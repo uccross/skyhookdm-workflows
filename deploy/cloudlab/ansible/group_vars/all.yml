@@ -1,0 +1,20 @@
+---
+ceph_origin: repository
+ceph_repository: community
+ceph_stable_release: luminous
+monitor_address: "192.168.1.1"
+public_network: "192.168.1.0/24"
+cluster_network: "192.168.1.0/24"
+cephx: false
+ceph_conf_local: true
+generate_fsid: false
+fsid: 3eca8d23-12a7-40e0-b723-421e9b527959
+ceph_conf_overrides:
+  osd:
+    osd scrub during recovery: false
+  mon:
+    mon allow pool delete: true
+osd_scenario: lvm
+osd_objectstore: bluestore
+devices:
+- '/dev/sdb'

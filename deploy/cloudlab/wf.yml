@@ -1,0 +1,47 @@
+steps:
+
+- id: allocate resources
+  uses: docker://popperized/geni:v0.9.9.2
+  # writes to geni/manifest.xml
+  args: ['geni/config.py', 'apply']
+  secrets:
+  - GENI_FRAMEWORK
+  - GENI_PROJECT
+  - GENI_USERNAME
+  - GENI_KEY_PASSPHRASE
+  - GENI_PUBKEY_DATA
+  - GENI_CERT_DATA
+
+
+- id: generate ansible inventory
+  uses: docker://popperized/geni:v0.9.9.2
+  # override the entrypoint so we don't need to provide credentials, as they
+  # are not needed for the 'get-inventory' subcommand
+  runs: 'python'
+  # convert geni/manifest.xml to ansible/hosts.yaml
+  args: ['geni/config.py', 'get-inventory']
+
+
+# the version of ceph being deployed determines which version of ceph-ansible
+# to use: https://docs.ceph.com/ceph-ansible/master/#releases
+- id: deploy
+  uses: docker://popperized/ceph-ansible:v3.2.42
+  args: ['-i', 'ansible/hosts.yaml', 'ansible/deploy-mons-and-osds.yml']
+  env:
+    ANSIBLE_LOG_PATH: ../ansible.log
+    ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
+    ANSIBLE_HOST_KEY_CHECKING: false
+  secrets:
+  - ANSIBLE_SSH_KEY_DATA
+
+
+#- id: release resources
+#  uses: docker://popperized/geni:v0.9.9.2
+#  args: ['geni/config.py', 'destroy']
+#  secrets:
+#  - GENI_FRAMEWORK
+#  - GENI_PROJECT
+#  - GENI_USERNAME
+#  - GENI_KEY_PASSPHRASE
+#  - GENI_PUBKEY_DATA
+#  - GENI_CERT_DATA
