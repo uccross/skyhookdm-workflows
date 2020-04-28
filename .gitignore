@@ -1,4 +1,5 @@
 .DS_Store
+.ropeproject
 *.sw?
 *.pyc
 manifest.xml

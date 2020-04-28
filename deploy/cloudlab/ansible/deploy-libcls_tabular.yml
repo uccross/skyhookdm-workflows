@@ -1,0 +1,6 @@
+- hosts: osds
+  tasks:
+  - name: copy libcls to all osds
+    copy:
+      src: libcls_tabular.so
+      dest: /usr/lib64/rados-classes/

@@ -35,6 +35,32 @@ steps:
   - ANSIBLE_SSH_KEY_DATA
 
 
+- id: download and extract libcls
+  uses: docker://docker:19.03.3
+  runs: /bin/sh
+  args:
+  - -c,
+  - |
+    docker pull popperized/skyhookdm-libcls:luminous-bionic
+    docker run \
+      -v $PWD:/w \
+      -w /w \
+      --entrypoint=/bin/bash \
+      popperized/skyhookdm-libcls:luminous-bionic
+        -c 'cp /usr/lib/libcls_tabular.so ansible/files/'
+
+
+- id: deploy
+  uses: docker://popperized/ansible:v2.9.7
+  args: ['-i', 'ansible/hosts.yaml', 'ansible/playbooks/deploy-libcls_tabular.yml']
+  env:
+    ANSIBLE_LOG_PATH: ./ansible.log
+    ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
+    ANSIBLE_HOST_KEY_CHECKING: false
+  secrets:
+  - ANSIBLE_SSH_KEY_DATA
+
+
 #- id: release resources
 #  uses: docker://popperized/geni:v0.9.9.2
 #  args: ['geni/config.py', 'destroy']
