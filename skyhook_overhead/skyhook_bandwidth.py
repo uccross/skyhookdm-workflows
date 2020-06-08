@@ -6,15 +6,23 @@ import rados
 import sys
 import threading
 
-def write_data(buff_bytes, name,  ceph_pool):
 
+def connect_to_ceph(ceph_pool):
     try:
         cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
         cluster.connect()
         ioctx = cluster.open_ioctx(ceph_pool)
-        ioctx.write_full(name, buff_bytes)
-        ioctx.close()
-        cluster.shutdown()
+
+    except Exception as e:
+        return str(e)
+
+    return ioctx
+
+
+def write_data(buff_bytes, name , ioctx):
+
+    try:
+        ioctx.aio_write_full(name, buff_bytes)
 
     except Exception as e:
         return str(e)
@@ -22,7 +30,7 @@ def write_data(buff_bytes, name,  ceph_pool):
     return True
 
 
-def write_to_ceph(table, obj_prefix = 'C', chunk_size = 10000000):
+def write_to_ceph(table, ioctx ,  obj_prefix = 'C', chunk_size = 10000000):
     batches = table.to_batches()
     sink = pa.BufferOutputStream()
     writer = pa.RecordBatchStreamWriter(sink, table.schema)
@@ -36,7 +44,7 @@ def write_to_ceph(table, obj_prefix = 'C', chunk_size = 10000000):
     i = 0
     while(True):
         chunk = buff[start:start + chunk_size]
-        write_data(chunk, 'c' + str(i), 'test')
+        write_data(chunk, 'c' + str(i), ioctx)
 
         if(start + chunk_size > len(buff)):
             i += 1
@@ -45,7 +53,7 @@ def write_to_ceph(table, obj_prefix = 'C', chunk_size = 10000000):
         start += chunk_size
         i += 1
 
-    write_data(buff[start:], obj_prefix + str(i), 'test')
+    write_data(buff[start:], obj_prefix + str(i), ioctx)
 
 
 def generate_data_schema(table):
@@ -59,7 +67,6 @@ def generate_data_schema(table):
     return data_schema
 
 
-
 def add_metadata(table):
 
     data_schema = 'test metadata' #generate_data_schema(table)
@@ -69,7 +76,7 @@ def add_metadata(table):
     return table
 
 
-def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+def write_to_skyhook(table, ioctx, obj_prefix = 'S', partition_num = 1000):
     row_num = len(table.columns[0])
     batches = table.to_batches(row_num/partition_num)
     i = 0 
@@ -84,8 +91,9 @@ def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
         buff = sink.getvalue()
         buff = buff.to_pybytes()
         buff_bytes = addFB_Meta(buff)
-        write_data(buff_bytes, obj_prefix + str(i), 'test' )
+        write_data(buff_bytes, obj_prefix + str(i), ioctx )
         i += 1
+
 
 def generate_table():
     f = open('data', 'rb')
@@ -98,35 +106,57 @@ def generate_table():
     return table
 
 
+# Get the time when writting data directly to Ceph. 
+# ioctx = connect_to_ceph('test')
+# table = generate_table()
+# start_time = time.time()
+# write_to_ceph(table, ioctx = ioctx, obj_prefix = obj_prefix + 'c')
+# stop_time = time.time()
+# print('write to ceph time: ' + str(stop_time - start_time ))
+# time.sleep(30)
+
+
+# Get the object prefix and the number of the workers from the command line.
 obj_prefix = sys.argv[1]
 worker_num = int(sys.argv[2])
 
-# table = generate_table()
-# start_time = time.time()
-# write_to_ceph(table, obj_prefix = obj_prefix + 'c')
-# stop_time = time.time()
-# print('write to ceph time: ' + str(stop_time - start_time ))
 
-# time.sleep(30)
+# Read the data from the binary file and construct the Arrow table.
 
-f = open('data', 'rb')
-data = f.read()
-partition_num = int(len(data)/10000000)
-table = generate_table()
+tables = []
 
+partition_num  = 0
 
+for i in range(10):
+    f = open('data', 'rb')
+    data = f.read()
+    partition_num = int(len(data)/10000000)
+    table = generate_table()
+    tables.append(table)
 
+partition_num = int(partition_num/10)
+
+# Connect to Ceph cluster and get the ioctx handler.
+ioctx = connect_to_ceph('test')
+
+# Start the timer.
 start_time = time.time()
 
+# Create threads according to the number of the workers given in the command line.
 ths = []
 for i in range(worker_num):
-    th = threading.Thread(target=write_to_skyhook, args=(table, obj_prefix + 's' + str(i), partition_num))
+    th = threading.Thread(target=write_to_skyhook, args=(tables[i], ioctx, obj_prefix + 's' + str(i), partition_num))
     ths.append(th)
     th.start()
 
+
+# Wait for the workers to finish
 for th in ths:
     th.join()
 
+ioctx.aio_flush()
+# Get the time when all workers are done.
 stop_time = time.time()
-# print('write to skyhook time: ' + str(stop_time - start_time ))
+
+# Calculate and print the throughput
 print('write to skyhook bandwidth: ' + str(worker_num * len(data)/1000000/(stop_time - start_time)) + ' MB/s.')
