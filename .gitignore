@@ -4,7 +4,7 @@
 *.pyc
 manifest.xml
 ansible.log
-rook/kube/
-rook/ceph/
+rook/kubeconfig/
+rook/ceph-client/config
 rook/geni/hosts
 rook/.env

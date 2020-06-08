@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-export KUBECONFIG=./kube/config
+export KUBECONFIG=/workspace/kubeconfig/config
 kubectl delete -f ./prometheus/service-monitor.yaml
 kubectl delete -f ./prometheus/prometheus.yaml
 kubectl delete -f ./prometheus/prometheus-service.yaml

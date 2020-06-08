@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-client-deployment
+spec:
+  selector:
+    matchLabels:
+        app: ceph-client    
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: ceph-client
+    spec:
+      volumes:
+        - name: data-store
+          hostPath:
+            path: /data
+      nodeSelector:
+        kubernetes.io/hostname: node4
+      containers:
+      - name: ceph-client
+        image: jcnitdgp25/ceph-client:latest
+        volumeMounts:
+          - name: data-store
+            mountPath: /workspace
