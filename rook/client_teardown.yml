@@ -1,4 +1,0 @@
-steps:
-- id: teardown client nodes
-  uses: docker://bitnami/kubectl
-  runs: ['./scripts/teardown_ceph_clients.sh']

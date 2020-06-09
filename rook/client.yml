@@ -1,7 +1,7 @@
 steps:
 - id: copy ceph config
   uses: docker://bitnami/kubectl
-  runs: ['./scripts/copy_ceph_config.sh']
+  runs: ['./scripts/download_ceph_config.sh']
 
 - id: build ceph-client image
   uses: docker://docker:19.03.3
@@ -27,3 +27,7 @@ steps:
 - id: start client nodes
   uses: docker://bitnami/kubectl
   runs: ['./scripts/setup_ceph_clients.sh']
+
+- id: teardown client nodes
+  uses: docker://bitnami/kubectl
+  runs: ['./scripts/teardown_ceph_clients.sh']

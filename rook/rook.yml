@@ -9,7 +9,7 @@ steps:
 
 - id: copy kube config
   uses: docker://lgatica/openssh-client
-  runs: ['./scripts/copy_kube_config.sh']
+  runs: ['./scripts/download_kube_config.sh']
   secrets: [
     'ANSIBLE_USER',
     'ANSIBLE_SSH_KEY_DATA'

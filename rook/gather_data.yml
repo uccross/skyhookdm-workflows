@@ -1,0 +1,8 @@
+steps:
+- id: download results
+  uses: docker://lgatica/openssh-client
+  runs: ['./scripts/download_benchmark_results.sh']
+  secrets: [
+    'ANSIBLE_USER',
+    'ANSIBLE_SSH_KEY_DATA'
+  ]

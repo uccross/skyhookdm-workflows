@@ -1,0 +1,127 @@
+{
+    "datas": [
+        {
+            "sec": "0",
+            "cur_ops": "0",
+            "started": "0",
+            "finished": "0",
+            "avg_bw": "0.000000",
+            "cur_bw": "0.000000",
+            "last_lat": "0.000000",
+            "avg_lat": "0.000000"
+        },
+        {
+            "sec": "1",
+            "cur_ops": "16",
+            "started": "49",
+            "finished": "33",
+            "avg_bw": "131.957196",
+            "cur_bw": "132.000000",
+            "last_lat": "0.001634",
+            "avg_lat": "0.274911"
+        },
+        {
+            "sec": "2",
+            "cur_ops": "16",
+            "started": "85",
+            "finished": "69",
+            "avg_bw": "137.967127",
+            "cur_bw": "144.000000",
+            "last_lat": "0.127517",
+            "avg_lat": "0.337351"
+        },
+        {
+            "sec": "3",
+            "cur_ops": "16",
+            "started": "115",
+            "finished": "99",
+            "avg_bw": "131.975440",
+            "cur_bw": "120.000000",
+            "last_lat": "0.575145",
+            "avg_lat": "0.385726"
+        },
+        {
+            "sec": "4",
+            "cur_ops": "16",
+            "started": "151",
+            "finished": "135",
+            "avg_bw": "134.976356",
+            "cur_bw": "144.000000",
+            "last_lat": "0.001754",
+            "avg_lat": "0.412100"
+        },
+        {
+            "sec": "5",
+            "cur_ops": "16",
+            "started": "182",
+            "finished": "166",
+            "avg_bw": "132.777886",
+            "cur_bw": "124.000000",
+            "last_lat": "0.109897",
+            "avg_lat": "0.428409"
+        },
+        {
+            "sec": "6",
+            "cur_ops": "16",
+            "started": "219",
+            "finished": "203",
+            "avg_bw": "135.310256",
+            "cur_bw": "148.000000",
+            "last_lat": "0.452714",
+            "avg_lat": "0.435045"
+        },
+        {
+            "sec": "7",
+            "cur_ops": "16",
+            "started": "252",
+            "finished": "236",
+            "avg_bw": "134.834941",
+            "cur_bw": "132.000000",
+            "last_lat": "1.339802",
+            "avg_lat": "0.445476"
+        },
+        {
+            "sec": "8",
+            "cur_ops": "16",
+            "started": "290",
+            "finished": "274",
+            "avg_bw": "136.978219",
+            "cur_bw": "152.000000",
+            "last_lat": "0.175536",
+            "avg_lat": "0.436019"
+        },
+        {
+            "sec": "9",
+            "cur_ops": "16",
+            "started": "319",
+            "finished": "303",
+            "avg_bw": "134.645478",
+            "cur_bw": "116.000000",
+            "last_lat": "0.001838",
+            "avg_lat": "0.439931"
+        },
+        {
+            "sec": "10",
+            "cur_ops": "16",
+            "started": "350",
+            "finished": "334",
+            "avg_bw": "133.579138",
+            "cur_bw": "124.000000",
+            "last_lat": "0.234606",
+            "avg_lat": "0.455673"
+        }
+    ],
+    "total_time_run": "10.573017",
+    "total_reads_made": "351",
+    "read_size": "4194304",
+    "object_size": "4194304",
+    "bandwidth": "132.790856",
+    "average_iops": "33",
+    "stddev_iops": "3",
+    "max_iops": "38",
+    "min_iops": "29",
+    "average_latency": "0.477400",
+    "max_latency": "1.756523",
+    "min_latency": "0.001629"
+}
+

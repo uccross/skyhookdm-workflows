@@ -1,26 +1,47 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: PersistentVolume
 metadata:
-  name: ceph-client-deployment
+  name: ceph-client-volume
+  labels:
+    type: local
 spec:
-  selector:
-    matchLabels:
-        app: ceph-client    
-  replicas: 3
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/results
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-client-volume-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ceph-client-tests-job
+spec:
   template:
-    metadata:
-      labels:
-        app: ceph-client
     spec:
+      restartPolicy: Never
       volumes:
-        - name: data-store
-          hostPath:
-            path: /data
+      - name: ceph-client-storage 
+        persistentVolumeClaim:
+          claimName: ceph-client-volume-claim
       nodeSelector:
         kubernetes.io/hostname: node4
       containers:
       - name: ceph-client
         image: jcnitdgp25/ceph-client:latest
         volumeMounts:
-          - name: data-store
+          - name: ceph-client-storage
             mountPath: /workspace
