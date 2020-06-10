@@ -17,3 +17,5 @@ MASTER="$(echo "$HOSTS" | cut -d' ' -f4)"
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/seq.json /workspace/results/seq.json
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/rand.json /workspace/results/rand.json
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/write.json /workspace/results/write.json
+
+# scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.1.json /workspace/results/osd.1.json

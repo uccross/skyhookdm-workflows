@@ -3,7 +3,9 @@ import json
 
 import matplotlib.pyplot as plt
 
-os.makedirs('/workspace/results/outputs')
+if not os.path.exists('/workspace/results/outputs'):
+    os.makedirs('/workspace/results/outputs')
+
 results_dir = '/workspace/results'
 results = {
     'write_data': None,
