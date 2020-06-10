@@ -16,7 +16,7 @@ steps:
   ]
 
 - id: setup rook skyhookdm cluster
-  uses: docker://bitnami/kubectl
+  uses: docker://bitnami/kubectl:1.17.4
   runs: ['./scripts/setup_rook.sh']
 
 # here will also be a teardown rook cluster step
