@@ -8,9 +8,9 @@ steps:
   ]
 
 - id: plot rados benchmarks
-  uses: docker://czentye/matplotlib-minimal
+  uses: docker://czentye/matplotlib-minimal:3.1.2
   runs: ['python', './scripts/plot_rados_benchmarks.py']
 
 - id: plot osd benchmarks
-  uses: docker://czentye/matplotlib-minimal
+  uses: docker://czentye/matplotlib-minimal:3.1.2
   runs: ['python', './scripts/plot_osd_benchmarks.py']
