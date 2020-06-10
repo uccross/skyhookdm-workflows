@@ -18,4 +18,11 @@ scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/rand.json /workspace/results/rand.json
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/write.json /workspace/results/write.json
 
-# scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.1.json /workspace/results/osd.1.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.0.json /workspace/results/osd.0.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.1.json /workspace/results/osd.1.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.2.json /workspace/results/osd.2.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.3.json /workspace/results/osd.3.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.4.json /workspace/results/osd.4.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.5.json /workspace/results/osd.5.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.6.json /workspace/results/osd.6.json
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/mnt/data/results/osd.7.json /workspace/results/osd.7.json

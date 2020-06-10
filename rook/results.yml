@@ -7,6 +7,10 @@ steps:
     'ANSIBLE_SSH_KEY_DATA'
   ]
 
-- id: visualize results
+- id: plot rados benchmarks
   uses: docker://czentye/matplotlib-minimal
   runs: ['python', './scripts/plot_rados_benchmarks.py']
+
+- id: plot osd benchmarks
+  uses: docker://czentye/matplotlib-minimal
+  runs: ['python', './scripts/plot_osd_benchmarks.py']
