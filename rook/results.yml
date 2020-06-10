@@ -6,3 +6,7 @@ steps:
     'ANSIBLE_USER',
     'ANSIBLE_SSH_KEY_DATA'
   ]
+
+- id: visualize results
+  uses: docker://czentye/matplotlib-minimal
+  runs: ['python', './visualize/plot.py']

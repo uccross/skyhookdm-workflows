@@ -7,4 +7,5 @@ ansible.log
 rook/kubeconfig/
 rook/ceph-client/config
 rook/geni/hosts
+rook/results/
 rook/.env
