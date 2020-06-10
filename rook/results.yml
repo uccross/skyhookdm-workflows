@@ -9,4 +9,4 @@ steps:
 
 - id: visualize results
   uses: docker://czentye/matplotlib-minimal
-  runs: ['python', './visualize/plot.py']
+  runs: ['python', './scripts/plot_rados_benchmarks.py']
