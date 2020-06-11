@@ -1,32 +1,21 @@
+options:
+  secrets:
+    - GENI_FRAMEWORK
+    - GENI_PROJECT
+    - GENI_USERNAME
+    - GENI_KEY_PASSPHRASE
+    - GENI_PUBKEY_DATA
+    - GENI_CERT_DATA
+    - NODE_COUNT
+    - NODE_CLUSTER
+    - NODE_SLICE
+    - NODE_HARDWARE
+
 steps:
 - id: setup nodes
   uses: docker://popperized/geni:v0.9.9.2
   args: ['./geni/setup-nodes.py']
-  secrets: [
-    'GENI_FRAMEWORK',
-    'GENI_PROJECT',
-    'GENI_USERNAME',
-    'GENI_KEY_PASSPHRASE',
-    'GENI_PUBKEY_DATA',
-    'GENI_CERT_DATA',
-    'NODE_COUNT',
-    'NODE_CLUSTER',
-    'NODE_HARDWARE',
-    'NODE_SLICE'
-  ]
 
 - id: release nodes
   uses: docker://popperized/geni:v0.9.9.2
   args: ['./geni/release.py']
-  secrets: [
-    'GENI_FRAMEWORK',
-    'GENI_PROJECT',
-    'GENI_USERNAME',
-    'GENI_KEY_PASSPHRASE',
-    'GENI_PUBKEY_DATA',
-    'GENI_CERT_DATA',
-    'NODE_COUNT',
-    'NODE_CLUSTER',
-    'NODE_HARDWARE',
-    'NODE_SLICE'
-  ]
