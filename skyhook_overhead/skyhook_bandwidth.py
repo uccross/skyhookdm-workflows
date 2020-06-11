@@ -5,24 +5,18 @@ import time
 import rados
 import sys
 import threading
+from multiprocessing import Process
 
 
-def connect_to_ceph(ceph_pool):
+def write_data(buff_bytes, name,  ceph_pool):
+
     try:
         cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
         cluster.connect()
         ioctx = cluster.open_ioctx(ceph_pool)
-
-    except Exception as e:
-        return str(e)
-
-    return ioctx
-
-
-def write_data(buff_bytes, name , ioctx):
-
-    try:
-        ioctx.aio_write_full(name, buff_bytes)
+        ioctx.write_full(name, buff_bytes)
+        ioctx.close()
+        cluster.shutdown()
 
     except Exception as e:
         return str(e)
@@ -30,7 +24,7 @@ def write_data(buff_bytes, name , ioctx):
     return True
 
 
-def write_to_ceph(table, ioctx ,  obj_prefix = 'C', chunk_size = 10000000):
+def write_to_ceph(table,  obj_prefix = 'C', chunk_size = 10000000):
     batches = table.to_batches()
     sink = pa.BufferOutputStream()
     writer = pa.RecordBatchStreamWriter(sink, table.schema)
@@ -44,7 +38,7 @@ def write_to_ceph(table, ioctx ,  obj_prefix = 'C', chunk_size = 10000000):
     i = 0
     while(True):
         chunk = buff[start:start + chunk_size]
-        write_data(chunk, 'c' + str(i), ioctx)
+        write_data(chunk, 'c' + str(i), 'test')
 
         if(start + chunk_size > len(buff)):
             i += 1
@@ -53,7 +47,7 @@ def write_to_ceph(table, ioctx ,  obj_prefix = 'C', chunk_size = 10000000):
         start += chunk_size
         i += 1
 
-    write_data(buff[start:], obj_prefix + str(i), ioctx)
+    write_data(buff[start:], obj_prefix + str(i), 'test')
 
 
 def generate_data_schema(table):
@@ -76,7 +70,7 @@ def add_metadata(table):
     return table
 
 
-def write_to_skyhook(table, ioctx, obj_prefix = 'S', partition_num = 1000):
+def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
     row_num = len(table.columns[0])
     batches = table.to_batches(row_num/partition_num)
     i = 0 
@@ -91,7 +85,7 @@ def write_to_skyhook(table, ioctx, obj_prefix = 'S', partition_num = 1000):
         buff = sink.getvalue()
         buff = buff.to_pybytes()
         buff_bytes = addFB_Meta(buff)
-        write_data(buff_bytes, obj_prefix + str(i), ioctx )
+        write_data(buff_bytes, obj_prefix + str(i), 'test' )
         i += 1
 
 
@@ -127,34 +121,34 @@ tables = []
 
 partition_num  = 0
 
-for i in range(10):
+for i in range(worker_numPSUTIL.cpu_percent(interval=1))):
     f = open('data', 'rb')
     data = f.read()
     partition_num = int(len(data)/10000000)
     table = generate_table()
     tables.append(table)
 
-partition_num = int(partition_num/10)
+# partition_num = int(partition_num/10)
 
 # Connect to Ceph cluster and get the ioctx handler.
-ioctx = connect_to_ceph('test')
+# ioctx = connect_to_ceph('test')
 
 # Start the timer.
 start_time = time.time()
 
 # Create threads according to the number of the workers given in the command line.
-ths = []
+processes = []
 for i in range(worker_num):
-    th = threading.Thread(target=write_to_skyhook, args=(tables[i], ioctx, obj_prefix + 's' + str(i), partition_num))
-    ths.append(th)
-    th.start()
+    p = Process(target=write_to_skyhook, args=(tables[i], obj_prefix + 's' + str(i), partition_num))
+    processes.append(p)
+    p.start()
 
 
 # Wait for the workers to finish
-for th in ths:
-    th.join()
+for p in processes:
+    p.join()
 
-ioctx.aio_flush()
+# ioctx.aio_flush()
 # Get the time when all workers are done.
 stop_time = time.time()
 
