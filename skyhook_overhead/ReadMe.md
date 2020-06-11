@@ -6,7 +6,7 @@ bash install_skyhookdmdriver.sh;
 bash prepare.sh;
 
 ### Generate Arrow Table Data (2000MB's Arrow Table):
-python3 data_gen.py 2000MB
+python3 data_gen.py 2000
 
 ### Run Experiment (4 writers):
 run_experiment.sh 4
