@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: iperf-client-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      containers:
+      - name: iperf-client
+        image: moutten/iperf:2.0
+        args: ['-c', "__ip__"]

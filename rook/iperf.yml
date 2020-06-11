@@ -1,0 +1,8 @@
+steps:
+- id: setup iperf tests
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./scripts/setup_iperf_tests.sh']
+
+- id: teardown iperf tests
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./scripts/teardown_iperf_tests.sh']

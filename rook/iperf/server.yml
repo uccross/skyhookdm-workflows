@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf-server-pod
+  labels: 
+    app: iperf-server
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    kubernetes.io/hostname: node4
+  containers:
+  - name: iperf-server
+    image: moutten/iperf:2.0
+    args: ['-s', '--reportstyle', 'C']
