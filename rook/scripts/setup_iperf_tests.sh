@@ -18,4 +18,4 @@ while [ -z "$result" ]; do
   result=$(kubectl logs $pod_name)
 done
 
-echo $result > /workspace/results/iperf-results.txt
+echo "$result" > /workspace/results/iperf-results.txt
