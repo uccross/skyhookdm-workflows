@@ -9,4 +9,4 @@ bash prepare.sh;
 python3 data_gen.py 2000
 
 ### Run Experiment (4 writers):
-run_experiment.sh 4
+bash run_experiment.sh 4
