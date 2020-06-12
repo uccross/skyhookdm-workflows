@@ -3,11 +3,14 @@ kind: Job
 metadata:
   name: iperf-client-job
 spec:
+  parallelism: 3
   template:
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
       restartPolicy: Never
-      nodeSelector:
-        kubernetes.io/hostname: node1
       containers:
       - name: iperf-client
         image: moutten/iperf:2.0

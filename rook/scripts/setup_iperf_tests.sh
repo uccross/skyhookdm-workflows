@@ -14,8 +14,11 @@ kubectl create -f iperf/client.temp.yml
 rm iperf/client.temp.yml
 
 result=$(kubectl logs $pod_name)
-while [ -z "$result" ]; do
+while true; do
   result=$(kubectl logs $pod_name)
+  echo "$result" > /workspace/results/iperf-results.txt
+  line_count=$(cat /workspace/results/iperf-results.txt | wc -l)
+  if [ "$line_count"  -eq 3 ]; then
+    break;
+  fi
 done
-
-echo "$result" > /workspace/results/iperf-results.txt

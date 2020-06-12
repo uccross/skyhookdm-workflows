@@ -1,7 +1,7 @@
 steps:
-- id: copy ceph config
+- id: download ceph config
   uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./scripts/download_ceph_config.sh']
+  runs: ['./scripts/ceph-benchmarks/download_ceph_config.sh']
 
 - id: build ceph-client image
   uses: docker://docker:19.03.3
@@ -12,7 +12,8 @@ steps:
     './ceph-client'
   ]
 
-- uses: docker://docker:19.03.3
+- id: push ceph-client image to dockerhub
+  uses: docker://docker:19.03.3
   secrets: [
     'DOCKER_USERNAME',
     'DOCKER_PASSWORD'
@@ -26,8 +27,12 @@ steps:
 
 - id: start client nodes
   uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./scripts/setup_ceph_clients.sh']
+  runs: ['./scripts/ceph-benchmarks/setup_ceph_benchmark_tests.sh']
+
+- id: download results
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./scripts/ceph-benchmarks/download_ceph_benchmark_results.sh']
 
 - id: teardown client nodes
   uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./scripts/teardown_ceph_clients.sh']
+  runs: ['./scripts/ceph-benchmarks/teardown_ceph_benchmark_tests.sh']
