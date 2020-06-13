@@ -7,11 +7,11 @@ if [ -z "$ANSIBLE_SSH_KEY_DATA" ]; then
 fi
 
 mkdir -p /root/.ssh
-mkdir -p /workspace/kubeconfig
+mkdir -p ./kubeconfig
 echo "$ANSIBLE_SSH_KEY_DATA" | base64 -d > /root/.ssh/id_rsa
 chmod 600 /root/.ssh
 chmod 400 /root/.ssh/id_rsa
 
-HOSTS=$(cat /workspace/geni/hosts)
+HOSTS=$(cat ./geni/hosts)
 MASTER="$(echo "$HOSTS" | cut -d' ' -f1)"
-scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/etc/kubernetes/admin.conf /workspace/kubeconfig/config
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$ANSIBLE_USER"@"$MASTER":/etc/kubernetes/admin.conf ./kubeconfig/config

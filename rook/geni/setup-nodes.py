@@ -56,5 +56,5 @@ node_ip_list = list()
 for idx in range(0, len(dict_response['rspec']['node'])):
     node_ip_list.append(str(dict_response['rspec']['node'][idx]['host']['@ipv4']))
 
-with open('/workspace/geni/hosts', 'w') as f:
+with open('./geni/hosts', 'w') as f:
     f.write(' '.join(node_ip_list))

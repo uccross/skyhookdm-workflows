@@ -3,10 +3,10 @@ import json
 
 import matplotlib.pyplot as plt
 
-if not os.path.exists('/workspace/results/outputs'):
-    os.makedirs('/workspace/results/outputs')
+if not os.path.exists('./results/outputs'):
+    os.makedirs('./results/outputs')
 
-results_dir = '/workspace/results'
+results_dir = './results'
 results = {
     'write_data': None,
     'seq_data': None,
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     plt.xlabel('Seconds')
     plt.ylabel('Avg. Bandwidth')
     plt.title('Rados Bechmarks')
-    plt.savefig('/workspace/results/outputs/rados-benchmarks.png', dpi=300, bbox_inches='tight')
+    plt.savefig('./results/outputs/rados-benchmarks.png', dpi=300, bbox_inches='tight')

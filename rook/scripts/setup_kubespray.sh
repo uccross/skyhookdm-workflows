@@ -11,7 +11,7 @@ pip install -r requirements.txt
 cp -rfp inventory/sample inventory/skyhookcluster
 
 # specify the participating nodes IP's
-HOSTS=$(cat /workspace/geni/hosts)
+HOSTS=$(cat ./geni/hosts)
 declare -a IPS=("$HOSTS")
 CONFIG_FILE=inventory/skyhookcluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 

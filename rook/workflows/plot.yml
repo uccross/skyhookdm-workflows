@@ -1,12 +1,12 @@
 steps:
 - id: plot rados benchmarks
   uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: ['python', './scripts/plot/plot_rados_benchmarks.py']
+  runs: ['python', './plot/plot_rados_benchmarks.py']
 
 - id: plot osd benchmarks
   uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: ['python', './scripts/plot/plot_osd_benchmarks.py']
+  runs: ['python', './plot/plot_osd_benchmarks.py']
 
 - id: plot iperf benchmarks
   uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: ['python', './scripts/plot/plot_iperf_results.py']
+  runs: ['python', './plot/plot_iperf_results.py']

@@ -3,10 +3,10 @@ import json
 
 import matplotlib.pyplot as plt
 
-if not os.path.exists('/workspace/results/outputs'):
-    os.makedirs('/workspace/results/outputs')
+if not os.path.exists('./results/outputs'):
+    os.makedirs('./results/outputs')
 
-results_dir = '/workspace/results'
+results_dir = './results'
 
 def read_output_file_and_plot(filename):
     with open(os.path.join(results_dir,filename), 'r') as f:
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     plt.ylabel('Throughput (MB/s)')
     plt.title('OSD Bechmarks')
     plt.bar(osds, througputs)
-    plt.savefig('/workspace/results/outputs/osd-benchmarks.png', dpi=300, bbox_inches='tight')
+    plt.savefig('./results/outputs/osd-benchmarks.png', dpi=300, bbox_inches='tight')
