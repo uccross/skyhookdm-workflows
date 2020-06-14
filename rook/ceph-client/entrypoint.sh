@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 
 # rados benchmarks
 ceph osd pool create testbench 100 100
