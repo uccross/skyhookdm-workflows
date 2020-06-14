@@ -7,7 +7,7 @@ metadata:
 spec:
   restartPolicy: Never
   nodeSelector:
-    kubernetes.io/hostname: node4
+    kubernetes.io/hostname: node3
   containers:
   - name: ceph-client
-    image: jcnitdgp25/ceph-client:latest
+    image: __docker_username__/ceph-client:latest

@@ -11,6 +11,7 @@ pod_host=$(kubectl get pod $pod_name --template={{.status.podIP}})
 cp ./iperf/client.yml ./iperf/client.temp.yml
 sed -i "s/__target__/$pod_host/g" ./iperf/client.temp.yml
 sed -i "s/__replicas__/$replicas/g" ./iperf/client.temp.yml
+sed -i "s/__docker_username__/$DOCKER_USERNAME/g" ./iperf/client.temp.yml
 kubectl create -f ./iperf/client.temp.yml
 rm ./iperf/client.temp.yml
 

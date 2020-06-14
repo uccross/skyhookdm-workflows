@@ -24,7 +24,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: iperf-client
-        image: jcnitdgp25/iperf-client:latest
+        image: __docker_username__/iperf-client:latest
         env:
           - name: TARGET
             value: __target__

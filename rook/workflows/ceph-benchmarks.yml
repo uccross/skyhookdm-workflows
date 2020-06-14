@@ -28,6 +28,7 @@ steps:
 - id: start client pods
   uses: docker://bitnami/kubectl:1.17.4
   runs: ['./ceph-client/setup_ceph_benchmark_tests.sh']
+  secrets: ['DOCKER_USERNAME']
 
 - id: download results
   uses: docker://bitnami/kubectl:1.17.4
