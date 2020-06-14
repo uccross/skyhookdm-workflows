@@ -1,17 +1,30 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: iperf-client-job
+  name: iperf-client
 spec:
-  parallelism: 3
+  selector:
+    matchLabels:
+      app: iperf-client
+  replicas: __replicas__
   template:
+    metadata:
+      labels:
+        app: iperf-client
     spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-      restartPolicy: Never
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - iperf-client
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: iperf-client
-        image: moutten/iperf:2.0
-        args: ['-c', "__ip__"]
+        image: jcnitdgp25/iperf-client:latest
+        env:
+          - name: TARGET
+            value: __target__
