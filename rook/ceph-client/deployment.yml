@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ceph-client-pod
+  labels:
+    app: ceph-client
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    kubernetes.io/hostname: node3
+  containers:
+  - name: ceph-client
+    image: __docker_username__/ceph-client:latest

@@ -1,0 +1,22 @@
+steps:
+- id: spawn kubernetes cluster
+  uses: docker://popperized/ansible:v2.9
+  runs: ['./scripts/setup_kubespray.sh']
+  secrets: [
+    'ANSIBLE_USER',
+    'ANSIBLE_SSH_KEY_DATA'
+  ]
+
+- id: copy kube config
+  uses: docker://lgatica/openssh-client
+  runs: ['./scripts/download_kube_config.sh']
+  secrets: [
+    'ANSIBLE_USER',
+    'ANSIBLE_SSH_KEY_DATA'
+  ]
+
+- id: setup rook skyhookdm cluster
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./scripts/setup_rook.sh']
+
+# here will also be a teardown rook cluster step

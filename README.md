@@ -1,6 +1,9 @@
-# SkyhookDM Workflows
+# Deployment Workflows
 
-Popper workflows for deploying and testing [SkyhookDM][skyhook] on 
-multiple platforms.
+These workflows deploy Ceph on multiple infrastructures using 
+[`ceph-ansible`][ceph-ansible]. All of them generate an Ansible 
+inventory and a `ceph.conf` file that can be used to obtain 
+information and connect to a cluster to run subsequent orchestration 
+tasks such as [running performance benchmarks](../test/cbt).
 
-[skyhook]: https://github.com/uccross/skyhookdm-ceph
+[ceph-ansible]: https://github.com/ceph/ceph-ansible

@@ -1,0 +1,8 @@
+steps:
+- id: setup prometheus monitoring
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./prometheus/setup_prometheus.sh']
+
+- id: teardown prometheus monitoring
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./prometheus/teardown_prometheus.sh']

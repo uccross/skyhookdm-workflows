@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf-client
+spec:
+  selector:
+    matchLabels:
+      app: iperf-client
+  replicas: __replicas__
+  template:
+    metadata:
+      labels:
+        app: iperf-client
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - iperf-client
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: iperf-client
+        image: __docker_username__/iperf-client:latest
+        env:
+          - name: TARGET
+            value: __target__
