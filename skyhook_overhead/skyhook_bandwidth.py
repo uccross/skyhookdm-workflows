@@ -121,7 +121,7 @@ tables = []
 
 partition_num  = 0
 
-for i in range(worker_numPSUTIL.cpu_percent(interval=1))):
+for i in range(worker_num):
     f = open('data', 'rb')
     data = f.read()
     partition_num = int(len(data)/10000000)
