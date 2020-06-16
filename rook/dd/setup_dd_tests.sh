@@ -3,7 +3,7 @@ set -eu
 
 export KUBECONFIG=./kubeconfig/config
 
-kubectl create -f ./dd/dd.yml
+kubectl create -f ./dd/psp.yml
 
 kubectl create namespace dd-tests
 kubectl create serviceaccount fake-user -n dd-tests

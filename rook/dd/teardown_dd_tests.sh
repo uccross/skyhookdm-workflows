@@ -9,4 +9,4 @@ kubectl delete rolebinding -n dd-tests fake-editor
 kubectl delete serviceaccount -n dd-tests fake-user
 kubectl delete namespace dd-tests
 
-kubectl delete -f ./dd/dd.yml
+kubectl delete -f ./dd/psp.yml
