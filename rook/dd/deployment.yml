@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dd-client
+spec:
+  selector:
+    matchLabels:
+      app: dd-client
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: dd-client
+    spec:
+      volumes:
+        - name: device-volume
+          hostPath:
+            path: /dev
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - dd-client
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: dd-client
+        image: jcnitdgp25/dd:latest
+        volumeMounts:
+          - mountPath: /dev
+            name: device-volume
+        securityContext:
+          privileged: true
