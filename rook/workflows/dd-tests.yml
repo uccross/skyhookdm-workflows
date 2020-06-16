@@ -5,7 +5,7 @@ steps:
     'build',
     '-t',
     'jcnitdgp25/dd:latest',
-    './dd'
+    './dd/dd-image'
   ]
 
 - id: push dd image to dockerhub
