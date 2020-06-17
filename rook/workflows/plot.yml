@@ -10,3 +10,7 @@ steps:
 - id: plot iperf benchmarks
   uses: docker://czentye/matplotlib-minimal:3.1.2
   runs: ['python', './plot/plot_iperf_results.py']
+
+- id: plot dd tests
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: ['python', './plot/plot_dd_test_results.py']
