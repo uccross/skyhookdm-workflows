@@ -24,6 +24,8 @@ steps:
 - id: setup dd tests
   uses: docker://bitnami/kubectl:1.17.4
   runs: ['./dd/setup_dd_tests.sh']
+  env:
+    BLOCKDEVICES: 'sda sdb'
 
 - id: download results
   uses: docker://bitnami/kubectl:1.17.4

@@ -9,4 +9,7 @@ kubectl create namespace dd-tests
 kubectl create serviceaccount fake-user -n dd-tests
 kubectl create rolebinding fake-editor --clusterrole=edit --serviceaccount=dd-tests:fake-user -n dd-tests
 
-kubectl create -f ./dd/deployment.yml
+cp ./dd/deployment.yml ./dd/deployment.temp.yml
+sed -i "s/__blockdevices__/$BLOCKDEVICES/g" ./dd/deployment.temp.yml
+kubectl create -f ./dd/deployment.temp.yml
+rm ./dd/deployment.temp.yml
