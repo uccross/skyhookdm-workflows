@@ -6,8 +6,6 @@ metadata:
     app: iperf-server
 spec:
   restartPolicy: Never
-  nodeSelector:
-    kubernetes.io/hostname: node3
   containers:
   - name: iperf-server
     image: moutten/iperf:2.0
