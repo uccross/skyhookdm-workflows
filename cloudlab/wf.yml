@@ -1,7 +1,7 @@
 steps:
 
 - id: allocate resources
-  uses: docker://popperized/geni:v0.9.9.2
+  uses: docker://getpopper/geni:v0.9.9.2
   # writes to geni/manifest.xml
   args: ['geni/config.py', 'apply']
   secrets:
