@@ -1,8 +1,4 @@
-FROM ubuntu:xenial
-
-RUN apt-get update && \
-    apt-get install -y ceph-common && \
-    apt-get clean
+FROM ceph/ceph:v14.2.9
 
 ADD entrypoint.sh /entrypoint.sh
 ADD config/ceph.conf /etc/ceph/ceph.conf
