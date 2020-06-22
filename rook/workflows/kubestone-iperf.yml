@@ -1,0 +1,13 @@
+steps:
+- id: setup
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./kubestone-iperf/setup.sh']
+
+- id: download
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./kubestone-iperf/download.sh']
+
+- id: teardown
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./kubestone-iperf/teardown.sh']
+

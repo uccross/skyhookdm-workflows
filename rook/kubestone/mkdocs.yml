@@ -1,0 +1,49 @@
+site_name: Kubestone
+nav:
+  - Home: index.md
+  - Quickstart guide: quickstart.md
+  - Benchmarks:
+      - 'Benchmarks home': benchmarks-index.md
+      - 'drill': benchmarks/drill.md
+      - 'fio': benchmarks/fio.md
+      - 'ioping': benchmarks/ioping.md
+      - 'iperf3': benchmarks/iperf3.md
+      - 'pgbench': benchmarks/pgbench.md
+      - 'qperf': benchmarks/qperf.md
+      - 'sysbench': benchmarks/sysbench.md
+  - CRD API docs: apidocs.md
+  - Development guide: devguide.md
+
+docs_dir: docs/
+
+repo_name: 'xridge/kubestone'
+repo_url: 'https://github.com/xridge/kubestone'
+
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/xridge/kubestone'
+    - type: 'linkedin'
+      link: 'https://linkedin.com/company/xridge'
+
+plugins:
+  - search
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - markdown_include.include:
+      base_path: docs/
+  - admonition
+  - codehilite
+  - meta
+
+theme:
+  name: material
+  palette:
+    primary: 'white'
+  logo: images/kubestone-logo-notext.png
+
+google_analytics:
+  - 'UA-146023212-2'
+  - 'auto'

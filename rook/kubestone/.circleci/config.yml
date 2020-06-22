@@ -1,0 +1,90 @@
+version: 2
+jobs:
+  run_unit_tests:
+    docker:
+      - image: circleci/golang:1.12.5
+        environment:
+          GO111MODULE: "on"
+          GOFLAGS: "-p=8"  # To avoid out of memory related kills
+
+    working_directory: /go/src/github.com/xridge/kubestone
+    steps:
+      - checkout
+      - run:
+          name: Install kubebuilder
+          command: |
+            version=2.0.0-beta.0
+            arch=amd64
+            curl -L -O https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${version}/kubebuilder_${version}_linux_${arch}.tar.gz
+            tar -zxvf kubebuilder_${version}_linux_${arch}.tar.gz
+            sudo mv kubebuilder_${version}_linux_${arch} /usr/local/kubebuilder
+            export PATH=$PATH:/usr/local/kubebuilder/bin
+      - run: make test
+
+  run_e2e_tests:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    working_directory: ~/go/src/github.com/xridge/kubestone
+    steps:
+      - checkout
+      - run:
+          name: Upgrade golang to 1.12
+          command: |
+            sudo rm -rf /usr/local/go
+            VERSION=1.12.8
+            OS=linux
+            ARCH=amd64
+            curl -L -O https://dl.google.com/go/go${VERSION}.${OS}-${ARCH}.tar.gz
+            sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+            go version
+      - run:
+          name: Install Kustomize
+          command: |
+            VERSION=3.1.0
+            OS=linux
+            ARCH=amd64
+            curl -L -O https://github.com/kubernetes-sigs/kustomize/releases/download/v${VERSION}/kustomize_${VERSION}_${OS}_${ARCH}
+            chmod +x kustomize_${VERSION}_${OS}_${ARCH}
+            sudo mv kustomize_${VERSION}_${OS}_${ARCH} /usr/local/bin/kustomize
+      - run:
+          name: Start e2e test
+          command: |
+            export GO111MODULE=on
+            export GOPATH=~/go
+            export PATH=$PATH:$GOPATH/bin
+            make e2e-test
+
+  check_generated_content:
+    docker:
+      - image: circleci/golang:1.12.5
+        environment:
+          GO111MODULE: "on"
+
+    working_directory: ~/go/src/github.com/xridge/kubestone
+    steps:
+      - checkout
+      - run:
+          name: Check generated content's diff
+          command: |
+            make generate
+            make manifests
+            # TODO: `make apidocs` generates the commit hash of the last commit.
+            # When creating a new pull request the commit id will change and we
+            # do not know it in advance!
+            commit="$(grep 'on git commit' ./docs/static/apidocs.html)"
+            sed -i -e "s|.*on git commit.*|$commit|g" ./docs/apidocs/template/pkg.tpl
+            make apidocs
+            git checkout -- ./docs/apidocs/template/pkg.tpl
+            # Print generated file names which are different
+            echo "Non up-to-date files:"
+            git diff --exit-code
+            echo "--bai--"
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - run_unit_tests
+      - run_e2e_tests
+      - check_generated_content
