@@ -8,4 +8,5 @@ for i in line.split(' '):
         arr.append(float(i))
 
 avg = sum(arr)/len(arr)
-print("CPU utilization: " + str(avg) + " %")
+#print("CPU utilization: " + str(avg) + " %")
+print(str(avg))

@@ -153,4 +153,5 @@ for p in processes:
 stop_time = time.time()
 
 # Calculate and print the throughput
-print('write to skyhook bandwidth: ' + str(worker_num * len(data)/1000000/(stop_time - start_time)) + ' MB/s.')
+#print('write to skyhook bandwidth: ' + str(worker_num * len(data)/1000000/(stop_time - start_time)) + ' MB/s.')
+print(str(worker_num * len(data)/1000000/(stop_time - start_time)))

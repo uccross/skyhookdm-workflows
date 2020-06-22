@@ -9,3 +9,4 @@ rook/ceph-client/config
 rook/geni/hosts
 rook/results/
 rook/.env
+skyhook_overhead/data
