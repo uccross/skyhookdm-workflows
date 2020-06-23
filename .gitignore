@@ -9,3 +9,7 @@ rook/ceph-client/config
 rook/geni/hosts
 rook/results/
 rook/.env
+
+# iperf
+rook/kubestone-iperf/results
+rook/kubestone-iperf/*.png
