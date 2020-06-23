@@ -10,6 +10,8 @@ rook/geni/hosts
 rook/results/
 rook/.env
 
+skyhook_overhead/data
+
 # iperf
 rook/kubestone-iperf/results
 rook/kubestone-iperf/*.png
