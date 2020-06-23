@@ -11,3 +11,6 @@ steps:
   uses: docker://bitnami/kubectl:1.17.4
   runs: ['./kubestone-iperf/teardown.sh']
 
+- id: plot
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: ['python', './kubestone-iperf/plot.py']
