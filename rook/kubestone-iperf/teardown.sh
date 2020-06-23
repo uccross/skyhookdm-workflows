@@ -3,5 +3,5 @@ set -ex
 
 export KUBECONFIG=./kubeconfig/config
 
-# delete iperf3 test pods
-kubectl delete -n kubestone -f ./kubestone/config/samples/perf_v1alpha1_iperf3.yaml
+# delete the iperf benchmark pods
+kubectl delete -n kubestone -f ./kubestone-iperf/iperf.yaml
