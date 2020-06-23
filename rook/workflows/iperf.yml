@@ -1,9 +1,11 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
 steps:
 - id: run
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash]
-  env:
-    KUBECONFIG: ./kubeconfig/config
   args:
   - -c 
   - |
@@ -13,8 +15,6 @@ steps:
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash]
-  env:
-    KUBECONFIG: ./kubeconfig/config
   args:
   - -c
   - |
@@ -25,8 +25,6 @@ steps:
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash]
-  env:
-    KUBECONFIG: ./kubeconfig/config
   args:
   - -c 
   - |
@@ -35,4 +33,5 @@ steps:
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: ['python', './kubestone-iperf/plot.py']
+  runs: [python]
+  args: [./kubestone-iperf/plot.py]
