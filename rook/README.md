@@ -38,11 +38,10 @@ $ popper run -f workflows/ceph-benchmarks.yml -w . 'teardown client pods'
 
 ## iperf benchmarks
 ```bash
-# setup iperf benchmark tests
-$ popper run -f workflow/iperf-tests.yml -w . 'setup iperf tests'
-
-# teardown iperf benchmark tests
-$ popper run -f workflow/iperf-tests.yml -w . 'teardown iperf tests'
+$ popper run -f workflows/iperf.yml setup
+$ popper run -f workflows/iperf.yml download
+$ popper run -f workflows/iperf.yml teardown
+$ popper run -f workflows/iperf.yml plot
 ```
 
 ## plot graphs
