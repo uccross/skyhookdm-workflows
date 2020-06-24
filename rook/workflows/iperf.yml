@@ -1,0 +1,27 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
+steps:
+- id: run
+  uses: docker://bitnami/kubectl:1.17.4
+  args: [create, -n, kubestone, -f, ./kubestone-iperf/iperf.yaml]
+
+- id: download-results
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash]
+  args:
+  - -c
+  - |
+    set -ex
+    POD=$(kubectl get pod -n kubestone -l iperf-mode=server -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs -n kubestone $POD > ./kubestone-iperf/results
+
+- id: teardown
+  uses: docker://bitnami/kubectl:1.17.4
+  args: [delete, -n, kubestone, -f, ./kubestone-iperf/iperf.yaml]
+
+- id: plot-results
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: [python]
+  args: [./kubestone-iperf/plot.py]
