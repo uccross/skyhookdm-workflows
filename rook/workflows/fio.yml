@@ -1,0 +1,8 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
+steps:
+- id: run
+  uses: docker://traherom/kustomize-docker
+  runs: [./kubestone-fio/run.sh]
