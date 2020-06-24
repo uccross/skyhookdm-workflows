@@ -37,9 +37,9 @@ echo "    Writers number: $writers_num"
 echo "    Object sizes: $obj_sizes"
 echo "    Experiment data size: $data_size MB"
 
-# bash ramdisk_ceph.sh $osds $ssh_key $os
-# bash install_skyhookdmdriver.sh
-# bash prepare.sh
+bash ramdisk_ceph.sh $osds $ssh_key $os
+bash install_skyhookdmdriver.sh
+bash prepare.sh
 
 for obj_size in $obj_sizes
 do
