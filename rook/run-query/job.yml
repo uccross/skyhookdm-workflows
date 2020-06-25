@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-query
+spec:
+  template:
+    metadata:
+      labels:
+        app: run-query
+    spec:
+      containers:
+      - name: run-query
+        image: uccross/skyhookdm-ceph:v14.2.9
+        command: [sleep, infinity]
+      nodeSelector:
+        kubernetes.io/hostname: node0.rook-ceph-2.schedock-pg0.clemson.cloudlab.us
+      restartPolicy: Never
