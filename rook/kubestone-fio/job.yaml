@@ -1,22 +1,3 @@
-# apiVersion: perf.kubestone.xridge.io/v1alpha1
-# kind: Fio
-# metadata:
-#   name: fio-sample
-# spec:
-#   builtinJobFiles:
-#   - /jobs/rand-read.fio
-#   - /jobs/rand-write.fio
-#   image:
-#     name: xridge/fio:3.13
-#     volumeDevices:
-#       - name: data
-#         devicePath: /dev/sdb
-#   volume:
-#     volumeSource:
-#         persistentVolumeClaim:
-#           claimName: pvc
-
-
 apiVersion: batch/v1
 kind: Job
 metadata:
