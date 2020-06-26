@@ -13,12 +13,17 @@ spec:
           image: xridge/fio:3.13
           command: ["sleep", "100000"]
           volumeDevices:
-            - name: data
+            - name: pvc-sdb
               devicePath: /dev/sdb
+            - name: pvc-sda
+              devicePath: /dev/sda
           securityContext:
             privileged: true
       restartPolicy: Never
       volumes:
-        - name: data
+        - name: pvc-sdb
           persistentVolumeClaim:
-            claimName: pvc
+            claimName: pvc-sdb
+        - name: pvc-sda
+          persistentVolumeClaim:
+            claimName: pvc-sda
