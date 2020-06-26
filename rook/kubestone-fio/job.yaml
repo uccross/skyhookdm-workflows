@@ -1,0 +1,43 @@
+# apiVersion: perf.kubestone.xridge.io/v1alpha1
+# kind: Fio
+# metadata:
+#   name: fio-sample
+# spec:
+#   builtinJobFiles:
+#   - /jobs/rand-read.fio
+#   - /jobs/rand-write.fio
+#   image:
+#     name: xridge/fio:3.13
+#     volumeDevices:
+#       - name: data
+#         devicePath: /dev/sdb
+#   volume:
+#     volumeSource:
+#         persistentVolumeClaim:
+#           claimName: pvc
+
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fio-test-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: fio-test
+    spec:
+      containers:
+        - name: fio-container
+          image: xridge/fio:3.13
+          command: ["sleep", "100000"]
+          volumeDevices:
+            - name: data
+              devicePath: /dev/sdb
+          securityContext:
+            privileged: true
+      restartPolicy: Never
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc

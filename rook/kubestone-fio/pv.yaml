@@ -1,0 +1,21 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv
+spec:
+  volumeMode: Block
+  capacity:
+    storage: 10Gi
+  local:
+    path: /dev/sdb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - node2.rook-ceph-2.schedock-pg0.clemson.cloudlab.us
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete

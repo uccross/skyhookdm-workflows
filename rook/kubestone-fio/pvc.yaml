@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: fio-test-vol
+  name: pvc
 spec:
   accessModes:
- - ReadWriteOnce
+    - ReadWriteOnce
+  volumeMode: Block
   resources:
- requests:
-   storage: 5Gi
+    requests:
+      storage: 10Gi
