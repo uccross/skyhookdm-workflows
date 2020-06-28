@@ -58,20 +58,24 @@ do
     echo "Object size: $obj_size"
     rm -f data
     python3 data_gen.py $data_size $obj_size
-
-    titles="obj_size, writers, client_util, client_bandwidth"
-    osd_last_index=$((osds-1))
-    for osd_index in $(seq 0 $osd_last_index)
+    for operation in ("write" "read" "remove")
     do
-        titles="$titles, OSD_${osd_index}_util"
-    done
+        output_name = "output_$operation_$obj_size.csv"
+        titles="obj_size, writers, client_util, client_bandwidth"
+        osd_last_index=$((osds-1))
+        for osd_index in $(seq 0 $osd_last_index)
+        do
+            titles="$titles, OSD_${osd_index}_util"
+        done
 
-    echo "$titles" >> "output_$obj_size.csv"
+        echo "$titles" >> "$output_name"
 
-    for writer_num in $writers_num
-    do
-        echo "Starting the experiment with $writer_num writers"
-        echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds)" >> "output_$obj_size.csv"
+        for writer_num in $writers_num
+        do
+            echo "Starting the experiment with $writer_num writers"
+            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation)" >> "$output_name"
+        done
+        sleep 5
     done
 done
 

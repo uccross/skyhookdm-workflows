@@ -23,6 +23,22 @@ def write_data(buff_bytes, name,  ceph_pool):
 
     return True
 
+def read_data(name, ceph_pool):
+    cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
+    cluster.connect()
+    ioctx = cluster.open_ioctx(ceph_pool)
+    data = ioctx.read(name)
+    ioctx.close()
+    cluster.shutdown()
+    return data
+
+def remove_data(name, ceph_pool):
+    cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
+    cluster.connect()
+    ioctx = cluster.open_ioctx(ceph_pool)
+    ioctx.remove_object(name)
+    ioctx.close()
+    cluster.shutdown()
 
 def write_to_ceph(table,  obj_prefix = 'C', chunk_size = 10000000):
     batches = table.to_batches()
@@ -85,9 +101,39 @@ def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
         buff = sink.getvalue()
         buff = buff.to_pybytes()
         buff_bytes = addFB_Meta(buff)
+        print('Writing '+str(len(buff_bytes))+' B object '+obj_prefix + str(i))
         write_data(buff_bytes, obj_prefix + str(i), 'test' )
         i += 1
 
+
+def read_from_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+    row_num = len(table.columns[0])
+    batches = table.to_batches(row_num/partition_num)
+    i = 0 
+    for batch in batches:
+        sub_table = pa.Table.from_batches([batch])
+        sub_table = add_metadata(sub_table)
+        batches = sub_table.to_batches()
+        sink = pa.BufferOutputStream()
+        writer = pa.RecordBatchStreamWriter(sink, table.schema)
+        for batch in batches:
+            writer.write_batch(batch)
+        buff = sink.getvalue()
+        buff = buff.to_pybytes()
+        buff_bytes = addFB_Meta(buff)
+        data = read_data(obj_prefix + str(i), 'test' )
+        assert data == buff_bytes
+        i += 1
+        
+        
+def remove_from_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+    row_num = len(table.columns[0])
+    batches = table.to_batches(row_num/partition_num)
+    i = 0 
+    for batch in batches:
+        remove_data(obj_prefix + str(i), 'test' )
+        i += 1
+      
 
 def generate_table():
     f = open('data', 'rb')
@@ -113,10 +159,9 @@ def generate_table():
 # Get the object prefix and the number of the workers from the command line.
 obj_prefix = sys.argv[1]
 worker_num = int(sys.argv[2])
-
+operation = sys.argv[3]
 
 # Read the data from the binary file and construct the Arrow table.
-
 tables = []
 
 partition_num  = 0
@@ -127,7 +172,7 @@ for i in range(worker_num):
     partition_num = int(len(data)/10000000)
     table = generate_table()
     tables.append(table)
-
+    
 # partition_num = int(partition_num/10)
 
 # Connect to Ceph cluster and get the ioctx handler.
@@ -136,10 +181,17 @@ for i in range(worker_num):
 # Start the timer.
 start_time = time.time()
 
+process_target = write_to_skyhook
+if operation = 'read':
+    process_target = read_from_skyhook
+elif operation = 'remove':
+    process_target = remove_from_skyhook
 # Create threads according to the number of the workers given in the command line.
 processes = []
+
+    
 for i in range(worker_num):
-    p = Process(target=write_to_skyhook, args=(tables[i], obj_prefix + 's' + str(i), partition_num))
+    p = Process(target=process_target, args=(tables[i], obj_prefix + 's' + str(i), partition_num))
     processes.append(p)
     p.start()
 
