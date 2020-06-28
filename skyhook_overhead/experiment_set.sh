@@ -14,7 +14,7 @@ echo "    Object sizes: $obj_sizes"
 echo "    Experiment data size: $data_size MB"
 
 sudo apt update
-sudo apt install python3-pip
+sudo apt --assume-yes install python3-pip
 pip3 install runipy
 pip3 install numpy
 pip3 install pandas
@@ -41,10 +41,13 @@ fi
 if [ -z obj_sizes ]
     then obj_sizes=(10)
 fi
+if [ -z storage_device ]
+    then storage_device="sdb"
+fi
 
 FILE=/etc/ceph
 if [ ! -d "$FILE" ]; then
-    bash ramdisk_ceph.sh $osds $ssh_key $os
+    bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
     bash install_skyhookdmdriver.sh
     bash prepare.sh
 fi

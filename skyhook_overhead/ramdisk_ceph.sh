@@ -12,7 +12,7 @@ then
   echo "Usage:"
   echo "./this <number-of-osds> <yourclusterkey.id_rsa> <ubuntu|centos> <storage-device>"
   echo "Ex:"
-  echo "./this 8 clusterkey.id_rsa ubuntu sdb"
+  echo "./this 8 clusterkey.id_rsa ubuntu ${3}"
   echo "forcing program exit..."
   exit 1
 else
@@ -41,7 +41,7 @@ sshkeypath=$2
 max_osd=$((nosds-1))
 pkgs="git x11-apps screen curl python nano scite vim x11-apps tmux dstat wget cmake ccache gnupg python-pip python3 python-virtualenv gcc g++ bzip2 libzip"
 CEPH_VER="luminous"
-STORAGE_DEVICE="sdb"
+STORAGE_DEVICE="${3}"
 REPO_DIR="/mnt/${STORAGE_DEVICE}/"
 
 # prep for postgres installation later.

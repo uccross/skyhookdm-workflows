@@ -28,4 +28,4 @@ do
     osd_utils_str="$osd_utils_str, $result"
 done;
 
-echo "$client_util, $client_band, $osd_utils_str"
+echo "$client_util, $client_band$osd_utils_str"
