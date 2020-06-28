@@ -7,8 +7,8 @@ import sys
 obj_size = int(sys.argv[2])
 data_size = int(sys.argv[1])/obj_size
 int_number_in_obj = int((obj_size * 1000 * 1000) / 8)
-print('Object size='+str(obj_size))
-print('Data size='+str(data_size)+' MB')
+print('Object size='+str(obj_size)+' MB')
+print('Data size='+str(sys.argv[1])+' MB')
 # 1000 = 10GB of data, 100 = 1GB of data, 10 = 100MB of data
 cols_num = int(data_size)
 cols = range(cols_num)
