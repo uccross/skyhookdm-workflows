@@ -4,21 +4,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-result_files = os.listdir('./kubestone-fio/results')
+results_dir = './kubestone-fio/results'
+result_files = os.listdir(results_dir)
 
 data = defaultdict(dict)
 
 for file in result_files:
-    with open(os.path.join('./kubestone-fio/results', file), 'r') as f:
-        blockdevice = file.split("-")[1]
-        rw  = file.split("-")[2][:-5]
-        mode = None
-        if rw == "randread" or rw == "read":
-            mode = "read"
-        elif rw == "randwrite" or rw == "write":
-            mode = "write"
-        jobdata = json.load(f)
-        data[blockdevice][rw] = float(jobdata["jobs"][0][mode]["bw"])/1000
+    if file.startswith('fio') and file.endswith('.json'):
+        with open(os.path.join(results_dir, file), 'r') as f:
+            blockdevice = file.split("-")[1]
+            rw  = file.split("-")[2][:-5]
+            mode = None
+            if rw == "randread" or rw == "read":
+                mode = "read"
+            elif rw == "randwrite" or rw == "write":
+                mode = "write"
+            jobdata = json.load(f)
+            data[blockdevice][rw] = float(jobdata["jobs"][0][mode]["bw"])/1000
 
 blockdevices = list(data.keys())
 writes = []
@@ -49,4 +51,4 @@ plt.ylabel("Bandwidth (mb/s)")
 plt.xlabel("block devices")
 plt.legend(loc="upper right")
 plt.title("fio benchmarks")
-plt.savefig('./kubestone-fio/fio-benchmarks.png', dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(results_dir ,'fio-benchmarks.png'), dpi=300, bbox_inches='tight')
