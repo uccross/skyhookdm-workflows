@@ -3,10 +3,7 @@ import json
 
 import matplotlib.pyplot as plt
 
-if not os.path.exists('./results/outputs'):
-    os.makedirs('./results/outputs')
-
-results_dir = './results'
+results_dir = './ceph_benchmarks/results'
 results = {
     'write_data': None,
     'seq_data': None,
@@ -14,7 +11,7 @@ results = {
 }
 
 def read_output_file_and_plot(filename, line_color):
-    with open(os.path.join(results_dir,filename), 'r') as f:
+    with open(os.path.join(results_dir, filename), 'r') as f:
         results[f'{filename[:-5]}_data'] = json.loads(f.read())['datas']  
 
     x = list()
@@ -32,7 +29,7 @@ if __name__ == "__main__":
     read_output_file_and_plot('rand.json', 'green')
 
     plt.legend(['write', 'sequential', 'random'])
-    plt.xlabel('Seconds')
-    plt.ylabel('Avg. Bandwidth')
-    plt.title('Rados Bechmarks')
-    plt.savefig('./results/outputs/rados-benchmarks.png', dpi=300, bbox_inches='tight')
+    plt.xlabel('seconds')
+    plt.ylabel('avg. bandwidth')
+    plt.title('rados bechmarks')
+    plt.savefig(os.path.join(results_dir, 'rados_benchmarks.png'), dpi=300, bbox_inches='tight')
