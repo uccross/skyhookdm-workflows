@@ -10,6 +10,11 @@ rados bench -p testbench 120 rand --no-cleanup --format=json-pretty > /tmp/rand.
 rados -p testbench cleanup
 ceph osd pool rm testbench testbench --yes-i-really-really-mean-it
 
+# clean the rados benchmark output files
+sed -i '1d' /tmp/write.json
+sed -i '1d' /tmp/seq.json
+sed -i '1d' /tmp/rand.json
+
 # osd benchmarks
 osd_count=$(ceph osd ls | wc -l)
 for (( i=0; i<$osd_count; i++ ))
