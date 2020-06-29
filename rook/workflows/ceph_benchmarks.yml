@@ -1,0 +1,42 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
+steps:
+- id: start-pods
+  uses: docker://bitnami/kubectl:1.17.4
+  args: [create, -f, ./ceph_benchmarks/deployment.yml]
+
+- id: copy-config
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    POD=$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
+    kubectl cp ./cephconfig/ceph.conf default/$POD:/etc/ceph/ceph.conf
+    kubectl cp ./cephconfig/keyring default/$POD:/etc/ceph/keyring
+
+- id: run-benchmarks
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    POD=$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
+    SCRIPT=$(cat ./ceph_benchmarks/run_benchmarks.sh)
+    kubectl exec $POD -- bash -c "$SCRIPT"
+
+- id: download-results
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: ['./ceph_benchmarks/download_results.sh']
+
+- id: plot-results
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: [sh, -euc]
+  args:
+  - |
+    python ./ceph_benchmarks/plot_osd_benchmarks.py
+    python ./ceph_benchmarks/plot_rados_benchmarks.py
+
+- id: teardown-pods
+  uses: docker://bitnami/kubectl:1.17.4
+  args: [delete, -f, ./ceph_benchmarks/deployment.yml]
