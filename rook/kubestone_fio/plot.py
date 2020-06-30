@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-results_dir = './kubestone-fio/results'
+results_dir = './kubestone_fio/results'
 result_files = os.listdir(results_dir)
 
 data = defaultdict(dict)

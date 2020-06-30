@@ -3,7 +3,7 @@ import argparse
 import yaml
 
 
-config_dir = './kubestone-fio'
+config_dir = './kubestone_fio'
 
 
 def get_pv_defination(name, size, blockdevice, hostname):
@@ -74,7 +74,7 @@ def get_job_defination(blockdevice):
 
     volumes = []
     for dev in blockdevice:
-        volumes.append({"name": f"pvc-{dev}", "persistentVolumeClaim": {"name": f"pvc-{dev}"}})
+        volumes.append({"name": f"pvc-{dev}", "persistentVolumeClaim": {"claimName": f"pvc-{dev}"}})
 
     job = {
         "apiVersion": "batch/v1",
@@ -94,7 +94,7 @@ def get_job_defination(blockdevice):
                         {
                             "name": "fio-container",
                             "image": "xridge/fio:3.13",
-                            "command": ["sleep", 100000],
+                            "command": ["sleep", "100000"],
                             "volumeDevices": volumeDevices,
                             "securityContext": {
                                 "privileged": True
@@ -141,9 +141,4 @@ def write_definations(size, blockdevice, hostname):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="persistent volume generation script")
-    parser.add_argument('--size', action="store", type=str, help="size of the persistent volume")
-    parser.add_argument('--hostname', action="store", type=str, help="the host whose blockevices to benchmark")
-    parser.add_argument('--blockdevice', action="append", help="the blockdevices to benchmark")
-    args = parser.parse_args()
-    write_definations(args.size, args.blockdevice, args.hostname)
+    write_definations(os.environ["PV_SIZE"], os.environ["BLOCKDEVICES"].split(" "), os.environ["HOSTNAME"])
