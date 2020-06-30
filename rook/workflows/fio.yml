@@ -6,6 +6,8 @@ options:
     PV_SIZE: 3Gi
     SIZE: 3G
     IO_DEPTH: '1'
+    IO_ENGINE: libaio
+    NUM_JOBS: '1'
     HOSTNAME: node2.rook-ceph-2.schedock-pg0.clemson.cloudlab.us
 
 steps:
