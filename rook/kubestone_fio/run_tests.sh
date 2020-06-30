@@ -2,6 +2,12 @@
 set -ex
 
 pod=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].metadata.name}")
+status=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].status.phase}")
+while [ "$status" != "Running" ]
+do
+status=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].status.phase}")
+done
+
 blockdevices=($BLOCKDEVICES)
 for blkdev in ${blockdevices[@]}
 do
