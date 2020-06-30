@@ -6,7 +6,7 @@ done;
 python3 get_cpu_utils.py &
 
 # echo "Running the experiment..."
-client_band=$(python3 skyhook_bandwidth.py a ${1} ${3})
+client_band=$(python3 skyhook_bandwidth.py ${4} ${1} ${3})
 
 # printf client0:
 client_util=$(python3 calc_cpu_utils.py)

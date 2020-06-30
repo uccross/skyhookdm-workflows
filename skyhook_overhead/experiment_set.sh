@@ -45,38 +45,37 @@ if [ -z storage_device ]
     then storage_device="sdb"
 fi
 
-FILE=/etc/ceph
-if [ ! -d "$FILE" ]; then
-    bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
-    bash install_skyhookdmdriver.sh
-    bash prepare.sh
-fi
 
+bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
+bash install_skyhookdmdriver.sh
+bash prepare.sh
+
+operations=("write" "read")
 rm -f output_*.csv
 for obj_size in $obj_sizes
 do
     echo "Object size: $obj_size"
     rm -f data
     python3 data_gen.py $data_size $obj_size
-    for operation in ("write" "read" "remove")
+    titles="obj_size, writers, client_util, client_bandwidth"
+    osd_last_index=$((osds-1))
+    for osd_index in $(seq 0 $osd_last_index)
     do
-        output_name = "output_$operation_$obj_size.csv"
-        titles="obj_size, writers, client_util, client_bandwidth"
-        osd_last_index=$((osds-1))
-        for osd_index in $(seq 0 $osd_last_index)
-        do
-            titles="$titles, OSD_${osd_index}_util"
-        done
-
-        echo "$titles" >> "$output_name"
-
-        for writer_num in $writers_num
-        do
-            echo "Starting the experiment with $writer_num writers"
-            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation)" >> "$output_name"
-        done
-        sleep 5
+        titles="$titles, OSD_${osd_index}_util"
     done
+
+    for writer_num in $writers_num
+    do
+        prefix="obj_${obj_sizes}_${writer_num}_"
+        for operation in "${operations[@]}"
+        do
+            output_name="output_${operation}_${obj_size}.csv"
+            echo "$titles" >> "$output_name"
+            echo "Starting the experiment $operation with $writer_num workers"
+            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation $prefix)" >> "$output_name"
+        done
+    done
+    sleep 5
 done
 
 ~/.local/bin/runipy result.ipynb
