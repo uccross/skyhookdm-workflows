@@ -1,0 +1,32 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
+steps:
+- id: setup-rook-cluster
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl apply -f ./rook/common.yaml
+    kubectl apply -f ./rook/operator.yaml
+    kubectl apply -f ./rook/cluster.yaml
+    kubectl apply -f ./rook/toolbox.yaml
+
+- id: download-ceph-config
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl exec -n rook-ceph $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- cat /etc/ceph/keyring > ./cephconfig/keyring
+    kubectl exec -n rook-ceph $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- cat /etc/ceph/ceph.conf > ./cephconfig/ceph.conf
+
+- id: teardown-rook-cluster
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -f ./rook/toolbox.yaml
+    kubectl delete -f ./rook/cluster.yaml
+    kubectl delete -f ./rook/operator.yaml
+    kubectl delete -f ./rook/common.yaml

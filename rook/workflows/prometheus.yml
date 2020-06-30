@@ -1,8 +1,25 @@
-steps:
-- id: setup prometheus monitoring
-  uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./prometheus/setup_prometheus.sh']
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
 
-- id: teardown prometheus monitoring
+steps:
+- id: setup
   uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./prometheus/teardown_prometheus.sh']
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
+    kubectl apply -f ./prometheus/service-monitor.yaml
+    kubectl apply -f ./prometheus/prometheus.yaml
+    kubectl apply -f ./prometheus/prometheus-service.yaml
+    echo "http://$(kubectl -n rook-ceph -o jsonpath={.status.hostIP} get pod prometheus-rook-prometheus-0):30900"
+
+- id: teardown
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -f ./prometheus/service-monitor.yaml
+    kubectl delete -f ./prometheus/prometheus.yaml
+    kubectl delete -f ./prometheus/prometheus-service.yaml
+    kubectl delete -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
