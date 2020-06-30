@@ -3,9 +3,19 @@ options:
     KUBECONFIG: ./kubeconfig/config
 
 steps:
+- id: bootstrap-config
+  uses: docker://biowdl/pyyaml:3.13-py37-slim
+  runs: [python]
+  args: ['./kubestone-fio/bootstrap.py']
+
 - id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone-fio/start.sh]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl create -n kubestone -f ./kubestone-fio/pv.yaml
+    kubectl create -n kubestone -f ./kubestone-fio/pvc.yaml
+    kubectl create -n kubestone -f ./kubestone-fio/job.yaml
 
 - id: run-tests
   uses: docker://bitnami/kubectl:1.17.4
@@ -24,4 +34,9 @@ steps:
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone-fio/teardown.sh]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -n kubestone -f ./kubestone-fio/job.yaml
+    kubectl delete -n kubestone -f ./kubestone-fio/pvc.yaml
+    kubectl delete -n kubestone -f ./kubestone-fio/pv.yaml
