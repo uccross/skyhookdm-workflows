@@ -54,7 +54,7 @@ $ popper run -f workflows/iperf.yml plot-results
 ## fio benchmarks
 
 ### Installing `kubestone`
-The `fio` benchmarks require [`kubestone`](https://kubestone.io/en/latest/`) to be installed and a `kubestone` namespace to be created in the cluster.
+The `fio` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
 Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace).
 
 ### Running the benchmarks
