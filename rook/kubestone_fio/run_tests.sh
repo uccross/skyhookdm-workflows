@@ -1,11 +1,11 @@
 #!/bin/bash
 set -ex
 
-pod=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].metadata.name}")
-status=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].status.phase}")
+pod=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0].metadata.name}")
+status=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0].status.phase}")
 while [ "$status" != "Running" ]
 do
-status=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].status.phase}")
+status=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0].status.phase}")
 done
 
 blockdevices=($BLOCKDEVICES)

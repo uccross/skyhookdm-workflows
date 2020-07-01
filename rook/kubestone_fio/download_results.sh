@@ -2,7 +2,7 @@
 set -ex
 
 mkdir -p ./kubestone_fio/results
-pod=$(kubectl get pod -n kubestone -l app=fio-test -o jsonpath="{.items[0].metadata.name}")
+pod=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0].metadata.name}")
 output_files=($(kubectl exec -n kubestone "$pod" -- ls /tmp | grep 'fio-*'))
 for file in ${output_files[@]}
 do

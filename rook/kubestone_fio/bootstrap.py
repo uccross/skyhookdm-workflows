@@ -80,13 +80,13 @@ def get_job_defination(blockdevice):
         "apiVersion": "batch/v1",
         "kind": "Job",
         "metadata": {
-            "name": "fio-test-job"
+            "name": "fio-benchmarks"
         },
         "spec": {
             "template": {
                 "metadata": {
                     "labels": {
-                        "app": "fio-test"
+                        "app": "fio-benchmarks"
                     }
                 },
                 "spec": {
