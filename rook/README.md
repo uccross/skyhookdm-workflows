@@ -1,6 +1,6 @@
 # SkyhookDM-Benchmarks Workflow
 
-Popper workflow to automate large scale tests in SkyhookDM
+Popper workflow to automate large scale tests in SkyhookDM Ceph
 
 ## install popper
 ```bash
@@ -9,34 +9,33 @@ $ pip install popper
 
 ## environment variables
 ```bash
+# generate the .env file and populate it
 $ cp .env.example .env 
-# then populate the .env
 
+# apply the environment variables to your shell
 $ source .env
 ```
 
 ## prometheus monitoring
 ```bash
 # setup monitoring
-$ popper run -f workflows/prometheus.yml -w . 'setup prometheus monitoring'
+$ popper run -f workflows/prometheus.yml setup
 
 # teardown monitoring
-$ popper run -f workflows/prometheus.yml -w . 'teardown prometheus monitoring'
+$ popper run -f workflows/prometheus.yml teardown
 ```
 
-## ceph benchmarks
+## ceph (rados and osd) benchmarks
 ```bash
-# start rados and osd tests in client pods
-$ popper run -f workflows/ceph-benchmarks.yml -w . --skip 'download results' --skip 'teardown client pods'
-
-# download the results of the tests
-$ popper run -f workflows/ceph-benchmarks.yml -w . 'download results'
-
-# teardown the client pods
-$ popper run -f workflows/ceph-benchmarks.yml -w . 'teardown client pods'
+$ popper run -f workflows/ceph_benchmarks.yml 
 ```
 
-## iperf benchmarks
+## kubestone benchmarks
+
+The `fio` and `iperf` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
+Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace).
+
+### iperf
 ```bash
 # run the tests
 $ popper run -f workflows/iperf.yml run
@@ -51,21 +50,7 @@ $ popper run -f workflows/iperf.yml teardown
 $ popper run -f workflows/iperf.yml plot-results
 ```
 
-## fio benchmarks
-
-### Installing `kubestone`
-The `fio` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
-Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace).
-
-### Running the benchmarks
-
+### fio
 ```bash
-$ cd rook/
 $ popper run -f workflows/fio.yml
-```
-
-## plot graphs
-```bash
-# plot graphs for all the benchmark tests
-$ popper run -f workflows/plot.yml -w .
 ```
