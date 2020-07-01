@@ -20,23 +20,15 @@ chmod +x ./rados-store-glob.sh
 ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
 ceph osd pool create tpchdata 128 128 replicated
 
-wget --no-check-certificate https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.10MB.75Krows.obj.0
-yes | PATH=$PATH:bin ./rados-store-glob.sh tpchdata  public lineitem fbx.lineitem.10MB.75Krows.obj.0
+wget --no-check-certificate https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/arrow.lineitem.10MB.75Krows.obj.0
+yes | PATH=$PATH:bin ./rados-store-glob.sh tpchdata  public lineitem arrow.lineitem.10MB.75Krows.obj.0
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --use-cls --select "extendedprice,gt,91350";
+run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --use-cls --select "*";
 end=$(date --utc "+%s.%N")
 result=0$(echo "$end - $start" | bc)
 echo "Lineitem - Apache Arrow - 10M - 75K Rows (100% selectivity): $result seconds"
-
-# 100% selectivity
-start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --use-cls --select "extendedprice,gt,91350";
-end=$(date --utc "+%s.%N")
-result=0$(echo "$end - $start" | bc)
-echo "Lineitem - Apache Arrow - 10M - 75K Rows (100% selectivity): $result seconds"
-
 
 # # 10% selectivity
 # start=$(date --utc "+%s.%N")
@@ -55,9 +47,9 @@ echo "Lineitem - Apache Arrow - 10M - 75K Rows (100% selectivity): $result secon
 ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
 
 
-# ######################################
-# ###### NCOLS100 - ARROW - 10MB #######
-# ######################################
+######################################
+###### NCOLS100 - ARROW - 10MB #######
+######################################
 # ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
 # ceph osd pool create tpchdata 128 128 replicated
 

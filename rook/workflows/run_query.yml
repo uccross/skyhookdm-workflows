@@ -3,9 +3,9 @@ options:
         KUBECONFIG: ./kubeconfig/config
 
 steps:
-- id: start
+- id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [create, -f, ./run-query/job.yml]
+  args: [create, -f, ./run_query/job.yml]
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
@@ -13,8 +13,8 @@ steps:
   args:
   - |
     POD=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./ceph-client/config/ceph.conf default/$POD:/etc/ceph/ceph.conf
-    kubectl cp ./ceph-client/config/keyring default/$POD:/etc/ceph/keyring
+    kubectl cp ./cephconfig/ceph.conf default/$POD:/etc/ceph/ceph.conf
+    kubectl cp ./cephconfig/keyring default/$POD:/etc/ceph/keyring
 
 - id: run-queries
   uses: docker://bitnami/kubectl:1.17.4
@@ -22,9 +22,9 @@ steps:
   args:
   - |
     POD=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    SCRIPT=$(cat ./run-query/entrypoint.sh)
+    SCRIPT=$(cat ./run_query/entrypoint.sh)
     kubectl exec $POD -- bash -c "$SCRIPT"
 
-- id: teardown
+- id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [delete, -f, ./run-query/job.yml]
+  args: [delete, -f, ./run_query/job.yml]
