@@ -65,14 +65,14 @@ do
     do
         titles="$titles, OSD_${osd_index}_util"
     done
-
+    echo "$titles" >> "output_read_${obj_size}.csv"
+    echo "$titles" >> "output_write_${obj_size}.csv"
     for writer_num in $writers_num
     do
         prefix="obj_${obj_sizes}_${writer_num}_"
         for operation in "${operations[@]}"
         do
             output_name="output_${operation}_${obj_size}.csv"
-            echo "$titles" >> "$output_name"
             echo "Starting the experiment $operation with $writer_num workers"
             echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation $prefix $obj_size)" >> "$output_name"
         done
