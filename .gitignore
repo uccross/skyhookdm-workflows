@@ -18,3 +18,7 @@ rook/ceph_benchmarks/results
 rook/kubestone-iperf/results
 rook/kubestone-iperf/*.png
 
+# fio
+rook/kubestone_fio/results
+rook/kubestone_fio/*.png
+rook/kubestone_fio/*.yaml
