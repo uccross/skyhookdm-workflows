@@ -45,10 +45,12 @@ if [ -z storage_device ]
     then storage_device="sdb"
 fi
 
-
-bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
-bash install_skyhookdmdriver.sh
-bash prepare.sh
+FILE=/etc/ceph
+if [ ! -d "$FILE" ]; then
+    bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
+    bash install_skyhookdmdriver.sh
+    bash prepare.sh
+fi
 
 operations=("write" "read")
 rm -f output_*.csv
@@ -56,7 +58,7 @@ for obj_size in $obj_sizes
 do
     echo "Object size: $obj_size"
     rm -f data
-    python3 data_gen.py $data_size $obj_size
+    python3 data_gen.py $data_size
     titles="obj_size, writers, client_util, client_bandwidth"
     osd_last_index=$((osds-1))
     for osd_index in $(seq 0 $osd_last_index)
@@ -72,7 +74,7 @@ do
             output_name="output_${operation}_${obj_size}.csv"
             echo "$titles" >> "$output_name"
             echo "Starting the experiment $operation with $writer_num workers"
-            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation $prefix)" >> "$output_name"
+            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation $prefix $obj_size)" >> "$output_name"
         done
     done
     sleep 5

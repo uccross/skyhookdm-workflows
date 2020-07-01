@@ -157,7 +157,8 @@ def generate_table():
 obj_prefix = sys.argv[1]
 worker_num = int(sys.argv[2])
 operation = sys.argv[3]
-
+obj_size = int(sys.argv[4])
+obj_size = obj_size * 1000_000
 # Read the data from the binary file and construct the Arrow table.
 tables = []
 
@@ -166,7 +167,7 @@ partition_num  = 0
 for i in range(worker_num):
     f = open('data', 'rb')
     data = f.read()
-    partition_num = int(len(data)/10000000)
+    partition_num = int(len(data)/obj_size)
     table = generate_table()
     tables.append(table)
     
