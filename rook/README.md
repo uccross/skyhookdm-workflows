@@ -37,17 +37,7 @@ Please follow the instructions given [here](https://kubestone.io/en/latest/quick
 
 ### iperf
 ```bash
-# run the tests
-$ popper run -f workflows/iperf.yml run
-
-# download the test results
-$ popper run -f workflows/iperf.yml download-results
-
-# teardown the tests
-$ popper run -f workflows/iperf.yml teardown
-
-# plot the test results
-$ popper run -f workflows/iperf.yml plot-results
+$ popper run -f workflows/iperf.yml
 ```
 
 ### fio
