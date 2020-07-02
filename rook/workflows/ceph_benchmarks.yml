@@ -1,11 +1,15 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
+    NAMESPACE: kubestone
 
 steps:
 - id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [create, -f, ./ceph_benchmarks/deployment.yml]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl create -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
@@ -40,4 +44,7 @@ steps:
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [delete, -f, ./ceph_benchmarks/deployment.yml]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
