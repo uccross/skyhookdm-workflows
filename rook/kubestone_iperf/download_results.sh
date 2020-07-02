@@ -12,5 +12,5 @@ sleep 5
 count=$(( count + 1 ))
 done
 
-pod=$(kubectl get pod -n kubestone -l iperf-mode=server -o jsonpath="{.items[0].metadata.name}")
+pod=$(kubectl get pod -n kubestone -l iperf-mode=client -o jsonpath="{.items[0].metadata.name}")
 kubectl logs -n kubestone $pod > ./kubestone_iperf/results

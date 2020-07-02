@@ -9,7 +9,7 @@ spec:
     pullPolicy: IfNotPresent
 
   serverConfiguration:
-    cmdLineArgs: --json && sleep infinity
+    cmdLineArgs: --json
     podLabels:
       iperf-mode: server
 
@@ -27,6 +27,7 @@ spec:
     hostNetwork: false
     
   clientConfiguration:
+    cmdLineArgs: --json
     podLabels:
       iperf-mode: client
     podScheduling:
