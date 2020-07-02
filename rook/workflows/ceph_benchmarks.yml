@@ -12,6 +12,7 @@ steps:
   runs: [bash, -euc]
   args:
   - |
+    while [ "$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")" != "Running" ]; do echo "waiting for pod"; done
     POD=$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
     kubectl cp ./cephconfig/ceph.conf default/$POD:/etc/ceph/ceph.conf
     kubectl cp ./cephconfig/keyring default/$POD:/etc/ceph/keyring
