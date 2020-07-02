@@ -2,7 +2,7 @@
 set -eu
 
 count=0
-while [ "$(kubectl get pod -n kubestone -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")" != "Running" ];
+while [ "$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")" != "Running" ];
 do
 if [ $count == 10 ]; then
     exit 1
