@@ -13,8 +13,8 @@ steps:
   args:
   - |
     while [ "$(kubectl get pod -n kubestone -l iperf-mode=client -o jsonpath="{.items[0].status.phase}")" != "Succeeded" ]; do echo "waiting for client pod to complete"; done
-    POD=$(kubectl get pod -n kubestone -l iperf-mode=server -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs -n kubestone $POD > ./kubestone_iperf/results
+    pod=$(kubectl get pod -n kubestone -l iperf-mode=server -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs -n kubestone $pod > ./kubestone_iperf/results
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
