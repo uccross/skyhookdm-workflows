@@ -2,7 +2,9 @@ import os
 import json
 import matplotlib.pyplot as plt
 
-with open('./kubestone-iperf/results') as f:
+results_dir = './kubestone_iperf'
+
+with open(os.path.join(results_dir, 'results')) as f:
     results = json.load(f)
 
 seconds = []
@@ -16,4 +18,4 @@ plt.xlabel('time (in seconds)')
 plt.ylabel('bandwidth (mb/s)')
 plt.title('iperf benchmarks')
 plt.bar(seconds, bandwidth)
-plt.savefig('./kubestone-iperf/iperf-benchmarks.png', dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(results_dir, './iperf-benchmarks.png'), dpi=300, bbox_inches='tight')
