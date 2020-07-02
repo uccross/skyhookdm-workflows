@@ -15,8 +15,8 @@ skyhook_overhead/data
 rook/ceph_benchmarks/results
 
 # iperf
-rook/kubestone-iperf/results
-rook/kubestone-iperf/*.png
+rook/kubestone_iperf/results
+rook/kubestone_iperf/*.png
 
 # fio
 rook/kubestone_fio/results
