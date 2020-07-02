@@ -3,18 +3,13 @@ options:
     KUBECONFIG: ./kubeconfig/config
 
 steps:
-- id: run-pods
+- id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
   args: [create, -n, kubestone, -f, ./kubestone_iperf/iperf.yaml]
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [bash, -euc]
-  args:
-  - |
-    while [ "$(kubectl get pod -n kubestone -l iperf-mode=client -o jsonpath="{.items[0].status.phase}")" != "Succeeded" ]; do echo "waiting for client pod to complete"; done
-    pod=$(kubectl get pod -n kubestone -l iperf-mode=server -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs -n kubestone $pod > ./kubestone_iperf/results
+  runs: [./kubestone_iperf/download_results.sh]
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
