@@ -1,16 +1,15 @@
 #!/bin/bash
-set -eux
+set -eu
 
 count=0
-status=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")
-while [ "$status" != "Running" ]; do 
-if [ count == 10 ]; then
+while [ "$(kubectl get pod -n kubestone -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")" != "Running" ];
+do
+if [ $count == 10 ]; then
     exit 1
 fi
 echo "waiting for pod to comeup";
-count=$(( count + 1 ))
 sleep 5
-status=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].status.phase}")
+count=$(( count + 1 ))
 done
 
 pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
