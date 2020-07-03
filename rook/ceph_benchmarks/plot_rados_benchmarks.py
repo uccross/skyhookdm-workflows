@@ -8,19 +8,13 @@ import matplotlib.pyplot as plt
 results_dir = './ceph_benchmarks/results'
 
 
-results = {
-    'write_data': None,
-    'seq_data': None,
-    'rand_data': None
-}
-
-
-min_lat = []
-avg_lat = []
-max_lat = []
-
-
 def plot_bw(filenames, line_colors):
+    results = {
+        'write_data': None,
+        'seq_data': None,
+        'rand_data': None
+    }
+
     for filename, line_color in zip(filenames, line_colors):
         with open(os.path.join(results_dir, filename), 'r') as f:
             results[f'{filename[:-5]}_data'] = json.loads(f.read())['datas']  
@@ -43,6 +37,10 @@ def plot_bw(filenames, line_colors):
 
 
 def plot_latencies(filenames):
+    min_lat = []
+    avg_lat = []
+    max_lat = []
+
     for filename in filenames:
         with open(os.path.join(results_dir, filename), 'r') as f:
             data = json.loads(f.read())
