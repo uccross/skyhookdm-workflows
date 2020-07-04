@@ -26,5 +26,6 @@ wait get_cpu_utils.py 2>/dev/null
 for osd_index in $(seq 0 $osd_last_index)
 do
     file_name="${result_path}osd${osd_index}_${5}_${1}_${3}_cpu_utils"
-    scp osd${osd_index}:/tmp/cpu_utils $file_name
+    scp "${USER}@osd${osd_index}:/tmp/cpu_utils" "${file_name}"
+    echo "scp osd cpu details to ${file_name}"
 done;

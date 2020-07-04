@@ -52,9 +52,10 @@ echo "    Result path: $result_path"
 FILE=/etc/ceph
 if [ ! -d "$FILE" ]; then
     bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
-    bash install_skyhookdmdriver.sh
-    bash prepare.sh
 fi
+
+bash install_skyhookdmdriver.sh
+bash prepare.sh
 
 operations=("write" "read")
 rm -rf "$result_path"
@@ -66,7 +67,7 @@ do
     osd_last_index=$((osds-1))
     for worker_num in $workers_num
     do
-        prefix="obj_${obj_sizes}_${worker_num}_"
+        prefix="obj_${obj_size}_${worker_num}_"
         for operation in "${operations[@]}"
         do
             echo "Starting the experiment $operation with $worker_num workers"
