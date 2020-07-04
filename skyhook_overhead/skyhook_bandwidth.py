@@ -94,8 +94,10 @@ def add_metadata(table):
     table = table.replace_schema_metadata(sche_meta)
     return table
 
+def generate_object_name(prefix, worker_index, partition_index):
+    return prefix + '_' + str(worker_index) + '_' + str(partition_index)
 
-def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_index = 1):
     row_num = len(table.columns[0])
     batches = table.to_batches(row_num/partition_num)
     i = 0 
@@ -110,25 +112,25 @@ def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000):
         buff = sink.getvalue()
         buff = buff.to_pybytes()
         buff_bytes = addFB_Meta(buff)
-        write_data(buff_bytes, obj_prefix + str(i), 'test' )
+        write_data(generate_object_name(obj_prefix, worker_index, i), 'test' )
         i += 1
 
 
-def read_from_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+def read_from_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_index = 1):
     row_num = len(table.columns[0])
     batches = table.to_batches(row_num/partition_num)
     i = 0 
     for batch in batches:
-        data = read_data(obj_prefix + str(i), 'test' )
+        data = read_data(generate_object_name(obj_prefix, worker_index, i), 'test' )
         i += 1
         
         
-def remove_from_skyhook(table, obj_prefix = 'S', partition_num = 1000):
+def remove_from_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_index = 1):
     row_num = len(table.columns[0])
     batches = table.to_batches(row_num/partition_num)
     i = 0 
     for batch in batches:
-        remove_data(obj_prefix + str(i), 'test' )
+        remove_data(generate_object_name(obj_prefix, worker_index, i), 'test' )
         i += 1
       
 
@@ -188,7 +190,7 @@ processes = []
 
     
 for i in range(worker_num):
-    p = Process(target=process_target, args=(tables[i], obj_prefix + 's' + str(i), partition_num))
+    p = Process(target=process_target, args=(tables[i], obj_prefix, partition_num, i))
     processes.append(p)
     p.start()
 
@@ -202,5 +204,8 @@ for p in processes:
 stop_time = time.time()
 
 # Calculate and print the throughput
-#print('write to skyhook bandwidth: ' + str(worker_num * len(data)/1000000/(stop_time - start_time)) + ' MB/s.')
-print(str(worker_num * len(data)/1000000/(stop_time - start_time)))
+bandwidth = worker_num * len(data)/1000000/(stop_time - start_time)
+print('write to skyhook bandwidth: ' + str(bandwidth) + ' MB/s.')
+f = open("client_"+obj_size+"_"+worker_num+"_"+operation+"_bandwidth.log", "w")
+f.write("%d, %d, %f\r\n" % (obj_size, worker_num, bandwidth))
+f.close()

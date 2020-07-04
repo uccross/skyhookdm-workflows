@@ -2,14 +2,14 @@
 
 source conf_experiment_set.config
 
-writers_num=${writers_num[@]}
+workers_num=${workers_num[@]}
 obj_sizes=${obj_sizes[@]}
 
 echo "Experiment Set Info:"
 echo "    OSD Number: $osds"
 echo "    OS: $os"
 echo "    Cluster SSH key path: $ssh_key"
-echo "    Writers number: $writers_num"
+echo "    Workers number: $workers_num"
 echo "    Object sizes: $obj_sizes"
 echo "    Experiment data size: $data_size MB"
 
@@ -20,6 +20,7 @@ pip3 install numpy
 pip3 install pandas
 pip3 install matplotlib
 pip3 install matplotlib
+pip3 install crush
 
 if [ -z osds ]
     then osds=4
@@ -32,8 +33,8 @@ if [ -z ssh_key ]
         echo "Error: ssh_key is not defined."
         exit 1
 fi
-if [ -z writers_num ]
-    then writers_num=(4)
+if [ -z workers_num ]
+    then workers_num=(4)
 fi
 if [ -z data_size ]
     then data_size=2000
@@ -56,25 +57,17 @@ operations=("write" "read")
 rm -f output_*.csv
 for obj_size in $obj_sizes
 do
-    echo "Object size: $obj_size"
+    echo "Object size: ${obj_size} MB"
     rm -f data
     python3 data_gen.py $data_size
-    titles="obj_size, writers, client_util, client_bandwidth"
     osd_last_index=$((osds-1))
-    for osd_index in $(seq 0 $osd_last_index)
+    for worker_num in $workers_num
     do
-        titles="$titles, OSD_${osd_index}_util"
-    done
-    echo "$titles" >> "output_read_${obj_size}.csv"
-    echo "$titles" >> "output_write_${obj_size}.csv"
-    for writer_num in $writers_num
-    do
-        prefix="obj_${obj_sizes}_${writer_num}_"
+        prefix="obj_${obj_sizes}_${worker_num}_"
         for operation in "${operations[@]}"
         do
-            output_name="output_${operation}_${obj_size}.csv"
-            echo "Starting the experiment $operation with $writer_num workers"
-            echo "$obj_size, $writer_num, $(bash run_experiment.sh $writer_num $osds $operation $prefix $obj_size)" >> "$output_name"
+            echo "Starting the experiment $operation with $worker_num workers"
+            bash run_experiment.sh $worker_num $osds $operation $prefix $obj_size
         done
     done
     sleep 5

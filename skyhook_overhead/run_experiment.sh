@@ -5,14 +5,15 @@ for ((i = 0 ; i < osds ; i++)); do
 done;
 python3 get_cpu_utils.py &
 
-# echo "Running the experiment..."
+echo "Running the experiment..."
 client_band=$(python3 skyhook_bandwidth.py ${4} ${1} ${3} ${5})
-
+echo "Done."
 # printf client0:
-client_util=$(python3 calc_cpu_utils.py)
+# client_util=$(python3 calc_cpu_utils.py)
 
+mv /tmp/cpu_utils "client_${5}_${1}_${3}_cpu_utils"
 
-# echo "Stopping CPU recording on the client and OSDs..."
+echo "Stopping CPU recording on the client and OSDs..."
 for ((i = 0 ; i < osds ; i++)); do
     ssh osd${i} "pkill -f get_cpu_utils.py;" 2> /dev/null
 done;
@@ -20,12 +21,7 @@ pkill -f get_cpu_utils.py 2> /dev/null &
 wait get_cpu_utils.py 2>/dev/null
 
 # echo "Reporting CPU utlizations..."
-osd_last_index=$((osds-1))
-osd_utils_str=""
 for osd_index in $(seq 0 $osd_last_index)
 do
-    result=$(ssh osd${osd_index} "python3 /tmp/calc_cpu_utils.py;")
-    osd_utils_str="$osd_utils_str, $result"
+    scp osd${osd_index}:/tmp/cpu_utils "${osd_index}_${5}_${1}_${3}_cpu_utils"
 done;
-
-echo "$client_util, $client_band$osd_utils_str"
