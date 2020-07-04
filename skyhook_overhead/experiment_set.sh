@@ -5,15 +5,6 @@ source conf_experiment_set.config
 workers_num=${workers_num[@]}
 obj_sizes=${obj_sizes[@]}
 
-echo "Experiment Set Info:"
-echo "    OSD Number: $osds"
-echo "    OS: $os"
-echo "    Cluster SSH key path: $ssh_key"
-echo "    Workers number: $workers_num"
-echo "    Object sizes: $obj_sizes"
-echo "    Experiment data size: $data_size MB"
-echo "    Result path: $result_path"
-
 sudo apt update
 sudo apt --assume-yes install python3-pip
 pip3 install runipy
@@ -49,6 +40,15 @@ if [ -z result_path ]
     then result_path="results/"
 fi
 
+echo "Experiment Set Info:"
+echo "    OSD Number: $osds"
+echo "    OS: $os"
+echo "    Cluster SSH key path: $ssh_key"
+echo "    Workers number: $workers_num"
+echo "    Object sizes: $obj_sizes"
+echo "    Experiment data size: $data_size MB"
+echo "    Result path: $result_path"
+
 FILE=/etc/ceph
 if [ ! -d "$FILE" ]; then
     bash ramdisk_ceph.sh $osds $ssh_key $os $storage_device
@@ -70,7 +70,7 @@ do
         for operation in "${operations[@]}"
         do
             echo "Starting the experiment $operation with $worker_num workers"
-            bash run_experiment.sh "$worker_num $osds $operation $prefix $obj_size $result_path"
+            bash run_experiment.sh "$worker_num" "$osds" "$operation" "$prefix" "$obj_size" "$result_path"
         done
     done
     sleep 5
