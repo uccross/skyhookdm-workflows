@@ -112,7 +112,7 @@ def write_to_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_index
         buff = sink.getvalue()
         buff = buff.to_pybytes()
         buff_bytes = addFB_Meta(buff)
-        write_data(generate_object_name(obj_prefix, worker_index, i), 'test' )
+        write_data(buff_bytes, generate_object_name(obj_prefix, worker_index, i), 'test' )
         i += 1
 
 
@@ -161,6 +161,14 @@ worker_num = int(sys.argv[2])
 operation = sys.argv[3]
 obj_size = int(sys.argv[4])
 obj_size = obj_size * 1000_000
+result_path = sys.argv[5]
+
+print("Object Prefix: " + obj_prefix)
+print("worker num: "+ sys.argv[2])
+print("operation: "+ operation)
+print("obj size: "+ sys.argv[4])
+print("result_path: "+result_path)
+
 # Read the data from the binary file and construct the Arrow table.
 tables = []
 
@@ -206,6 +214,6 @@ stop_time = time.time()
 # Calculate and print the throughput
 bandwidth = worker_num * len(data)/1000000/(stop_time - start_time)
 print('write to skyhook bandwidth: ' + str(bandwidth) + ' MB/s.')
-f = open("client_"+obj_size+"_"+worker_num+"_"+operation+"_bandwidth.log", "w")
+f = open(result_path + "client_"+sys.argv[4]+"_"+str(worker_num)+"_"+operation+"_bandwidth.log", "w")
 f.write("%d, %d, %f\r\n" % (obj_size, worker_num, bandwidth))
 f.close()

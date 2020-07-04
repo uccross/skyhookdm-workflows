@@ -12,15 +12,15 @@ echo "    Cluster SSH key path: $ssh_key"
 echo "    Workers number: $workers_num"
 echo "    Object sizes: $obj_sizes"
 echo "    Experiment data size: $data_size MB"
+echo "    Result path: $result_path"
 
 sudo apt update
 sudo apt --assume-yes install python3-pip
 pip3 install runipy
-pip3 install numpy
+# pip3 install numpy
 pip3 install pandas
 pip3 install matplotlib
 pip3 install matplotlib
-pip3 install crush
 
 if [ -z osds ]
     then osds=4
@@ -45,6 +45,9 @@ fi
 if [ -z storage_device ]
     then storage_device="sdb"
 fi
+if [ -z result_path ]
+    then result_path="results/"
+fi
 
 FILE=/etc/ceph
 if [ ! -d "$FILE" ]; then
@@ -67,7 +70,7 @@ do
         for operation in "${operations[@]}"
         do
             echo "Starting the experiment $operation with $worker_num workers"
-            bash run_experiment.sh $worker_num $osds $operation $prefix $obj_size
+            bash run_experiment.sh $worker_num $osds $operation $prefix $obj_size $result_path
         done
     done
     sleep 5
