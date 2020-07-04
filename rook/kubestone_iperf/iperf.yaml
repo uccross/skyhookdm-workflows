@@ -27,6 +27,9 @@ spec:
     hostNetwork: false
     
   clientConfiguration:
+    cmdLineArgs: --json
+    podLabels:
+      iperf-mode: client
     podScheduling:
       affinity:
         podAntiAffinity:

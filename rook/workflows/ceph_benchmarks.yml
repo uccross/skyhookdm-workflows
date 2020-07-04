@@ -1,33 +1,32 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
+    NAMESPACE: kubestone
 
 steps:
 - id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [create, -f, ./ceph_benchmarks/deployment.yml]
-
-- id: copy-config
-  uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    POD=$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./cephconfig/ceph.conf default/$POD:/etc/ceph/ceph.conf
-    kubectl cp ./cephconfig/keyring default/$POD:/etc/ceph/keyring
+    kubectl create -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
+
+- id: copy-config
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [./ceph_benchmarks/copy_config.sh]
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    POD=$(kubectl get pod -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
-    SCRIPT=$(cat ./ceph_benchmarks/run_benchmarks.sh)
-    kubectl exec $POD -- bash -c "$SCRIPT"
+    pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
+    script=$(cat ./ceph_benchmarks/run_benchmarks.sh)
+    kubectl -n "$NAMESPACE" exec "$pod" -- bash -c "$script"
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
-  runs: ['./ceph_benchmarks/download_results.sh']
+  runs: [./ceph_benchmarks/download_results.sh]
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
@@ -39,4 +38,7 @@ steps:
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [delete, -f, ./ceph_benchmarks/deployment.yml]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
