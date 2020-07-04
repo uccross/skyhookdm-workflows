@@ -57,7 +57,7 @@ if [ ! -d "$FILE" ]; then
 fi
 
 operations=("write" "read")
-rm -f output_*.csv
+rm -rf "$result_path"
 for obj_size in $obj_sizes
 do
     echo "Object size: ${obj_size} MB"
@@ -70,7 +70,7 @@ do
         for operation in "${operations[@]}"
         do
             echo "Starting the experiment $operation with $worker_num workers"
-            bash run_experiment.sh $worker_num $osds $operation $prefix $obj_size $result_path
+            bash run_experiment.sh "$worker_num $osds $operation $prefix $obj_size $result_path"
         done
     done
     sleep 5

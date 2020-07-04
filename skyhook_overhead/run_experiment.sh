@@ -8,7 +8,7 @@ python3 get_cpu_utils.py &
 echo "Running the experiment ${1} ${3}s with object size: ${5} MB"
 result_path=${6}
 mkdir -p ${result_path}
-python3 skyhook_bandwidth.py ${4} ${1} ${3} ${5} ${result_path}
+python3 skyhook_bandwidth.py "${4} ${1} ${3} ${5} ${result_path}"
 echo "Done."
 # printf client0:
 # client_util=$(python3 calc_cpu_utils.py)
