@@ -18,7 +18,6 @@ def write_data(buff_bytes, name,  ceph_pool):
         ioctx.set_xattr(name, 'size', bytes(str(len(buff_bytes)),'utf-8'))
         ioctx.close()
         cluster.shutdown()
-
     except Exception as e:
         return str(e)
 
@@ -134,7 +133,9 @@ def remove_from_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_in
         i += 1
       
 
-def generate_table(data):
+def generate_table():
+    f = open('data', 'rb')
+    data = f.read()
     batches = []
     reader = pa.ipc.open_stream(data)
     for b in reader:
@@ -176,7 +177,7 @@ for i in range(worker_num):
     f = open('data', 'rb')
     data = f.read()
     partition_num = int(len(data)/obj_size)
-    table = generate_table(data)
+    table = generate_table()
     tables.append(table)
 print("dataframes created")
 # partition_num = int(partition_num/10)
@@ -214,5 +215,5 @@ stop_time = time.time()
 bandwidth = worker_num * len(data)/1000000/(stop_time - start_time)
 print('write to skyhook bandwidth: ' + str(bandwidth) + ' MB/s.')
 f = open(result_path + "client_"+sys.argv[4]+"_"+str(worker_num)+"_"+operation+"_bandwidth.log", "w")
-f.write("%d, %d, %f\r\n" % (obj_size, worker_num, bandwidth))
+f.write("%s, %d, %f\r\n" % (sys.argv[4], worker_num, bandwidth))
 f.close()

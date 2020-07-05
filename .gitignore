@@ -9,7 +9,9 @@ rook/cephconfig/
 rook/geni/hosts
 rook/.env
 
+#skyhook_overhead experiment
 skyhook_overhead/data
+skyhook_overhead/results
 
 # ceph benchmarks
 rook/ceph_benchmarks/results

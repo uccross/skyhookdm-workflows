@@ -13,7 +13,7 @@ echo "Done."
 # printf client0:
 # client_util=$(python3 calc_cpu_utils.py)
 
-mv /tmp/cpu_utils "client_${5}_${1}_${3}_cpu_utils"
+mv /tmp/cpu_utils "${result_path}client_${5}_${1}_${3}_cpu_utils"
 
 echo "Stopping CPU recording on the client and OSDs..."
 for ((i = 0 ; i < osds ; i++)); do
@@ -22,10 +22,10 @@ done;
 pkill -f get_cpu_utils.py 2> /dev/null &
 wait get_cpu_utils.py 2>/dev/null
 
-# echo "Reporting CPU utlizations..."
-for osd_index in $(seq 0 $osd_last_index)
-do
+echo "Reporting CPU utlizations..."
+for ((osd_index = 0 ; osd_index < osds ; osd_index++)); do
     file_name="${result_path}osd${osd_index}_${5}_${1}_${3}_cpu_utils"
-    scp "${USER}@osd${osd_index}:/tmp/cpu_utils" "${file_name}"
-    echo "scp osd cpu details to ${file_name}"
+    host="${USER}@osd${osd_index}"
+    scp "${host}:/tmp/cpu_utils" "${file_name}"
+    echo "scp ${host} cpu details to ${file_name}"
 done;
