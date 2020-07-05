@@ -72,9 +72,9 @@ do
         do
             echo "Starting the experiment $operation with $worker_num workers"
             bash run_experiment.sh "$worker_num" "$osds" "$operation" "$prefix" "$obj_size" "$result_path"
+            ceph osd pool delete test test --yes-i-really-really-mean-it
+            rados mkpool test
         done
     done
     sleep 5
 done
-
-~/.local/bin/runipy result.ipynb

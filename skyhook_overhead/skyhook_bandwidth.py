@@ -134,9 +134,7 @@ def remove_from_skyhook(table, obj_prefix = 'S', partition_num = 1000, worker_in
         i += 1
       
 
-def generate_table():
-    f = open('data', 'rb')
-    data = f.read()
+def generate_table(data):
     batches = []
     reader = pa.ipc.open_stream(data)
     for b in reader:
@@ -178,9 +176,9 @@ for i in range(worker_num):
     f = open('data', 'rb')
     data = f.read()
     partition_num = int(len(data)/obj_size)
-    table = generate_table()
+    table = generate_table(data)
     tables.append(table)
-    
+print("dataframes created")
 # partition_num = int(partition_num/10)
 
 # Connect to Ceph cluster and get the ioctx handler.
@@ -200,6 +198,7 @@ processes = []
 for i in range(worker_num):
     p = Process(target=process_target, args=(tables[i], obj_prefix, partition_num, i))
     processes.append(p)
+    print("process "+str(i)+"started")
     p.start()
 
 
