@@ -215,7 +215,7 @@ sudo chmod 0777 ceph.conf
 echo "
 osd pool default size = 1
 osd pool default min size = 1
-osd crush chooseleaf type = 0
+osd crush chooseleaf type = 1
 osd pool default pg num = 128
 osd pool default pgp num = 128
 mon_allow_pool_delete = true
