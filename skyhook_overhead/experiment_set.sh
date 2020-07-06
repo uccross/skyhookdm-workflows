@@ -59,11 +59,16 @@ bash prepare.sh
 
 operations=("write" "read")
 rm -rf "$result_path"
+first=1
 for obj_size in $obj_sizes
 do
-    ceph osd pool delete test test --yes-i-really-really-mean-it
-    sleep 30
-    rados mkpool test
+    if [ $? -eq 0 ]; then
+        ceph osd pool delete test test --yes-i-really-really-mean-it
+        sleep 30
+        rados mkpool test
+    else
+        first=0
+    fi
     echo "Object size: ${obj_size} MB"
     rm -f data
     python3 data_gen.py $data_size
