@@ -5,7 +5,7 @@ options:
     BLOCKSIZE: 4m
     PV_SIZE: 3Gi
     SIZE: 3G
-    IO_DEPTH: '1'
+    IO_DEPTH: '1 8 16'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
     HOSTNAME: node2.rook-ceph-4.schedock-pg0.clemson.cloudlab.us
@@ -34,9 +34,8 @@ steps:
   runs: [./kubestone_fio/download_results.sh]
 
 - id: plot-results
-  uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: [python]
-  args: [./kubestone_fio/plot.py]
+  uses: docker://jcnitdgp25/fio-plot:latest
+  runs: [./kubestone_fio/plot.sh]
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4

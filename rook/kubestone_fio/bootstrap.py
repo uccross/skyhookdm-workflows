@@ -93,8 +93,8 @@ def get_job_defination(blockdevice):
                     "containers": [
                         {
                             "name": "fio-container",
-                            "image": "xridge/fio:3.13",
-                            "command": ["sleep", "100000"],
+                            "image": "jcnitdgp25/fio-plot:latest",
+                            "command": ["sleep", "infinity"],
                             "volumeDevices": volumeDevices,
                             "securityContext": {
                                 "privileged": True
