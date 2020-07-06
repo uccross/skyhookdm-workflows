@@ -7,11 +7,7 @@ obj_sizes=${obj_sizes[@]}
 
 sudo apt update
 sudo apt --assume-yes install python3-pip
-pip3 install runipy
-# pip3 install numpy
-pip3 install pandas
-pip3 install matplotlib
-pip3 install matplotlib
+pip3 install crush
 
 if [ -z osds ]
     then osds=4
@@ -83,5 +79,8 @@ do
             sleep 15
         done
     done
+    ceph osd crush dump > crushmap-ceph.json
+    crush_path="/users/${USER}/.local/bin/crush"
+    "${crush_path}" analyze --rule replicated_rule --crushmap crushmap-ceph.json > "${result_path}object_distribution_${obj_size}.txt"
     sleep 30
 done
