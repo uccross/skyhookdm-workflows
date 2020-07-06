@@ -9,7 +9,15 @@ do
 sleep 5
 done
 
-bench_fio_cmd="./bench_fio --target /dev/sda2 --type device --mode read write randread randwrite --output FIO_OUTPUT -b $BLOCKSIZE -s $SIZE --iodepth $IO_DEPTH --numjobs $NUM_JOBS"
+targets=""
+for blkdev in ${BLOCKDEVICES[@]};
+do
+targets+=" /dev/$blkdev "
+done
+
+echo $targets
+
+bench_fio_cmd="./bench_fio --target ${targets} --type device --mode read write randread randwrite --output FIO_OUTPUT -b $BLOCKSIZE -s $SIZE --iodepth $IO_DEPTH --numjobs $NUM_JOBS"
 
 kubectl exec -n kubestone $pod  -- $bench_fio_cmd
 

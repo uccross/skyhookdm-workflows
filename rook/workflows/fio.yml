@@ -1,7 +1,7 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
-    BLOCKDEVICES: sda2
+    BLOCKDEVICES: sda2 sdb
     BLOCKSIZE: 4m
     PV_SIZE: 3Gi
     SIZE: 3G
