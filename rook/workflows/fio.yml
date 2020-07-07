@@ -34,7 +34,7 @@ steps:
   runs: [./kubestone_fio/download_results.sh]
 
 - id: plot-results
-  uses: docker://jcnitdgp25/fio-plot:latest
+  uses: docker://getpopper/fio-plot:3.12-2
   runs: [./kubestone_fio/plot.sh]
 
 - id: teardown-pods
