@@ -1,14 +1,14 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
-    BLOCKDEVICES: sda2 sdb
+    BLOCKDEVICES: 'sda2 sda4'
     BLOCKSIZE: 4m
     PV_SIZE: 3Gi
     SIZE: 3G
     IO_DEPTH: '1 8 16'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
-    HOSTNAME: node2.rook-ceph-4.schedock-pg0.clemson.cloudlab.us
+    HOSTNAME: node1.rook-ceph-4.schedock-pg0.clemson.cloudlab.us
 
 steps:
 - id: bootstrap-config
