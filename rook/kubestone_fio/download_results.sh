@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -eu
 
 # download json files
 mkdir -p ./kubestone_fio/results

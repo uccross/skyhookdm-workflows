@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -eu
 
 for io_depth in ${IO_DEPTH[@]};
 do
