@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 
 # make results dir
 mkdir -p ./ceph_benchmarks/results
