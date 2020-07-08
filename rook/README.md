@@ -40,7 +40,12 @@ Please follow the instructions given [here](https://kubestone.io/en/latest/quick
 $ popper run -f workflows/iperf.yml
 ```
 
-### fio
+### `fio`
 ```bash
 $ popper run -f workflows/fio.yml
 ```
+The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
+blockdevices at varying IO depths and readwrite modes. The plot given below is from benchmarking the reads of a blockdevice at IO depth 16.
+
+![fio-read-16-sda2-2020-07-08_095706](https://user-images.githubusercontent.com/33978990/86969921-29421400-c18c-11ea-96de-0e58f7936527.png)
+
