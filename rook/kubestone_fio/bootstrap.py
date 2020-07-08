@@ -93,7 +93,7 @@ def get_job_defination(blockdevice):
                     "containers": [
                         {
                             "name": "fio-container",
-                            "image": "jcnitdgp25/fio-plot:latest",
+                            "image": "getpopper/fio-plot:3.12-2",
                             "command": ["sleep", "infinity"],
                             "volumeDevices": volumeDevices,
                             "securityContext": {

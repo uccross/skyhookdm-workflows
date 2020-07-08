@@ -15,6 +15,6 @@ do
 targets+=" /dev/$blkdev "
 done
 
-bench_fio_cmd="./bench_fio --target ${targets} --type device --mode read write randread randwrite --output FIO_OUTPUT -e $IO_ENGINE -b $BLOCKSIZE -s $SIZE --iodepth $IO_DEPTH --numjobs $NUM_JOBS"
+bench_fio_cmd="bench_fio --target ${targets} --template /fio-plot/benchmark_script/fio-job-template.fio --type device --mode read write randread randwrite --output FIO_OUTPUT -e $IO_ENGINE -b $BLOCKSIZE -s $SIZE --iodepth $IO_DEPTH --numjobs $NUM_JOBS"
 
 kubectl exec -n kubestone $pod  -- $bench_fio_cmd
