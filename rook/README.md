@@ -32,12 +32,12 @@ $ popper run -f workflows/ceph_benchmarks.yml
 
 The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. An example plot is shown below.
 
-![rados_avg_bw_bench_iodepth_16](https://user-images.githubusercontent.com/33978990/86970919-e123f100-c18d-11ea-9baf-2fb7656e23e5.png)
+<img src="https://user-images.githubusercontent.com/33978990/86970919-e123f100-c18d-11ea-9baf-2fb7656e23e5.png" height="250" width="350" />
 
 Each of the OSD's are also benchmarked using the native ceph osd benchmark tool, `ceph tell`. 
 Both bandwidth (throughput) and IOPS is measured. An example OSD benchmark plot is shown below.
 
-![osd_throughput_benchmarks](https://user-images.githubusercontent.com/33978990/86971224-6c04eb80-c18e-11ea-90d2-59d9e762149a.png)
+<img src="https://user-images.githubusercontent.com/33978990/86971224-6c04eb80-c18e-11ea-90d2-59d9e762149a.png" height="250" width="350" />
 
 
 ## kubestone benchmarks
@@ -57,5 +57,4 @@ $ popper run -f workflows/fio.yml
 The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
 blockdevices at varying IO depths and readwrite modes. The plot given below is from benchmarking the reads of a blockdevice at IO depth 16.
 
-![fio-read-16-sda2-2020-07-08_095706](https://user-images.githubusercontent.com/33978990/86969921-29421400-c18c-11ea-96de-0e58f7936527.png)
-
+<img src="https://user-images.githubusercontent.com/33978990/86969921-29421400-c18c-11ea-96de-0e58f7936527.png" height="250" width="350" />
