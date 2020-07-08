@@ -8,7 +8,7 @@ options:
     IO_DEPTH: '1 8 16'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
-    HOSTNAME: node1.rook-ceph-4.schedock-pg0.clemson.cloudlab.us
+    HOSTNAME: node1.rook-ceph-5.schedock-pg0.clemson.cloudlab.us
 
 steps:
 - id: bootstrap-config

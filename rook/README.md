@@ -1,13 +1,13 @@
 # SkyhookDM-Benchmarks Workflow
 
-Popper workflow to automate large scale tests in SkyhookDM Ceph
+Popper workflow to automate Large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
 
-## install popper
+## Installing popper
 ```bash
 $ pip install popper
 ```
 
-## environment variables
+## Environment variables
 ```bash
 # generate the .env file and populate it
 $ cp .env.example .env 
@@ -16,7 +16,7 @@ $ cp .env.example .env
 $ source .env
 ```
 
-## prometheus monitoring
+## Prometheus monitoring
 ```bash
 # setup monitoring
 $ popper run -f workflows/prometheus.yml setup
@@ -25,7 +25,7 @@ $ popper run -f workflows/prometheus.yml setup
 $ popper run -f workflows/prometheus.yml teardown
 ```
 
-## rados and osd benchmarks
+## Rados and OSD benchmarks
 ```bash
 $ popper run -f workflows/ceph_benchmarks.yml 
 ```
@@ -44,12 +44,12 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 <img src="https://user-images.githubusercontent.com/33978990/86971992-c9e60300-c18f-11ea-89ea-436e108ff498.png" height="250" width="350" />
 
 
-## kubestone benchmarks
+## Kubestone benchmarks
 
 The `fio` and `iperf` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
 Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace).
 
-### iperf
+### `iperf`
 ```bash
 $ popper run -f workflows/iperf.yml
 ```
