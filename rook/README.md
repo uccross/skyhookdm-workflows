@@ -25,10 +25,20 @@ $ popper run -f workflows/prometheus.yml setup
 $ popper run -f workflows/prometheus.yml teardown
 ```
 
-## ceph (rados and osd) benchmarks
+## rados and osd benchmarks
 ```bash
 $ popper run -f workflows/ceph_benchmarks.yml 
 ```
+
+The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. An example plot is shown below.
+
+![rados_avg_bw_bench_iodepth_16](https://user-images.githubusercontent.com/33978990/86970919-e123f100-c18d-11ea-9baf-2fb7656e23e5.png)
+
+Each of the OSD's are also benchmarked using the native ceph osd benchmark tool, `ceph tell`. 
+Both bandwidth (throughput) and IOPS is measured. An example OSD benchmark plot is shown below.
+
+![osd_throughput_benchmarks](https://user-images.githubusercontent.com/33978990/86971224-6c04eb80-c18e-11ea-90d2-59d9e762149a.png)
+
 
 ## kubestone benchmarks
 
