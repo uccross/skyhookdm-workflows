@@ -5,7 +5,7 @@ mkdir -p ./ceph_benchmarks/results
 
 pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
 
-for io_depth in ${IO_DEPTH{@}};
+for io_depth in ${IO_DEPTH[@]};
 do
 kubectl exec -n "$NAMESPACE" "$pod" -- cat /tmp/write.json > ./ceph_benchmarks/results/write-$io_depth.json
 kubectl exec -n "$NAMESPACE" "$pod" -- cat /tmp/seq.json   > ./ceph_benchmarks/results/seq-$io_depth.json

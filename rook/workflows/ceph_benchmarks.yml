@@ -18,16 +18,7 @@ steps:
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [bash, -euc]
-  args:
-  - |
-    pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
-    script=$(cat ./ceph_benchmarks/run_benchmarks.sh)
-    kubectl -n "$NAMESPACE" exec "$pod" -- bash -c "$script"
-
-- id: download-results
-  uses: docker://bitnami/kubectl:1.17.4
-  runs: [./ceph_benchmarks/download_results.sh]
+  runs: [./ceph_benchmarks/run_benchmarks.sh]
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
