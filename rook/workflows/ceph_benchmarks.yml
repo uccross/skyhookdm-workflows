@@ -2,6 +2,7 @@ options:
   env:
     KUBECONFIG: ./kubeconfig/config
     NAMESPACE: kubestone
+    IO_DEPTH: '1 8 16'
 
 steps:
 - id: start-pods
