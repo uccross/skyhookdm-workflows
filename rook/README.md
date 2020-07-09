@@ -4,6 +4,8 @@ Popper workflow to automate Large-scale tests and benchmarks of SkyhookDM-Ceph i
 
 ## Installing popper
 ```bash
+$ python3 -m venv venv
+$ source venv/bin/activate
 $ pip install popper
 ```
 
@@ -16,13 +18,25 @@ $ cp .env.example .env
 $ source .env
 ```
 
-## Prometheus monitoring
+## Setting up skyhookDM cluster using rook
+```bash
+# setup the cluster
+$ popper run -f workflows/setup_rook_cluster.yml setup-rook-cluster
+
+# download the ceph configuration files
+$ popper run -f workflows/setup_rook_cluster.yml download-ceph-config
+
+# teardown the cluster
+$ popper run -f workflows/setup_rook_cluster.yml teardown-rook-cluster
+```
+
+## Setup prometheus monitoring
 ```bash
 # setup monitoring
-$ popper run -f workflows/prometheus.yml setup
+$ popper run -f workflows/setup_prometheus.yml setup
 
 # teardown monitoring
-$ popper run -f workflows/prometheus.yml teardown
+$ popper run -f workflows/setup_prometheus.yml teardown
 ```
 
 ## Rados and OSD benchmarks
