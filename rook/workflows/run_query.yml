@@ -12,18 +12,26 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    POD=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./cephconfig/ceph.conf default/$POD:/etc/ceph/ceph.conf
-    kubectl cp ./cephconfig/keyring default/$POD:/etc/ceph/keyring
+    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    kubectl cp ./cephconfig/ceph.conf default/$pod:/etc/ceph/ceph.conf
+    kubectl cp ./cephconfig/keyring default/$pod:/etc/ceph/keyring
 
 - id: run-queries
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    POD=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
     SCRIPT=$(cat ./run_query/entrypoint.sh)
-    kubectl exec $POD -- bash -c "$SCRIPT"
+    kubectl exec $pod -- bash -c "$SCRIPT"
+
+- id: download-results
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec $pod -- cat result > ./run_query/result
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4

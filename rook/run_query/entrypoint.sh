@@ -25,21 +25,33 @@ start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
 result=0$(echo "$end - $start" | bc)
-echo "Seconds Elapsed: $result seconds"
+fbx_1_lineitem=$result
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
 result=0$(echo "$end - $start" | bc)
-echo "Seconds Elapsed: $result seconds"
+fbx_10_lineitem=$result
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
 result=0$(echo "$end - $start" | bc)
-echo "Seconds Elapsed: $result seconds"
+fbx_100_lineitem=$result
 
 # delete the pool
 ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
+
+result="{
+    \"lineitem\": {
+        \"fbx\": {
+            \"1\": ${fbx_1_lineitem},
+            \"10\": ${fbx_10_lineitem},
+            \"100\": ${fbx_100_lineitem}
+        }
+    }
+}"
+
+echo "$result" > ./result
