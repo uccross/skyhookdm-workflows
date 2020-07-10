@@ -24,3 +24,6 @@ rook/kubestone_iperf/*.yaml
 rook/kubestone_fio/results
 rook/kubestone_fio/*.png
 rook/kubestone_fio/*.yaml
+
+# run-query
+rook/run_query/results

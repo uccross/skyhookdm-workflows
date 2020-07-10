@@ -12,4 +12,7 @@ spec:
       - name: run-query
         image: uccross/skyhookdm-ceph:v14.2.9
         command: [sleep, infinity]
+        env:
+        - name: POOLTYPE
+          value: replicated
       restartPolicy: Never

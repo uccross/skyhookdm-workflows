@@ -1,38 +1,55 @@
 options:
     env:
         KUBECONFIG: ./kubeconfig/config
+        NAMESPACE: kubestone
+        POOLTYPE: replicated
 
 steps:
 - id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [create, -f, ./run_query/job.yml]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl -n "$NAMESPACE" create -f ./run_query/job.yml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./cephconfig/ceph.conf default/$pod:/etc/ceph/ceph.conf
-    kubectl cp ./cephconfig/keyring default/$pod:/etc/ceph/keyring
+    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    kubectl cp ./cephconfig/ceph.conf "$NAMESPACE"/"$pod":/etc/ceph/ceph.conf
+    kubectl cp ./cephconfig/keyring "$NAMESPACE"/"$pod":/etc/ceph/keyring
 
 - id: run-queries
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    SCRIPT=$(cat ./run_query/entrypoint.sh)
-    kubectl exec $pod -- bash -c "$SCRIPT"
+    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    kubectl cp ./run_query/entrypoint.sh "$NAMESPACE"/"$pod":/tmp/entrypoint.sh
+    kubectl -n "$NAMESPACE" set env pod "$pod" POOLTYPE="$POOLTYPE"
+    kubectl -n "$NAMESPACE" exec "$pod" -- /tmp/entrypoint.sh
+  env:
+    POOLTYPE: replicated
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    pod=$(kubectl get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec $pod -- cat result > ./run_query/result
+    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    mkdir -p ./run_query/results/
+    kubectl -n "$NAMESPACE" exec "$pod" -- cat result.json > ./run_query/results/result.json
+
+- id: plot-results
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: [python]
+  args: [./run_query/plot.py]
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [delete, -f, ./run_query/job.yml]
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl -n "$NAMESPACE" delete -f ./run_query/job.yml

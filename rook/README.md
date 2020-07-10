@@ -57,6 +57,14 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 
 <img src="https://user-images.githubusercontent.com/33978990/86971992-c9e60300-c18f-11ea-89ea-436e108ff498.png" height="250" width="350" />
 
+## Run-Query benchmarks
+```bash
+$ popper run -f workflows/run_query.yml
+```
+
+This workflows run queries over tpch dataset at 1%, 10%, 100% selectivity in arrow (currently not supported) and flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below.
+
+<img src="https://user-images.githubusercontent.com/33978990/87318524-1772bf00-c546-11ea-8cad-66c5efbc7b8a.png" height="250" width="350">
 
 ## Kubestone benchmarks
 

@@ -188,3 +188,17 @@ spec:
     manageMachineDisruptionBudgets: false
     # Namespace in which to watch for the MachineDisruptionBudgets.
     machineDisruptionBudgetNamespace: openshift-machine-api
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  config: |
+    [osd]
+    osd max write size = 250
+    osd max object size = 256000000
+    osd class load list = *
+    osd class default list = *
+
+metadata:
+  name: rook-config-override
+  namespace: rook-ceph
