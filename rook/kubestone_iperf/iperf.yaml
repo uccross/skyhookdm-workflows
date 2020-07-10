@@ -1,45 +1,31 @@
----
 apiVersion: perf.kubestone.xridge.io/v1alpha1
 kind: Iperf3
-metadata:
-  name: iperf3-tests
+metadata: {name: iperf3-tests}
 spec:
-  image:
-    name: xridge/iperf3:3.7.0
-    pullPolicy: IfNotPresent
-
-  serverConfiguration:
-    cmdLineArgs: --json
-    podLabels:
-      iperf-mode: server
-
-    podScheduling:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - store
-            topologyKey: "kubernetes.io/hostname"
-    hostNetwork: false
-    
   clientConfiguration:
     cmdLineArgs: --json
-    podLabels:
-      iperf-mode: client
+    podLabels: {iperf-mode: client}
     podScheduling:
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: iperf-mode
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
                 operator: In
-                values:
-                - server
-            topologyKey: "kubernetes.io/hostname"
-
+                values: [river-c071.ssl-hep.org]
+  image: {name: 'xridge/iperf3:3.7.0', pullPolicy: IfNotPresent}
+  serverConfiguration:
+    cmdLineArgs: --json
+    hostNetwork: false
+    podLabels: {iperf-mode: server}
+    podScheduling:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [river-c061.ssl-hep.org]
   udp: false
