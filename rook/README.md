@@ -61,7 +61,19 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 ## Kubestone benchmarks
 
 The `fio` and `iperf` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
-Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace).
+Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace) or you can just do the following,
+
+```bash
+# clone the `kubestone` repo
+$ git clone https://github.com/xridge/kubestone
+
+# build the defination and create
+$ cd kubestone/config/default
+$ kustomize build | kubectl create -f -
+
+# create the `kubestone` namespace
+$ kubectl create namespace kubestone
+```
 
 ### `iperf`
 ```bash
