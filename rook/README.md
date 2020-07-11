@@ -77,8 +77,21 @@ $ kubectl create namespace kubestone
 
 ### `iperf`
 ```bash
-$ popper run -f workflows/iperf.yml
+# between server and client-1
+$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-1>
+
+# between server and client-2
+$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-2>
+
+# between server and client-3
+$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-3>
+.
+.
 ```
+
+The workflow measures the link speed between a node allocated as a server and other nodes allocated as clients. An example plot from such a benchmark run is shown below.
+
+<img src="https://user-images.githubusercontent.com/33978990/87217858-834d0000-c36b-11ea-9f41-5fa46017aaf2.png" height="300" width="450" />
 
 ### `fio`
 ```bash
