@@ -89,6 +89,8 @@ $ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<cli
 .
 ```
 
+The hostnames to be provided to the substitution variables of the `popper run` command should be the `kubernetes.io/hostname` value of the nodes in the cluster.
+
 The workflow measures the link speed between a node allocated as a server and other nodes allocated as clients. An example plot from such a benchmark run is shown below.
 
 <img src="https://user-images.githubusercontent.com/33978990/87332356-0da68700-c559-11ea-9a03-6af9beb11c3c.png" height="300" width="450" />
