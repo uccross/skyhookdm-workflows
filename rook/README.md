@@ -91,7 +91,7 @@ $ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<cli
 
 The workflow measures the link speed between a node allocated as a server and other nodes allocated as clients. An example plot from such a benchmark run is shown below.
 
-<img src="https://user-images.githubusercontent.com/33978990/87217858-834d0000-c36b-11ea-9f41-5fa46017aaf2.png" height="300" width="450" />
+<img src="https://user-images.githubusercontent.com/33978990/87332356-0da68700-c559-11ea-9a03-6af9beb11c3c.png" height="300" width="450" />
 
 ### `fio`
 ```bash
