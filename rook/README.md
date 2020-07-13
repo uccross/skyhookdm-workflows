@@ -67,7 +67,7 @@ Please follow the instructions given [here](https://kubestone.io/en/latest/quick
 # clone the `kubestone` repo
 $ git clone https://github.com/xridge/kubestone
 
-# build the defination and create
+# build the definition and create
 $ cd kubestone/config/default
 $ kustomize build | kubectl create -f -
 

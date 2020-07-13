@@ -5,7 +5,7 @@ import yaml
 config_dir = './kubestone_iperf'
 
 
-iperf_defination = {
+iperf_definition = {
   "apiVersion": "perf.kubestone.xridge.io/v1alpha1",
   "kind": "Iperf3",
   "metadata": {
@@ -65,5 +65,5 @@ iperf_defination = {
 
 if __name__ == "__main__":
   with open(os.path.join(config_dir, 'iperf.yaml'), 'w') as f:
-    defination_str = yaml.dump(iperf_defination)
-    f.write(defination_str)
+    definition_str = yaml.dump(iperf_definition)
+    f.write(definition_str)
