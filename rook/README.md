@@ -78,13 +78,13 @@ $ kubectl create namespace kubestone
 ### `iperf`
 ```bash
 # between server and client-1
-$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-1>
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-one-hostname>
 
 # between server and client-2
-$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-2>
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-two-hostname>
 
 # between server and client-3
-$ popper run -f workflows/iperf.yml --substitution _SERVER=<server> --substitution _CLIENT=<client-3>
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-three-hostname>
 .
 .
 ```
