@@ -1,14 +1,14 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
-    BLOCKDEVICES: sdb
+    BLOCKDEVICES: $_BLOCKDEVICES
     BLOCKSIZE: 4m
-    PV_SIZE: 3Gi
-    SIZE: 3G
+    PV_SIZE: 4Gi
+    SIZE: 4G
     IO_DEPTH: '1 8 16'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
-    HOSTNAME: river-c061.ssl-hep.org
+    HOSTNAME: $_HOSTNAME
 
 steps:
 - id: bootstrap-config
