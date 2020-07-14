@@ -17,7 +17,7 @@ steps:
   uses: docker://getpopper/geni:v0.9.9.2
   # override the entrypoint so we don't need to provide credentials, as they
   # are not needed for the 'get-inventory' subcommand
-  runs: 'python'
+  runs: ['python']
   # convert geni/manifest.xml to ansible/hosts.yaml
   args: ['geni/config.py', 'get-inventory']
 
@@ -28,41 +28,40 @@ steps:
   uses: docker://getpopper/ceph-ansible:v4.0.22
   args: ['-i', 'ansible/hosts.yaml', 'ansible/deploy-mons-and-osds.yml']
   env:
-    ANSIBLE_LOG_PATH: ../ansible.log
+    ANSIBLE_LOG_PATH: ansible/ansible.log
     ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
-    ANSIBLE_HOST_KEY_CHECKING: false
+    ANSIBLE_HOST_KEY_CHECKING: 'false'
   secrets:
   - ANSIBLE_SSH_KEY_DATA
 
 
-- id: download and extract libcls
+- id: download and extract the skyhook library
   uses: docker://docker:19.03.3
-  runs: /bin/sh
+  runs: [sh]
   args:
   - -c,
   - |
-    docker pull getpopper/skyhookdm-ceph:v14.2.9
+    docker pull uccross/skyhookdm-ceph:v14.2.9
     docker run \
       -v $PWD:/w \
       -w /w \
       --entrypoint=/bin/bash \
-      popperized/skyhookdm-ceph:v14.2.9 \
+      uccross/skyhookdm-ceph:v14.2.9 \
         -c 'cp /usr/lib64/rados-classes/libcls_tabular.so ansible/files/'
 
 
-- id: deploy
+- id: deploy skyhook library
   uses: docker://getpopper/ansible:v2.9.7
-  args: ['-i', 'ansible/hosts.yaml', 'ansible/playbooks/deploy-libcls_tabular.yml']
+  args: ['-i', 'ansible/hosts.yaml', 'ansible/deploy-libcls_tabular.yml']
   env:
-    ANSIBLE_LOG_PATH: ./ansible.log
+    ANSIBLE_LOG_PATH: ansible/ansible.log
     ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
-    ANSIBLE_HOST_KEY_CHECKING: false
+    ANSIBLE_HOST_KEY_CHECKING: 'false'
   secrets:
   - ANSIBLE_SSH_KEY_DATA
 
-
 #- id: release resources
-#  uses: docker://popperized/geni:v0.9.9.2
+#  uses: docker://getpopper/geni:v0.9.9.2
 #  args: ['geni/config.py', 'destroy']
 #  secrets:
 #  - GENI_FRAMEWORK
