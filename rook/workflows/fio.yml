@@ -1,14 +1,14 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
-    BLOCKDEVICES: sda2
+    BLOCKDEVICES: sdb
     BLOCKSIZE: 4m
     PV_SIZE: 3Gi
     SIZE: 3G
-    IO_DEPTH: '1'
+    IO_DEPTH: '1 8 16'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
-    HOSTNAME: node2.rook-ceph-2.schedock-pg0.clemson.cloudlab.us
+    HOSTNAME: river-c061.ssl-hep.org
 
 steps:
 - id: bootstrap-config
@@ -34,9 +34,8 @@ steps:
   runs: [./kubestone_fio/download_results.sh]
 
 - id: plot-results
-  uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: [python]
-  args: [./kubestone_fio/plot.py]
+  uses: docker://getpopper/fio-plot:3.12-2
+  runs: [./kubestone_fio/plot.sh]
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
