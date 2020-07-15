@@ -1,0 +1,14 @@
+        ~id~  ~weight~  ~PGs~  ~over/under filled %~
+~name~                                              
+osd2      -7       0.1  75127                   0.17
+osd1      -5       0.1  75037                   0.05
+osd3      -9       0.1  74982                  -0.02
+osd0      -3       0.1  74854                  -0.19
+
+Worst case scenario if a host fails:
+
+        ~over filled %~
+~type~                 
+device              0.0
+host                0.0
+root                0.0
