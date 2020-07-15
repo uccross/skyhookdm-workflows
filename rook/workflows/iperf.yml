@@ -1,8 +1,15 @@
 options:
   env:
     KUBECONFIG: ./kubeconfig/config
+    SERVER: $_SERVER
+    CLIENT: $_CLIENT
 
 steps:
+- id: bootstrap-config
+  uses: docker://biowdl/pyyaml:3.13-py37-slim
+  runs: [python]
+  args: [./kubestone_iperf/bootstrap.py]
+
 - id: start-pods
   uses: docker://bitnami/kubectl:1.17.4
   args: [create, -n, kubestone, -f, ./kubestone_iperf/iperf.yaml]

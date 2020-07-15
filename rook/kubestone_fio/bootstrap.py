@@ -6,7 +6,7 @@ import yaml
 config_dir = './kubestone_fio'
 
 
-def get_pv_defination(name, size, blockdevice, hostname):
+def get_pv_definition(name, size, blockdevice, hostname):
     pv = {
         "kind": "PersistentVolume",
         "apiVersion": "v1",
@@ -43,7 +43,7 @@ def get_pv_defination(name, size, blockdevice, hostname):
     return pv
 
 
-def get_pvc_defination(name, size, blockdevice):
+def get_pvc_definition(name, size, blockdevice):
     pvc = {
         "kind": "PersistentVolumeClaim",
         "apiVersion": "v1",
@@ -66,7 +66,7 @@ def get_pvc_defination(name, size, blockdevice):
     return pvc
 
 
-def get_job_defination(blockdevice):
+def get_job_definition(blockdevice):
 
     volumeDevices = []
     for dev in blockdevice:
@@ -110,35 +110,35 @@ def get_job_defination(blockdevice):
     return job
 
 
-def write_definations(size, blockdevice, hostname):
-    pv_defination = []
-    pvc_defination = []
-    job_defination = None
+def write_definitions(size, blockdevice, hostname):
+    pv_definition = []
+    pvc_definition = []
+    job_definition = None
     for dev in blockdevice:
-        pv_defination.append(
-            yaml.dump(get_pv_defination(
+        pv_definition.append(
+            yaml.dump(get_pv_definition(
                 f"pv-{dev}", size, dev, hostname
             ))
         )
-        pvc_defination.append(
-            yaml.dump(get_pvc_defination(
+        pvc_definition.append(
+            yaml.dump(get_pvc_definition(
                 f"pvc-{dev}", size, dev
             ))
         )
 
-    job_defination = yaml.dump(get_job_defination(blockdevice))
-    pv_defination = "---\n".join(pv_defination)
-    pvc_defination = "---\n".join(pvc_defination)
+    job_definition = yaml.dump(get_job_definition(blockdevice))
+    pv_definition = "---\n".join(pv_definition)
+    pvc_definition = "---\n".join(pvc_definition)
 
     with open(os.path.join(config_dir, 'pv.yaml'), 'w') as f:
-        f.write(pv_defination)
+        f.write(pv_definition)
 
     with open(os.path.join(config_dir, 'pvc.yaml'), 'w') as f:
-        f.write(pvc_defination)
+        f.write(pvc_definition)
 
     with open(os.path.join(config_dir, 'job.yaml'), 'w') as f:
-        f.write(job_defination)
+        f.write(job_definition)
 
 
 if __name__ == "__main__":
-    write_definations(os.environ["PV_SIZE"], os.environ["BLOCKDEVICES"].split(" "), os.environ["HOSTNAME"])
+    write_definitions(os.environ["PV_SIZE"], os.environ["BLOCKDEVICES"].split(" "), os.environ["HOSTNAME"])

@@ -67,7 +67,7 @@ Please follow the instructions given [here](https://kubestone.io/en/latest/quick
 # clone the `kubestone` repo
 $ git clone https://github.com/xridge/kubestone
 
-# build the defination and create
+# build the definition and create
 $ cd kubestone/config/default
 $ kustomize build | kubectl create -f -
 
@@ -77,8 +77,23 @@ $ kubectl create namespace kubestone
 
 ### `iperf`
 ```bash
-$ popper run -f workflows/iperf.yml
+# between server and client-1
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-one-hostname>
+
+# between server and client-2
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-two-hostname>
+
+# between server and client-3
+$ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<client-three-hostname>
+.
+.
 ```
+
+The value to be provided to the `SERVER` and `CLIENT` substitution variables of the `popper run` command is the hostname of the node within the kubernetes cluster that would act as the server and client respectively.
+
+The workflow measures the link speed from the node allocated as the client to the node allocated as the server. An example plot for such a benchmark run is shown below.
+
+<img src="https://user-images.githubusercontent.com/33978990/87332356-0da68700-c559-11ea-9a03-6af9beb11c3c.png" height="300" width="450" />
 
 ### `fio`
 ```bash
