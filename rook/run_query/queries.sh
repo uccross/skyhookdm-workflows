@@ -4,8 +4,6 @@ set -eux
 # export the lib path
 export LD_LIBRARY_PATH=/usr/lib64/ceph
 
-yum install -y bc
-
 # download the rados-store-glob.sh script
 curl https://raw.githubusercontent.com/uccross/skyhookdm-ceph/skyhook-luminous/src/progly/rados-store-glob.sh --output rados-store-glob.sh > /dev/null 2>&1
 chmod +x ./rados-store-glob.sh
@@ -22,22 +20,45 @@ yes | PATH=$PATH:bin ./rados-store-glob.sh tpchdata  public lineitem fbx.lineite
 start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
-result=0$(echo "$end - $start" | bc)
+result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_1_lineitem=$result
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
-result=0$(echo "$end - $start" | bc)
+result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_10_lineitem=$result
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
-result=0$(echo "$end - $start" | bc)
+result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_100_lineitem=$result
+
+
+
+# 1% selectivity
+start=$(date --utc "+%s.%N")
+run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
+end=$(date --utc "+%s.%N")
+result=0$(echo $end $start | awk '{print $1 - $2}')
+fbx_1_lineitem_cls=$result
+
+# 10% selectivity
+start=$(date --utc "+%s.%N")
+run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
+end=$(date --utc "+%s.%N")
+result=0$(echo $end $start | awk '{print $1 - $2}')
+fbx_10_lineitem_cls=$result
+
+# 100% selectivity
+start=$(date --utc "+%s.%N")
+run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
+end=$(date --utc "+%s.%N")
+result=0$(echo $end $start | awk '{print $1 - $2}')
+fbx_100_lineitem_cls=$result
 
 # delete the pool
 rados -p tpchdata rm public.lineitem.0
@@ -50,10 +71,10 @@ result="{
             \"10\": \"${fbx_10_lineitem}\",
             \"100\": \"${fbx_100_lineitem}\"
         },
-        \"arrow\": {
-            \"1\": \"\",
-            \"10\": \"\",
-            \"100\": \"\"
+        \"fbx_cls\": {
+            \"1\": \"${fbx_1_lineitem_cls}\",
+            \"10\": \"${fbx_10_lineitem_cls}\",
+            \"100\": \"${fbx_100_lineitem_cls}\"
         }
     }
 }"

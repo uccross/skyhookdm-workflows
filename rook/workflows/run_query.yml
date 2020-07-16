@@ -10,7 +10,7 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl -n "$NAMESPACE" create -f ./run_query/job.yml
+    kubectl -n "$NAMESPACE" apply -f ./run_query/job.yml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
@@ -27,9 +27,9 @@ steps:
   args:
   - |
     pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./run_query/entrypoint.sh "$NAMESPACE"/"$pod":/tmp/entrypoint.sh
+    kubectl cp ./run_query/queries.sh "$NAMESPACE"/"$pod":/tmp/queries.sh
     kubectl -n "$NAMESPACE" set env pod "$pod" POOLTYPE="$POOLTYPE"
-    kubectl -n "$NAMESPACE" exec "$pod" -- /tmp/entrypoint.sh
+    kubectl -n "$NAMESPACE" exec "$pod" -- /tmp/queries.sh
   env:
     POOLTYPE: replicated
 
