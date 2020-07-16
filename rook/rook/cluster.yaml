@@ -193,6 +193,8 @@ apiVersion: v1
 kind: ConfigMap
 data:
   config: |
+    [global]
+    debug ms = 1
     [osd]
     osd max write size = 250
     osd max object size = 256000000
@@ -204,6 +206,9 @@ data:
     osd pool default pg num = 128
     osd pool default pgp num = 128
     bluestore block create = true
+    debug osd = 25
+    debug bluestore = 30
+    debug journal = 20
 
 metadata:
   name: rook-config-override
