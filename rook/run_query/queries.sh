@@ -14,25 +14,30 @@ ceph osd pool create tpchdata 128 128 "$POOLTYPE"
 
 # download Flatbuffer 10MB lineitem dataset
 curl https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.100MB.750Krows.obj.0 --output fbx.lineitem.100MB.750Krows.obj.0 > /dev/null 2>&1
-yes | PATH=$PATH:bin ./rados-store-glob.sh tpchdata  public lineitem fbx.lineitem.100MB.750Krows.obj.0
+# yes | PATH=$PATH:bin ./rados-store-glob.sh tpchdata  public lineitem fbx.lineitem.100MB.750Krows.obj.0
+
+for i in {0..19}
+do
+    rados -p tpchdata put public.lineitem.$i fbx.lineitem.100MB.750Krows.obj.0
+done
 
 # 1% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
+run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_1_lineitem=$result
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
+run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_10_lineitem=$result
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
+run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_100_lineitem=$result
@@ -41,21 +46,21 @@ fbx_100_lineitem=$result
 
 # 1% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
+run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_1_lineitem_cls=$result
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
+run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_10_lineitem_cls=$result
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
-run-query --num-objs 1 --use-cls --wthreads 1 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
+run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
 result=0$(echo $end $start | awk '{print $1 - $2}')
 fbx_100_lineitem_cls=$result
