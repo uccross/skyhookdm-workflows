@@ -22,5 +22,4 @@ rook/kubestone_iperf/*.yaml
 
 # fio
 rook/kubestone_fio/results
-rook/kubestone_fio/*.png
 rook/kubestone_fio/*.yaml
