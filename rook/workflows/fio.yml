@@ -21,9 +21,9 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl create -n kubestone -f ./kubestone_fio/pv.yaml
-    kubectl create -n kubestone -f ./kubestone_fio/pvc.yaml
-    kubectl create -n kubestone -f ./kubestone_fio/job.yaml
+    kubectl apply -n kubestone -f ./kubestone_fio/pv.yaml
+    kubectl apply -n kubestone -f ./kubestone_fio/pvc.yaml
+    kubectl apply -n kubestone -f ./kubestone_fio/job.yaml
 
 - id: run-tests
   uses: docker://bitnami/kubectl:1.17.4
