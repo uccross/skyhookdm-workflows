@@ -21,65 +21,120 @@ do
     rados -p tpchdata put public.lineitem.$i fbx.lineitem.100MB.750Krows.obj.0
 done
 
+# declare the lineitem arrays
+fbx_1_lineitem=()
+fbx_10_lineitem=()
+fbx_100_lineitem=()
+
+for j in {0..9}
+do
 # 1% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_1_lineitem=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_1_lineitem+=("$result")
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_10_lineitem=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_10_lineitem+=("$result")
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_100_lineitem=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_100_lineitem+=("$result")
+done
 
+sum=0
+for i in ${fbx_1_lineitem[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_1_lineitem_result=$(echo "$sum" 10 | awk '{print $1/$2}')
 
+sum=0
+for i in ${fbx_10_lineitem[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_10_lineitem_result=$(echo "$sum" 10 | awk '{print $1/$2}')
 
+sum=0
+for i in ${fbx_100_lineitem[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_100_lineitem_result=$(echo "$sum" 10 | awk '{print $1/$2}')
+
+# declare the lineitem arrays
+fbx_1_lineitem_cls=()
+fbx_10_lineitem_cls=()
+fbx_100_lineitem_cls=()
+
+for j in {0..9}
+do
 # 1% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,91350";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_1_lineitem_cls=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_1_lineitem_cls+=("$result")
 
 # 10% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "extendedprice,gt,71000";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_10_lineitem_cls=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_10_lineitem_cls+=("$result")
 
 # 100% selectivity
 start=$(date --utc "+%s.%N")
 run-query --num-objs 20 --use-cls --wthreads 14 --qdepth 56 --pool tpchdata --oid-prefix "public" --table-name "lineitem" --quiet --select "*";
 end=$(date --utc "+%s.%N")
-result=0$(echo $end $start | awk '{print $1 - $2}')
-fbx_100_lineitem_cls=$result
+result=$(echo $end $start | awk '{print $1 - $2}')
+fbx_100_lineitem_cls+=("$result")
+done
+
+sum=0
+for i in ${fbx_1_lineitem_cls[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_1_lineitem_cls_result=$(echo "$sum" 10 | awk '{print $1/$2}')
+
+sum=0
+for i in ${fbx_10_lineitem_cls[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_10_lineitem_cls_result=$(echo "$sum" 10 | awk '{print $1/$2}')
+
+sum=0
+for i in ${fbx_100_lineitem_cls[@]}
+do
+  sum=$(echo $sum $i | awk '{print $1 + $2}')
+done
+fbx_100_lineitem_cls_result=$(echo "$sum" 10 | awk '{print $1/$2}')
 
 # delete the pool
-rados -p tpchdata rm public.lineitem.0
 ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
 
 result="{
     \"lineitem\": {
         \"fbx\": {
-            \"1\": \"${fbx_1_lineitem}\",
-            \"10\": \"${fbx_10_lineitem}\",
-            \"100\": \"${fbx_100_lineitem}\"
+            \"1\": \"${fbx_1_lineitem_result}\",
+            \"10\": \"${fbx_10_lineitem_result}\",
+            \"100\": \"${fbx_100_lineitem_result}\"
         },
         \"fbx_cls\": {
-            \"1\": \"${fbx_1_lineitem_cls}\",
-            \"10\": \"${fbx_10_lineitem_cls}\",
-            \"100\": \"${fbx_100_lineitem_cls}\"
+            \"1\": \"${fbx_1_lineitem_cls_result}\",
+            \"10\": \"${fbx_10_lineitem_cls_result}\",
+            \"100\": \"${fbx_100_lineitem_cls_result}\"
         }
     }
 }"
