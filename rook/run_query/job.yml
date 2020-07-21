@@ -15,4 +15,6 @@ spec:
         env:
         - name: POOLTYPE
           value: replicated
+        - name: LD_LIBRARY_PATH
+          value: /usr/lib64/ceph
       restartPolicy: Never
