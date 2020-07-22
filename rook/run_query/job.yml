@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-query
+spec:
+  template:
+    metadata:
+      labels:
+        app: run-query
+    spec:
+      containers:
+      - name: run-query
+        image: uccross/skyhookdm-ceph:v14.2.9
+        command: [sleep, infinity]
+        env:
+        - name: POOLTYPE
+          value: replicated
+        - name: LD_LIBRARY_PATH
+          value: /usr/lib64/ceph
+      restartPolicy: Never

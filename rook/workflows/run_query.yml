@@ -1,0 +1,45 @@
+options:
+    env:
+        KUBECONFIG: ./kubeconfig/config
+        NAMESPACE: kubestone
+
+steps:
+- id: start-pods
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl -n "$NAMESPACE" apply -f ./run_query/job.yml
+
+- id: copy-config
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
+    kubectl cp ./cephconfig/ceph.conf "$NAMESPACE"/"$pod":/etc/ceph/ceph.conf
+    kubectl cp ./cephconfig/keyring "$NAMESPACE"/"$pod":/etc/ceph/keyring
+
+- id: run-queries
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args: [./run_query/queries.sh]
+  env:
+    POOLTYPE: replicated
+    REPLICACY_COUNT: '1'
+    QUERY_EPOCHS: '3'
+    WTHREADS: '14'
+    QDEPTH: '56'
+    PG_COUNT: '128'
+
+- id: plot-results
+  uses: docker://jupyter/scipy-notebook:latest
+  runs: [python]
+  args: [./run_query/plot.py]
+
+- id: teardown-pods
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl -n "$NAMESPACE" delete -f ./run_query/job.yml
