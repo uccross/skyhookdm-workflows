@@ -41,8 +41,8 @@ if __name__ == "__main__":
 
   # plot for client side
   ax = sns.barplot(x="selectivity", y="duration", data=df_client_side)
-  ax.figure.savefig("lineitem_fbx_benchmarks_client_side.png", dpi=200)
+  ax.figure.savefig(os.path.join(results_dir, "lineitem_fbx_benchmarks_client_side.png"), dpi=200)
 
   # plot for storage side
   ax = sns.barplot(x="selectivity", y="duration", data=df_storage_side)
-  ax.figure.savefig("lineitem_fbx_benchmarks_storage_side.png", dpi=200)
+  ax.figure.savefig(os.path.join(results_dir, "lineitem_fbx_benchmarks_storage_side.png"), dpi=200)
