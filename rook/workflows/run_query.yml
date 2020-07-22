@@ -2,7 +2,6 @@ options:
     env:
         KUBECONFIG: ./kubeconfig/config
         NAMESPACE: kubestone
-        POOLTYPE: replicated
 
 steps:
 - id: start-pods
@@ -24,26 +23,17 @@ steps:
 - id: run-queries
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
-  args:
-  - |
-    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./run_query/queries.sh "$NAMESPACE"/"$pod":/tmp/queries.sh
-    kubectl -n "$NAMESPACE" set env pod "$pod" POOLTYPE="$POOLTYPE"
-    kubectl -n "$NAMESPACE" exec "$pod" -- /tmp/queries.sh
+  args: [./run_query/queries.sh]
   env:
     POOLTYPE: replicated
-
-- id: download-results
-  uses: docker://bitnami/kubectl:1.17.4
-  runs: [bash, -euc]
-  args:
-  - |
-    pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    mkdir -p ./run_query/results/
-    kubectl -n "$NAMESPACE" exec "$pod" -- cat result.json > ./run_query/results/result.json
+    REPLICACY_COUNT: '1'
+    QUERY_EPOCHS: '3'
+    WTHREADS: '14'
+    QDEPTH: '56'
+    PG_COUNT: '128'
 
 - id: plot-results
-  uses: docker://czentye/matplotlib-minimal:3.1.2
+  uses: docker://jupyter/scipy-notebook:latest
   runs: [python]
   args: [./run_query/plot.py]
 
