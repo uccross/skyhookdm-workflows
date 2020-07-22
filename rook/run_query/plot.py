@@ -11,30 +11,28 @@ sns.set(style="whitegrid")
 results_dir = './run_query/results'
 
 if __name__ == "__main__":
+  # load data
   with open(os.path.join(results_dir, 'result.json')) as f:
     data = json.loads(f.read())
-
 
   client_side = data["lineitem"]["fbx"]
   storage_side = data["lineitem"]["fbx_cls"]
 
-
   numpy_array_client_side = []
   numpy_array_storage_side = []
-
-
+  
+  # prepare the numpy array
   for key, value in client_side.items():
     points = value.split(",")
     for point in points:
       numpy_array_client_side.append([key, point])
 
-
   for key, value in storage_side.items():
     points = value.split(",")
     for point in points:
       numpy_array_storage_side.append([key, point])
-
-
+  
+  # convert to dataframes
   df_client_side = pd.DataFrame(np.array(numpy_array_client_side), columns=['selectivity', 'duration'])
   df_storage_side = pd.DataFrame(np.array(numpy_array_storage_side), columns=['selectivity', 'duration'])
 
