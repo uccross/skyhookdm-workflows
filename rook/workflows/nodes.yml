@@ -12,10 +12,10 @@ options:
     - NODE_HARDWARE
 
 steps:
-- id: setup nodes
+- id: setup
   uses: docker://popperized/geni:v0.9.9.2
   args: ['./geni/setup-nodes.py']
 
-- id: release nodes
+- id: teardown
   uses: docker://popperized/geni:v0.9.9.2
   args: ['./geni/release.py']
