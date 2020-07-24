@@ -26,7 +26,7 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete -f ./rook/toolbox.yaml
-    kubectl delete -f ./rook/cluster.yaml
-    kubectl delete -f ./rook/operator.yaml
-    kubectl delete -f ./rook/common.yaml
+    kubectl delete --ignore-not-found -f ./rook/toolbox.yaml
+    kubectl delete --ignore-not-found -f ./rook/cluster.yaml
+    kubectl delete --ignore-not-found -f ./rook/operator.yaml
+    kubectl delete --ignore-not-found -f ./rook/common.yaml

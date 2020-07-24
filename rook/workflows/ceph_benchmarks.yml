@@ -33,4 +33,4 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
+    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./ceph_benchmarks/deployment.yml

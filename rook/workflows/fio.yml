@@ -42,6 +42,6 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete -n kubestone -f ./kubestone_fio/job.yaml
-    kubectl delete -n kubestone -f ./kubestone_fio/pvc.yaml
-    kubectl delete -n kubestone -f ./kubestone_fio/pv.yaml
+    kubectl delete -n kubestone --ignore-not-found -f ./kubestone_fio/job.yaml
+    kubectl delete -n kubestone --ignore-not-found -f ./kubestone_fio/pvc.yaml
+    kubectl delete -n kubestone --ignore-not-found -f ./kubestone_fio/pv.yaml

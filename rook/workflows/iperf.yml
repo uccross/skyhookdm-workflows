@@ -25,4 +25,4 @@ steps:
 
 - id: teardown-pods
   uses: docker://bitnami/kubectl:1.17.4
-  args: [delete, -n, kubestone, -f, ./kubestone_iperf/iperf.yaml]
+  args: [delete, -n, kubestone, --ignore-not-found, -f, ./kubestone_iperf/iperf.yaml]
