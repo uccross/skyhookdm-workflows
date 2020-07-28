@@ -4,6 +4,10 @@
 *.pyc
 manifest.xml
 ansible.log
+
+# cloudlab
+cloudlab/ansible/hosts.yaml
+
 rook/kubeconfig/
 rook/cephconfig/
 rook/geni/hosts

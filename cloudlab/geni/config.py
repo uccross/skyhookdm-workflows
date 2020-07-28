@@ -20,22 +20,22 @@ with_lan = True
 # multi-node
 ############
 # grouping of nodes based on their ceph roles
-num_osds = 3
-groups = {
-   'mons': ['mon1'],
-   'mgrs': ['mon1'],
-   'osds': ['osd{}'.format(n) for n in range(1, num_osds+1)],
-}
+#num_osds = 3
+#groups = {
+#   'mons': ['mon1'],
+#   'mgrs': ['mon1'],
+#   'osds': ['osd{}'.format(n) for n in range(1, num_osds+1)],
+#}
 
 
 #############
 # single node
 #############
-#groups = {
-#    'mons': ['onlynode'],
-#    'osds': ['onlynode'],
-#    'mgrs': ['onlynode'],
-#}
+groups = {
+    'mons': ['onlynode'],
+    'osds': ['onlynode'],
+    'mgrs': ['onlynode'],
+}
 
 
 #############
