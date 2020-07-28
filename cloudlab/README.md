@@ -55,7 +55,8 @@ To execute this workflow:
 
     See [the GENI image README][gd] for more information about the 
     secrets related to the GENI steps; similarly [here][cad] for the 
-    Ansible step.
+    Ansible step. **NOTE:** the value of `GENI_PROJECT` is expected
+    to be all lower case.
 
  3. Tweak the following to your needs:
 
