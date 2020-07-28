@@ -35,8 +35,8 @@ To execute this workflow:
     your project:
 
     ```bash
-    git clone https://github.com/popperized/ceph-workflows
-    cd ceph-workflows/deploy/cloudlab
+    git clone https://github.com/uccross/skyhookdm-workflows
+    cd skyhookdm-workflows/cloudlab
     ```
 
  2. Define the secrets expected by the workflow, declared in the 
@@ -87,6 +87,6 @@ For more information on Popper, visit
 
 [cloudlab]: https://cloudlab.us
 [ca]: https://github.com/ceph/ceph-ansible
-[gd]: https://github.com/popperized/library/tree/master/geni
-[cad]: https://github.com/popperized/library/tree/master/ansible
+[gd]: https://github.com/getpopper/library/tree/master/geni
+[cad]: https://github.com/getpopper/library/tree/master/ansible
 [ca-docs]: http://docs.ceph.com/ceph-ansible/master/
