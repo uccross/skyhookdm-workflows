@@ -3,14 +3,24 @@ options:
     KUBECONFIG: ./kubeconfig/config
 
 steps:
-- id: setup
+- id: setup-skyhook-ceph
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
     kubectl apply -f ./rook/common.yaml
     kubectl apply -f ./rook/operator.yaml
-    kubectl apply -f ./rook/cluster.yaml
+    kubectl apply -f ./rook/cluster_skyhook_ceph.yaml
+    kubectl apply -f ./rook/toolbox.yaml
+
+- id: setup-ceph
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl apply -f ./rook/common.yaml
+    kubectl apply -f ./rook/operator.yaml
+    kubectl apply -f ./rook/cluster_ceph.yaml
     kubectl apply -f ./rook/toolbox.yaml
 
 - id: download-config
