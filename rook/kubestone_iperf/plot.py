@@ -21,7 +21,7 @@ for file in files:
     plt.plot(seconds, bandwidth, markersize=10, linewidth=3.0, label=file[:-5])
 
 plt.xlabel('time (in seconds)')
-plt.ylabel('bandwidth (mb/s)')
-plt.title('IPERF3 Benchmarks  (client side)')
+plt.ylabel('bandwidth (Mbps)')
+plt.title('IPERF3 Benchmarks')
 plt.legend()
 plt.savefig(os.path.join(results_dir, './iperf-benchmarks.png'), dpi=300, bbox_inches='tight')

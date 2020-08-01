@@ -39,7 +39,7 @@ iperf_definition = {
       "hostNetwork": False,
     },
     "clientConfiguration": {
-      "cmdLineArgs": "--json",
+      "cmdLineArgs": "--json --time 60",
       "podLabels": {
         "iperf-mode": "client"
       },
