@@ -31,12 +31,23 @@ steps:
     kubectl exec -n rook-ceph $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- cat /etc/ceph/keyring > ./cephconfig/keyring
     kubectl exec -n rook-ceph $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- cat /etc/ceph/ceph.conf > ./cephconfig/ceph.conf
 
-- id: teardown
+- id: teardown-ceph
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
     kubectl delete --ignore-not-found -f ./rook/toolbox.yaml
-    kubectl delete --ignore-not-found -f ./rook/cluster.yaml
+    kubectl delete --ignore-not-found -f ./rook/cluster_ceph.yaml
+    kubectl delete --ignore-not-found -f ./rook/operator.yaml
+    kubectl delete --ignore-not-found -f ./rook/common.yaml
+
+
+- id: teardown-skyhook-ceph
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete --ignore-not-found -f ./rook/toolbox.yaml
+    kubectl delete --ignore-not-found -f ./rook/cluster_skyhook_ceph.yaml
     kubectl delete --ignore-not-found -f ./rook/operator.yaml
     kubectl delete --ignore-not-found -f ./rook/common.yaml

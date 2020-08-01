@@ -5,7 +5,7 @@ options:
     BLOCKSIZE: 4m
     PV_SIZE: 4Gi
     SIZE: 4G
-    IO_DEPTH: '1 8 16'
+    IO_DEPTH: '1 8 16 32'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
     HOSTNAME: $_HOSTNAME
@@ -16,7 +16,7 @@ steps:
   runs: [python]
   args: [./kubestone_fio/bootstrap.py]
 
-- id: start-pods
+- id: start
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
@@ -25,7 +25,7 @@ steps:
     kubectl apply -n kubestone -f ./kubestone_fio/pvc.yaml
     kubectl apply -n kubestone -f ./kubestone_fio/job.yaml
 
-- id: run-tests
+- id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
   runs: [./kubestone_fio/run_tests.sh]
 
@@ -37,7 +37,7 @@ steps:
   uses: docker://getpopper/fio-plot:3.12-2
   runs: [./kubestone_fio/plot.sh]
 
-- id: teardown-pods
+- id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
