@@ -22,9 +22,9 @@ spec:
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
     # If you want to be more precise, you can always use a timestamp tag such ceph/ceph:v14.2.5-20190917
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-    image: ceph/ceph:v14.2.9
-    # Whether to allow unsupported versions of Ceph. Currently mimic and nautilus are supported, with the recommendation to upgrade to nautilus.
-    # Octopus is the version allowed when this is set to true.
+    image: ceph/ceph:v14.2.10
+    # Whether to allow unsupported versions of Ceph. Currently `nautilus` and `octopus` are supported.
+    # Future versions such as `pacific` would require this to be set to `true`.
     # Do not set to true in production.
     allowUnsupported: false
   # The path on the host where configuration files will be persisted. Must be specified.
@@ -41,7 +41,7 @@ spec:
   # set the amount of mons to be started
   mon:
     count: 3
-    allowMultiplePerNode: true
+    allowMultiplePerNode: false
   mgr:
     modules:
     # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
@@ -82,6 +82,10 @@ spec:
       #
       #public: public-conf --> NetworkAttachmentDefinition object name in Multus
       #cluster: cluster-conf --> NetworkAttachmentDefinition object name in Multus
+  rbdMirroring:
+    # The number of daemons that will perform the rbd mirroring.
+    # rbd mirroring must be configured with "rbd mirror" from the rook toolbox.
+    workers: 0
   # enable the crash collector for ceph daemon crash collection
   crashCollector:
     disable: false
@@ -91,7 +95,7 @@ spec:
     # to be destroyed in order to prevent these settings from being deployed unintentionally.
     # To signify that automatic deletion is desired, use the value "yes-really-destroy-data". Only this and an empty
     # string are valid values for this field.
-    confirmation: ""
+    confirmation: "yes-really-destroy-data"
 
   # To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
   # The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage-node' and
@@ -144,7 +148,7 @@ spec:
 #    crashcollector:
 #    cleanup:
   # The option to automatically remove OSDs that are out and are safe to destroy.
-  removeOSDsIfOutAndSafeToRemove: true
+  removeOSDsIfOutAndSafeToRemove: false
 #  priorityClassNames:
 #    all: rook-ceph-default-priority-class
 #    mon: rook-ceph-mon-priority-class
@@ -162,15 +166,18 @@ spec:
       # encryptedDevice: "true" # the default value for this option is "false"
 # Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
 # nodes below will be used as storage resources.  Each node's 'name' field should match their 'kubernetes.io/hostname' label.
-    nodes:
-    - name: "node1.rook-ceph-5.schedock-pg0.clemson.cloudlab.us"
-      deviceFilter: "sdb"
-    - name: "node2.rook-ceph-5.schedock-pg0.clemson.cloudlab.us"
-      deviceFilter: "sdb"
-    - name: "node3.rook-ceph-5.schedock-pg0.clemson.cloudlab.us"
-      deviceFilter: "sdb"
-    - name: "node4.rook-ceph-5.schedock-pg0.clemson.cloudlab.us"
-      deviceFilter: "sdb"
+#    nodes:
+#    - name: "172.17.4.201"
+#      devices: # specific devices to use for storage can be specified for each node
+#      - name: "sdb"
+#      - name: "nvme01" # multiple osds can be created on high performance devices
+#        config:
+#          osdsPerDevice: "5"
+#      - name: "/dev/disk/by-id/ata-ST4000DM004-XXXX" # devices can be specified using full udev paths
+#      config: # configuration can be specified at the node level which overrides the cluster level config
+#        storeType: filestore
+#    - name: "172.17.4.301"
+#      deviceFilter: "^sd."
   # The section for configuring management of daemon disruptions during upgrade or fencing.
   disruptionManagement:
     # If true, the operator will create and manage PodDisruptionBudgets for OSD, Mon, RGW, and MDS daemons. OSD PDBs are managed dynamically
