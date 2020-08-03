@@ -1,11 +1,17 @@
 options:
   env:
-    KUBECONFIG: ./kubeconfig/config
+    KUBECONFIG: ./kubeconfig/one
     NAMESPACE: kubestone
-    IO_DEPTH: '1 8 16'
+    DURATION: '60'
+    THREADS: '1'
+    OBJECT_SIZE: '4M'
+    PG_SIZE: '128'
+    POOL_NAME: 'testbench'
+    POOL_TYPE: 'replicated'
+    REPLICATION_DISABLED: '1'
 
 steps:
-- id: start-pods
+- id: start
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
@@ -28,7 +34,7 @@ steps:
     python ./ceph_benchmarks/plot_osd_benchmarks.py
     python ./ceph_benchmarks/plot_rados_benchmarks.py
 
-- id: teardown-pods
+- id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:

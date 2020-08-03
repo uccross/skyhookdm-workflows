@@ -1,44 +1,56 @@
 #!/bin/bash
 set -eu
 
-# make results dir
 mkdir -p ./ceph_benchmarks/results
+pod=$(kubectl get pod -n ${NAMESPACE} -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
 
-# findout the pod
-pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
+function k8s_exec {
+  kubectl -n ${NAMESPACE} exec ${pod} -- "$@"
+}
 
-# rados benchmarks
-# remove existing pool, if any
-kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd pool rm testbench testbench --yes-i-really-really-mean-it
+function info {
+  echo "[info] - $(date) - $@"
+}
 
-# create a pool with 100 PGs
-kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd pool create testbench 128 128
+info "removing existing pools, if any"
+k8s_exec ceph osd pool rm ${POOL_NAME} ${POOL_NAME} --yes-i-really-really-mean-it
 
-for io_depth in ${IO_DEPTH[@]};
+info "creating new pool"
+k8s_exec ceph osd pool create ${POOL_NAME} ${PG_SIZE} ${PG_SIZE} ${POOL_TYPE}
+
+if [[ ! -z "${REPLICATION_DISABLED}" ]]; then
+info "disabling replication in the pool"
+k8s_exec ceph osd pool set ${POOL_NAME} size 1
+fi
+
+for t in ${THREADS[@]};
 do
-kubectl -n "$NAMESPACE" exec "$pod" -- rados bench --no-hints --concurrent-ios $io_depth -p testbench 120 write --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/write-$io_depth.json
-kubectl -n "$NAMESPACE" exec "$pod" -- rados bench --no-hints --concurrent-ios $io_depth -p testbench 120 seq   --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/seq-$io_depth.json
-kubectl -n "$NAMESPACE" exec "$pod" -- rados bench --no-hints --concurrent-ios $io_depth -p testbench 120 rand  --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/rand-$io_depth.json
+info "running write bench"
+k8s_exec rados bench --no-hints -b ${OBJECT_SIZE} -t ${t} -p ${POOL_NAME} ${DURATION} write --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/write-${t}.json
+
+info "running seq bench"
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} seq   --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/seq-${t}.json
+
+info "running rand bench"
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} rand  --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/rand-${t}.json
 done
 
-# clean up and delete the pool
-kubectl -n "$NAMESPACE" exec "$pod" -- rados -p testbench cleanup
-kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd pool rm testbench testbench --yes-i-really-really-mean-it
+info "cleaning up and removing pool"
+k8s_exec rados -p ${POOL_NAME} cleanup
+k8s_exec ceph osd pool rm ${POOL_NAME} ${POOL_NAME} --yes-i-really-really-mean-it
 
-# clean the rados benchmark output files
-for io_depth in ${IO_DEPTH[@]};
+info "writing out results"
+
+for t in ${THREADS[@]};
 do
-sed -i '1d' ./ceph_benchmarks/results/write-$io_depth.json
-sed -i '1d' ./ceph_benchmarks/results/seq-$io_depth.json
-sed -i '1d' ./ceph_benchmarks/results/rand-$io_depth.json
+sed -i '1d' ./ceph_benchmarks/results/write-${t}.json
+sed -i '1d' ./ceph_benchmarks/results/seq-${t}.json
+sed -i '1d' ./ceph_benchmarks/results/rand-${t}.json
 done
 
-# osd benchmarks
-# count the osds
-osd_count=$(kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd ls | wc -l)
+osd_count=$(kubectl -n ${NAMESPACE} exec ${pod} -- ceph osd ls | wc -l)
 
-# run the tell benchmarks
 for (( i=0; i<$osd_count; i++ ))
 do
-   kubectl -n "$NAMESPACE" exec "$pod" -- ceph tell osd.$i bench > ./ceph_benchmarks/results/osd.$i.json
+   k8s_exec ceph tell osd.$i bench > ./ceph_benchmarks/results/osd.$i.json
 done
