@@ -2,14 +2,14 @@ options:
   env:
     KUBECONFIG: ./kubeconfig/one
     NAMESPACE: kubestone
-    DURATION: '60'
-    THREADS: '1'
+    DURATION: '600'
+    THREADS: '56'
     OBJECT_SIZE: '4M'
     PG_SIZE: '128'
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
     REPLICATION_DISABLED: '1'
-    CLIENT_NODE: node0
+    CLIENT_NODE: node1.single-osd.schedock-pg0.clemson.cloudlab.us
 
 steps:
 - id: bootstrap-config
@@ -22,7 +22,7 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl apply -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yml
+    kubectl apply -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yaml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
@@ -45,4 +45,4 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./ceph_benchmarks/deployment.yml
+    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./ceph_benchmarks/deployment.yaml
