@@ -9,8 +9,14 @@ options:
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
     REPLICATION_DISABLED: '1'
+    CLIENT_NODE: node0
 
 steps:
+- id: bootstrap-config
+  uses: docker://biowdl/pyyaml:3.13-py37-slim
+  runs: [python]
+  args: [./ceph_benchmarks/bootstrap.py]
+
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
