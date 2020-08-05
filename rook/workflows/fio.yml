@@ -4,7 +4,6 @@ options:
     BLOCKDEVICES: $_BLOCKDEVICES
     BLOCKSIZE: 4m
     PV_SIZE: 4Gi
-    SIZE: 4G
     IO_DEPTH: '1 8 16 32'
     IO_ENGINE: libaio
     NUM_JOBS: '1'
@@ -27,7 +26,7 @@ steps:
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone_fio/run_tests.sh]
+  runs: [./kubestone_fio/run_benchmarks.sh]
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
