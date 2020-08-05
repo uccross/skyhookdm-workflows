@@ -41,7 +41,7 @@ $ popper run -f workflows/setup_prometheus.yml teardown
 
 ## Rados and OSD benchmarks
 ```bash
-$ popper run -f workflows/ceph_benchmarks.yml 
+$ popper run -f workflows/radosbench.yml 
 ```
 
 The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. Example rados benchmark plots are shown below.

@@ -18,8 +18,8 @@ skyhook_overhead/data
 skyhook_overhead/results
 
 # ceph benchmarks
-rook/ceph_benchmarks/results*
-rook/ceph_benchmarks/*.yaml
+rook/radosbench/results*
+rook/radosbench/*.yaml
 
 # iperf
 rook/kubestone_iperf/results*

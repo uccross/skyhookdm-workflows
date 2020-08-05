@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-mkdir -p ./ceph_benchmarks/results
+mkdir -p ./radosbench/results
 pod=$(kubectl get pod -n ${NAMESPACE} -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
 
 function k8s_exec {
@@ -26,13 +26,13 @@ fi
 for t in ${THREADS[@]};
 do
 info "running write bench with $t thread"
-k8s_exec rados bench --no-hints -b ${OBJECT_SIZE} -t ${t} -p ${POOL_NAME} ${DURATION} write --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/write-${t}.json
+k8s_exec rados bench --no-hints -b ${OBJECT_SIZE} -t ${t} -p ${POOL_NAME} ${DURATION} write --no-cleanup --format=json-pretty > ./radosbench/results/write-${t}.json
 
 info "running seq bench with $t thread"
-k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} seq   --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/seq-${t}.json
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} seq   --no-cleanup --format=json-pretty > ./radosbench/results/seq-${t}.json
 
 info "running rand bench with $t thread"
-k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} rand  --no-cleanup --format=json-pretty > ./ceph_benchmarks/results/rand-${t}.json
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} rand  --no-cleanup --format=json-pretty > ./radosbench/results/rand-${t}.json
 done
 
 info "cleaning up and removing pool"
@@ -42,9 +42,9 @@ k8s_exec ceph osd pool rm ${POOL_NAME} ${POOL_NAME} --yes-i-really-really-mean-i
 info "writing out results"
 for t in ${THREADS[@]};
 do
-sed -i '1d' ./ceph_benchmarks/results/write-${t}.json
-sed -i '1d' ./ceph_benchmarks/results/seq-${t}.json
-sed -i '1d' ./ceph_benchmarks/results/rand-${t}.json
+sed -i '1d' ./radosbench/results/write-${t}.json
+sed -i '1d' ./radosbench/results/seq-${t}.json
+sed -i '1d' ./radosbench/results/rand-${t}.json
 done
 
 info "counting OSDs"
@@ -53,5 +53,5 @@ osd_count=$(kubectl -n ${NAMESPACE} exec ${pod} -- ceph osd ls | wc -l)
 for (( i=0; i<$osd_count; i++ ))
 do
 info "ceph tell osd.$i bench"
-k8s_exec ceph tell osd.$i bench > ./ceph_benchmarks/results/osd.$i.json
+k8s_exec ceph tell osd.$i bench > ./radosbench/results/osd.$i.json
 done

@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-results_dir = './ceph_benchmarks/results'
+results_dir = './radosbench/results'
 
 
 def plot(filenames, line_colors, thread, param):

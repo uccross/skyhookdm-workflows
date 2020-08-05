@@ -4,7 +4,7 @@ import json
 import matplotlib.pyplot as plt
 
 
-results_dir = './ceph_benchmarks/results'
+results_dir = './radosbench/results'
 
 
 def read_output_file(filename):

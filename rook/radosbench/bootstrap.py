@@ -28,5 +28,5 @@ if __name__ == "__main__":
         config["spec"]["nodeSelector"] = {
             "kubernetes.io/hostname": os.environ["CLIENT_NODE"]
         }
-    with open(os.path.join('./ceph_benchmarks/deployment.yaml'), 'w') as f:
+    with open(os.path.join('./radosbench/deployment.yaml'), 'w') as f:
         f.write(yaml.dump(config))

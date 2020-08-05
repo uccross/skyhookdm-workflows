@@ -15,34 +15,34 @@ steps:
 - id: bootstrap-config
   uses: docker://biowdl/pyyaml:3.13-py37-slim
   runs: [python]
-  args: [./ceph_benchmarks/bootstrap.py]
+  args: [./radosbench/bootstrap.py]
 
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    kubectl apply -n "$NAMESPACE" -f ./ceph_benchmarks/deployment.yaml
+    kubectl apply -n "$NAMESPACE" -f ./radosbench/deployment.yaml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./ceph_benchmarks/copy_config.sh]
+  runs: [./radosbench/copy_config.sh]
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./ceph_benchmarks/run_benchmarks.sh]
+  runs: [./radosbench/run_benchmarks.sh]
 
 - id: plot-results
   uses: docker://czentye/matplotlib-minimal:3.1.2
   runs: [sh, -euc]
   args:
   - |
-    python ./ceph_benchmarks/plot_osd_benchmarks.py
-    python ./ceph_benchmarks/plot_rados_benchmarks.py
+    python ./radosbench/plot_osd_benchmarks.py
+    python ./radosbench/plot_rados_benchmarks.py
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./ceph_benchmarks/deployment.yaml
+    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./radosbench/deployment.yaml
