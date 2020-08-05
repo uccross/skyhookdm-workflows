@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
         for run in results["intervals"]:
             seconds.append(float(run["sum"]["end"]))
-            bandwidth.append(float(run["sum"]["bits_per_second"])/(1000*1000*100))
+            bandwidth.append(float(run["sum"]["bits_per_second"])/(1000*1000*1000))
 
         plt.plot(seconds, bandwidth, markersize=10, linewidth=3.0, label=f" { minify(os.environ['SERVER']) } and { minify(file[:-5]) }")
 
