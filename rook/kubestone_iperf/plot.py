@@ -16,12 +16,12 @@ for file in files:
 
     for run in results["intervals"]:
         seconds.append(float(run["sum"]["end"]))
-        bandwidth.append(float(run["sum"]["bits_per_second"])/(1000*1000))
+        bandwidth.append(float(run["sum"]["bits_per_second"])/(1000*1000*100))
 
     plt.plot(seconds, bandwidth, markersize=10, linewidth=3.0, label=file[:-5])
 
 plt.xlabel('time (in seconds)')
-plt.ylabel('bandwidth (Mbps)')
+plt.ylabel('bandwidth (Gb/s)')
 plt.title('IPERF3 Benchmarks')
 plt.legend()
 plt.savefig(os.path.join(results_dir, './iperf-benchmarks.png'), dpi=300, bbox_inches='tight')
