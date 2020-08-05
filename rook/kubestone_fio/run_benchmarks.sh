@@ -24,7 +24,7 @@ done
 
 info "dropping caches"
 kubectl exec -n kubestone ${pod} -- sh -c "echo 3 | tee /proc/sys/vm/drop_caches"
-bench_fio_cmd="bench_fio --target ${targets} --template /fio-plot/benchmark_script/fio-job-template.fio --type device --mode read write randread randwrite --output FIO_OUTPUT -e ${IO_ENGINE} -b ${BLOCKSIZE} --iodepth ${IO_DEPTH} --numjobs ${NUM_JOBS}"
+bench_fio_cmd="bench_fio --target ${targets} --template /fio-plot/benchmark_script/fio-job-template.fio --type device --mode ${MODES} --output FIO_OUTPUT -e ${IO_ENGINE} -b ${BLOCKSIZE} --iodepth ${IO_DEPTH} --numjobs ${NUM_JOBS}"
 
 info "running benchmark"
 kubectl exec -n kubestone ${pod}  -- ${bench_fio_cmd}
