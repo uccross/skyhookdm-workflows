@@ -18,7 +18,7 @@ k8s_exec ceph osd pool rm ${POOL_NAME} ${POOL_NAME} --yes-i-really-really-mean-i
 info "creating new pool"
 k8s_exec ceph osd pool create ${POOL_NAME} ${PG_SIZE} ${PG_SIZE} ${POOL_TYPE}
 
-if [[ ! -z "${REPLICATION_DISABLED}" ]]; then
+if [[ "${REPLICATION_DISABLED}" -eq "1" ]]; then
 info "disabling replication in the pool"
 k8s_exec ceph osd pool set ${POOL_NAME} size 1
 fi

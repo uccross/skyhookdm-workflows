@@ -1,15 +1,15 @@
 options:
   env:
-    KUBECONFIG: ./kubeconfig/one
+    KUBECONFIG: ./kubeconfig/config
     NAMESPACE: kubestone
-    DURATION: '600'
-    THREADS: '56'
+    DURATION: '120'
+    THREADS: '16'
     OBJECT_SIZE: '4M'
     PG_SIZE: '128'
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
     REPLICATION_DISABLED: '1'
-    CLIENT_NODE: node1.single-osd.schedock-pg0.clemson.cloudlab.us
+    CLIENT_NODE: $_CLIENT_NODE
 
 steps:
 - id: bootstrap-config
