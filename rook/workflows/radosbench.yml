@@ -9,7 +9,7 @@ options:
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
     REPLICATION_DISABLED: '1'
-    CLIENT_NODE: $_CLIENT_NODE
+    CLIENT: $_CLIENT
 
 steps:
 - id: bootstrap-config

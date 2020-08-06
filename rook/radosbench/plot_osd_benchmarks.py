@@ -38,7 +38,7 @@ if __name__ == "__main__":
         iops_list.append(iops)
 
     plt.xlabel('osd')
-    plt.ylabel('throughput (mb/s)')
+    plt.ylabel('throughput (MB/s)')
     plt.title('osd throughput bechmarks')
     plt.bar(osds, througputs, color="green")
     plt.savefig(os.path.join(results_dir, 'osd_throughput_benchmarks.png'), dpi=300, bbox_inches='tight')
