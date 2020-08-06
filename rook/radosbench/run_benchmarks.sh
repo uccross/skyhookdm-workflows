@@ -26,13 +26,13 @@ fi
 for t in ${THREADS[@]};
 do
 info "running write bench with $t thread"
-k8s_exec rados bench --no-hints -b ${OBJECT_SIZE} -t ${t} -p ${POOL_NAME} ${DURATION} write --no-cleanup --format=json-pretty > ./radosbench/results/write-${t}.json
+k8s_exec rados bench --no-hints -b ${OBJECT_SIZE} -t ${t} -p ${POOL_NAME} ${WRITE_DURATION} write --no-cleanup --format=json-pretty > ./radosbench/results/write-${t}.json
 
 info "running seq bench with $t thread"
-k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} seq   --no-cleanup --format=json-pretty > ./radosbench/results/seq-${t}.json
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${READ_DURATION} seq   --no-cleanup --format=json-pretty > ./radosbench/results/seq-${t}.json
 
 info "running rand bench with $t thread"
-k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${DURATION} rand  --no-cleanup --format=json-pretty > ./radosbench/results/rand-${t}.json
+k8s_exec rados bench --no-hints                   -t ${t} -p ${POOL_NAME} ${READ_DURATION} rand  --no-cleanup --format=json-pretty > ./radosbench/results/rand-${t}.json
 done
 
 info "cleaning up and removing pool"
