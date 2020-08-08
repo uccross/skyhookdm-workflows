@@ -1,0 +1,49 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+    NAMESPACE: kubestone
+    WRITE_DURATION: '120'
+    READ_DURATION: '120'
+    THREADS: '1 8 16'
+    OBJECT_SIZE: '4M'
+    PG_SIZE: '128'
+    POOL_NAME: 'testbench'
+    POOL_TYPE: 'replicated'
+    REPLICATION_DISABLED: '1'
+    CLIENT: $_CLIENT
+
+steps:
+- id: bootstrap-config
+  uses: docker://biowdl/pyyaml:3.13-py37-slim
+  runs: [python]
+  args: [./radosbench/bootstrap.py]
+
+- id: start
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl apply -n "$NAMESPACE" -f ./radosbench/deployment.yaml
+
+- id: copy-config
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [./radosbench/copy_config.sh]
+
+- id: run-benchmarks
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [./radosbench/run_benchmarks.sh]
+
+- id: plot-results
+  uses: docker://czentye/matplotlib-minimal:3.1.2
+  runs: [sh, -euc]
+  args:
+  - |
+    python ./radosbench/plot_osd_benchmarks.py
+    python ./radosbench/plot_rados_benchmarks.py
+
+- id: teardown
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete -n "$NAMESPACE" --ignore-not-found -f ./radosbench/deployment.yaml

@@ -5,10 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-results_dir = './ceph_benchmarks/results'
+results_dir = './radosbench/results'
 
 
-def plot(filenames, line_colors, io_depth, param):
+def plot(filenames, line_colors, thread, param, param_title):
     results = {
         'write_data': None,
         'seq_data': None,
@@ -28,16 +28,16 @@ def plot(filenames, line_colors, io_depth, param):
         plt.plot(x, y, markersize=10, linewidth=3.0, color=line_color)
 
     plt.legend(['write', 'sequential', 'random'])
-    plt.xlabel('seconds')
-    plt.ylabel(f"{param}")
-    plt.title(f"rados - {param} - iodepth {io_depth}")
-    plt.savefig(os.path.join(results_dir, f"rados_{param}_bench_iodepth_{io_depth}.png"), dpi=300, bbox_inches='tight')
+    plt.xlabel('Seconds')
+    plt.ylabel(f"{param_title}")
+    plt.title(f"rados - {param} - thread {thread}")
+    plt.savefig(os.path.join(results_dir, f"rados_{param}_bench_thread_{thread}.png"), dpi=300, bbox_inches='tight')
     plt.cla()
     plt.clf()
 
 
 if __name__ == "__main__":
-    io_depths = os.environ.get("IO_DEPTH").split(" ")
-    for io_depth in io_depths:
-        plot([f"write-{io_depth}.json", f"seq-{io_depth}.json", f"rand-{io_depth}.json"], ['red', 'blue', 'green'], io_depth, "avg_bw")
-        plot([f"write-{io_depth}.json", f"seq-{io_depth}.json", f"rand-{io_depth}.json"], ['red', 'blue', 'green'], io_depth, "avg_lat")
+    threads = os.environ.get("THREADS").split(" ")
+    for thread in threads:
+        plot([f"write-{thread}.json", f"seq-{thread}.json", f"rand-{thread}.json"], ['red', 'blue', 'green'], thread, 'avg_bw', "Bandwidth (MB/s)")
+        plot([f"write-{thread}.json", f"seq-{thread}.json", f"rand-{thread}.json"], ['red', 'blue', 'green'], thread, 'avg_lat', "Latency (s)")

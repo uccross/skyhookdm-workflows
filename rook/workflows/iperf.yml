@@ -10,7 +10,7 @@ steps:
   runs: [python]
   args: [./kubestone_iperf/bootstrap.py]
 
-- id: start-pods
+- id: start
   uses: docker://bitnami/kubectl:1.17.4
   args: [apply, -n, kubestone, -f, ./kubestone_iperf/iperf.yaml]
 
@@ -23,6 +23,6 @@ steps:
   runs: [python]
   args: [./kubestone_iperf/plot.py]
 
-- id: teardown-pods
+- id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   args: [delete, -n, kubestone, --ignore-not-found, -f, ./kubestone_iperf/iperf.yaml]
