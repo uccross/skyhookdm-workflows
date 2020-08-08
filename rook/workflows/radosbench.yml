@@ -2,8 +2,9 @@ options:
   env:
     KUBECONFIG: ./kubeconfig/config
     NAMESPACE: kubestone
-    DURATION: '120'
-    THREADS: '16'
+    WRITE_DURATION: '120'
+    READ_DURATION: '120'
+    THREADS: '1 8 16'
     OBJECT_SIZE: '4M'
     PG_SIZE: '128'
     POOL_NAME: 'testbench'

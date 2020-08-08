@@ -24,9 +24,9 @@ config = {
 }
 
 if __name__ == "__main__":
-    if os.environ.get('CLIENT_NODE', None):
+    if os.environ.get('CLIENT', None):
         config["spec"]["nodeSelector"] = {
-            "kubernetes.io/hostname": os.environ["CLIENT_NODE"]
+            "kubernetes.io/hostname": os.environ["CLIENT"]
         }
     with open(os.path.join('./radosbench/deployment.yaml'), 'w') as f:
         f.write(yaml.dump(config))
