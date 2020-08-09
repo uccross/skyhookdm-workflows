@@ -9,6 +9,31 @@
 #   kubectl create -f cluster.yaml
 #################################################################################################################
 
+apiVersion: v1
+kind: ConfigMap
+data:
+  config: |
+    [global]
+    debug ms = 1
+    [osd]
+    osd max write size = 250
+    osd max object size = 256000000
+    osd class load list = *
+    osd class default list = *
+    osd pool default size = 1
+    osd pool default min size = 1
+    osd crush chooseleaf type = 1
+    osd pool default pg num = 128
+    osd pool default pgp num = 128
+    bluestore block create = true
+    debug osd = 25
+    debug bluestore = 30
+    debug journal = 20
+
+metadata:
+  name: rook-config-override
+  namespace: rook-ceph
+---
 apiVersion: ceph.rook.io/v1
 kind: CephCluster
 metadata:
@@ -20,7 +45,7 @@ spec:
     # v13 is mimic, v14 is nautilus, and v15 is octopus.
     # RECOMMENDATION: In production, use a specific version tag instead of the general v14 flag, which pulls the latest release and could result in different
     # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-    # If you want to be more precise, you can always use a timestamp tag such ceph/ceph:v14.2.5-20190917
+    # If you want to be more precise, you can always use a timestamp tag such ceph/ceph:v15.2.4-20200630
     # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
     image: uccross/skyhookdm-ceph:v14.2.9
     # Whether to allow unsupported versions of Ceph. Currently `nautilus` and `octopus` are supported.
@@ -82,10 +107,6 @@ spec:
       #
       #public: public-conf --> NetworkAttachmentDefinition object name in Multus
       #cluster: cluster-conf --> NetworkAttachmentDefinition object name in Multus
-  rbdMirroring:
-    # The number of daemons that will perform the rbd mirroring.
-    # rbd mirroring must be configured with "rbd mirror" from the rook toolbox.
-    workers: 0
   # enable the crash collector for ceph daemon crash collection
   crashCollector:
     disable: false
@@ -95,8 +116,20 @@ spec:
     # to be destroyed in order to prevent these settings from being deployed unintentionally.
     # To signify that automatic deletion is desired, use the value "yes-really-destroy-data". Only this and an empty
     # string are valid values for this field.
-    confirmation: "yes-really-destroy-data"
-
+    confirmation: ""
+    # sanitizeDisks represents settings for sanitizing OSD disks on cluster deletion
+    sanitizeDisks:
+      # method indicates if the entire disk should be sanitized or simply ceph's metadata
+      # in both case, re-install is possible
+      # possible choices are 'complete' or 'quick' (default)
+      method: quick
+      # dataSource indicate where to get random bytes from to write on the disk
+      # possible choices are 'zero' (default) or 'random'
+      # using random sources will consume entropy from the system and will take much more time then the zero source
+      dataSource: zero
+      # iteration overwrite N times instead of the default (1)
+      # takes an integer value
+      iteration: 1
   # To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
   # The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage-node' and
   # tolerate taints with a key of 'storage-node'.
@@ -155,8 +188,8 @@ spec:
 #    osd: rook-ceph-osd-priority-class
 #    mgr: rook-ceph-mgr-priority-class
   storage: # cluster level storage configuration and selection
-    useAllNodes: false
-    useAllDevices: false
+    useAllNodes: true
+    useAllDevices: true
     #deviceFilter:
     config:
       # metadataDevice: "md0" # specify a non-rotational storage so ceph-volume will use it as block db device of bluestore.
@@ -192,28 +225,25 @@ spec:
     manageMachineDisruptionBudgets: false
     # Namespace in which to watch for the MachineDisruptionBudgets.
     machineDisruptionBudgetNamespace: openshift-machine-api
----
-apiVersion: v1
-kind: ConfigMap
-data:
-  config: |
-    [global]
-    debug ms = 1
-    [osd]
-    osd max write size = 250
-    osd max object size = 256000000
-    osd class load list = *
-    osd class default list = *
-    osd pool default size = 1
-    osd pool default min size = 1
-    osd crush chooseleaf type = 1
-    osd pool default pg num = 128
-    osd pool default pgp num = 128
-    bluestore block create = true
-    debug osd = 25
-    debug bluestore = 30
-    debug journal = 20
 
-metadata:
-  name: rook-config-override
-  namespace: rook-ceph
+  # healthChecks
+  # Valid values for daemons are 'mon', 'osd', 'status'
+  healthCheck:
+    daemonHealth:
+      mon:
+        disabled: false
+        interval: 45s
+      osd:
+        disabled: false
+        interval: 60s
+      status:
+        disabled: false
+        interval: 60s
+    # Change pod liveness probe, it works for all mon,mgr,osd daemons
+    livenessProbe:
+      mon:
+        disabled: false
+      mgr:
+        disabled: false
+      osd:
+        disabled: false
