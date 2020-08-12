@@ -1,10 +1,11 @@
-## Setting up a Kubernetes cluster on an internal network
+# Setting up a Kubernetes cluster on an internal network
 
-This guide walks you through the process of setting up a Kubernetes cluster on an internal high-speed network.
+This guide walks you through the process of setting up a Kubernetes cluster on an internal high-speed network
+or on a network interface different from the default.
 
-### Master Node
+## Master Node
 
-1. Install `kubeadm` and `kubectl`.
+1. Install `kubeadm`, `kubelet`, `kubectl` on the master.
 ```bash
 # install prerequisites
 sudo apt-get update
@@ -24,7 +25,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo swapoff -a
 ```
 
-2. Configure and restart kubelet to listen on the internal network IP, like `10.10.1.1` in this case. Run the commands as `sudo`.
+2. Configure and restart `kubelet` to listen on the internal network IP, like `10.10.1.1` in this case. Run the commands as `sudo`.
 ```bash
 # change the node-ip and restart kubelet
 echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=10.10.1.1\"" >> /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
@@ -68,5 +69,39 @@ kustomize build | kubectl create -f -
 kubectl create ns kubestone
 ```
 
-### Worker nodes
+6. If you want kubernetes to schedule pods on the master also, do 
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/master-
+```
 
+## Worker nodes
+
+1. Install `kubeadm`, `kubelet`, `kubectl` on the worker.
+```bash
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+
+curl -o- https://get.docker.com | bash
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+
+sudo apt-mark hold kubelet kubeadm kubectl
+sudo swapoff -a
+```
+
+2. Configure and restart `kubelet` to listen on the internal network IP, like `10.10.1.2` in this case. Run the commands as `sudo`.
+```bash
+# change the node-ip and restart kubelet
+echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=10.10.1.2\"" >> /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+systemctl daemon-reload
+systemctl restart kubelet
+```
+
+3. Run the `kubeadm join` command generated in the `join.txt` file in the master node as `sudo` to add the node to the cluster.
+
+
+Following the above steps should setup the cluster to use the specified network for communication.
