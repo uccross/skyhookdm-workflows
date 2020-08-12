@@ -101,7 +101,7 @@ systemctl daemon-reload
 systemctl restart kubelet
 ```
 
-3. Run the `kubeadm join` command generated in the `join.txt` file in the master node as `sudo` to add the node to the cluster.
+3. Run the `kubeadm join` command generated in the `join.txt` file in the master node as `sudo` to add the worker node to the cluster.
 
 
 Following the above steps should setup the cluster to use the specified network for communication.
