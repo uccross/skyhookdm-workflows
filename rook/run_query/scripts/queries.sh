@@ -9,22 +9,6 @@ function k8s_exec {
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
-# download the rados-store-glob.sh script
-k8s_exec curl https://raw.githubusercontent.com/uccross/skyhookdm-ceph/skyhook-luminous/src/progly/rados-store-glob.sh --output rados-store-glob.sh
-k8s_exec chmod +x ./rados-store-glob.sh
-
-# delete any zombie pool and create a new pool with 128 min and max PG
-k8s_exec ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
-k8s_exec ceph osd pool create tpchdata "$PG_COUNT" "$PG_COUNT" "$POOLTYPE"
-
-# download Flatbuffer 10MB lineitem dataset
-k8s_exec curl https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.100MB.750Krows.obj.0 --output fbx.lineitem.100MB.750Krows.obj.0
-
-for (( k=1; k<=$REPLICACY_COUNT; k++ ))
-do
-    k8s_exec rados -p tpchdata put public.lineitem.$k fbx.lineitem.100MB.750Krows.obj.0
-done
-
 # declare the lineitem arrays
 fbx_1_lineitem=()
 fbx_10_lineitem=()
@@ -82,9 +66,6 @@ end=$(date --utc "+%s.%N")
 result=$(echo $end $start | awk '{print $1 - $2}')
 fbx_100_lineitem_cls+=("$result")
 done
-
-# delete the pool
-k8s_exec ceph osd pool delete tpchdata tpchdata --yes-i-really-really-mean-it
 
 # prepare results
 fbx_1_lineitem_result=$(join_by , ${fbx_1_lineitem[@]})

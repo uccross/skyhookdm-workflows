@@ -2,6 +2,12 @@ options:
     env:
         KUBECONFIG: ./kubeconfig/config
         NAMESPACE: kubestone
+        POOLTYPE: replicated
+        REPLICACY_COUNT: '1000'
+        QUERY_EPOCHS: '5'
+        WTHREADS: '28'
+        QDEPTH: '224'
+        PG_COUNT: '32'
 
 steps:
 - id: start
@@ -20,22 +26,20 @@ steps:
     kubectl cp ./cephconfig/ceph.conf "$NAMESPACE"/"$pod":/etc/ceph/ceph.conf
     kubectl cp ./cephconfig/keyring "$NAMESPACE"/"$pod":/etc/ceph/keyring
 
+- id: load-data
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args: [./run_query/scripts/loaddata.sh]
+
 - id: run-queries
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
-  args: [./run_query/queries.sh]
-  env:
-    POOLTYPE: replicated
-    REPLICACY_COUNT: '1'
-    QUERY_EPOCHS: '1'
-    WTHREADS: '56'
-    QDEPTH: '896'
-    PG_COUNT: '128'
+  args: [./run_query/scripts/queries.sh]
 
 - id: plot-results
   uses: docker://jupyter/datascience-notebook:latest
   runs: [jupyter]
-  args: ["nbconvert", "--execute", "--to=notebook", "run_query/notebook/plot.ipynb"]
+  args: ["nbconvert", "--execute", "--to=notebook", "./run_query/notebook/plot.ipynb"]
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
