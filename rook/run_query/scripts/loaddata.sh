@@ -21,7 +21,7 @@ k8s_exec ceph osd pool set tpchdata size 1
 k8s_exec curl https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.100MB.750Krows.obj.0 --output fbx.lineitem.100MB.750Krows.obj.0
 
 # put the data in a loop
-for (( k=1; k<=$REPLICACY_COUNT; k++ ))
+for (( k=1; k<=REPLICACY_COUNT; k++ ))
 do
-    k8s_exec rados -p tpchdata put public.lineitem.$k fbx.lineitem.100MB.750Krows.obj.0
+    k8s_exec rados -p tpchdata put public.lineitem."$k" fbx.lineitem.100MB.750Krows.obj.0
 done
