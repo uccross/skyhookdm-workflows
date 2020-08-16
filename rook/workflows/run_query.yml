@@ -1,13 +1,13 @@
 options:
     env:
-        KUBECONFIG: ./kubeconfig/config
-        NAMESPACE: kubestone
-        POOLTYPE: replicated
-        REPLICACY_COUNT: '1000'
-        QUERY_EPOCHS: '5'
-        WTHREADS: '28'
-        QDEPTH: '224'
-        PG_COUNT: '32'
+      KUBECONFIG: ./kubeconfig/config
+      NAMESPACE: kubestone
+      POOLTYPE: replicated
+      REPLICACY_COUNT: '1000'
+      QUERY_EPOCHS: '5'
+      WTHREADS: '28'
+      QDEPTH: '224'
+      PG_COUNT: '32'
 
 steps:
 - id: start
@@ -40,6 +40,9 @@ steps:
   uses: docker://jupyter/datascience-notebook:latest
   runs: [jupyter]
   args: ["nbconvert", "--execute", "--to=notebook", "./run_query/notebook/plot.ipynb"]
+  options:
+    ports:
+      8888/tcp: 8888
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
