@@ -24,6 +24,8 @@ rook/radosbench/*.yaml
 # iperf
 rook/kubestone_iperf/results*
 rook/kubestone_iperf/*.yaml
+rook/kubestone_iperf/notebook/.ipynb_checkpoints/
+rook/kubestone_iperf/notebook/*.nbconvert.ipynb
 
 # fio
 rook/kubestone_fio/results*
@@ -31,3 +33,5 @@ rook/kubestone_fio/*.yaml
 
 # run-query
 rook/run_query/results
+rook/run_query/notebook/.ipynb_checkpoints/
+rook/run_query/notebook/*.nbconvert.ipynb

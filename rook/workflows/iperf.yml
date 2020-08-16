@@ -8,7 +8,7 @@ steps:
 - id: bootstrap-config
   uses: docker://biowdl/pyyaml:3.13-py37-slim
   runs: [python]
-  args: [./kubestone_iperf/bootstrap.py]
+  args: [./kubestone_iperf/scripts/bootstrap.py]
 
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
@@ -16,12 +16,12 @@ steps:
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone_iperf/download_results.sh]
+  runs: [./kubestone_iperf/scripts/download_results.sh]
 
 - id: plot-results
-  uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: [python]
-  args: [./kubestone_iperf/plot.py]
+  uses: docker://jupyter/datascience-notebook:latest
+  runs: [jupyter]
+  args: ["nbconvert", "--execute", "--to=notebook", "./kubestone_iperf/notebook/plot.ipynb"]
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
