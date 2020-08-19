@@ -118,5 +118,5 @@ if __name__ == "__main__":
     write_definitions(
         os.environ["PV_SIZE"],
         os.environ["BLOCKDEVICES"].split(" "),
-        os.environ["HOSTNAME"],
+        os.environ["CLIENT"],
     )
