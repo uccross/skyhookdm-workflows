@@ -7,12 +7,12 @@ pod=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0]
 output_files=($(kubectl exec -n kubestone "$pod" -- find FIO_OUTPUT/ -name '*.json'))
 for file in ${output_files[@]}
 do
-kubectl cp kubestone/$pod:/$file ./kubestone_fio/results/$file
+kubectl cp "kubestone/${pod}:/${file}" "./kubestone_fio/results/${file}"
 done
 
 # download log files
 output_files=($(kubectl exec -n kubestone "$pod" -- find FIO_OUTPUT/ -name '*.log'))
 for file in ${output_files[@]}
 do
-kubectl cp kubestone/$pod:/$file ./kubestone_fio/results/$file
+kubectl cp "kubestone/${pod}:/${file}" "./kubestone_fio/results/${file}"
 done
