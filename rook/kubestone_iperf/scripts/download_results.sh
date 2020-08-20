@@ -9,10 +9,10 @@ do
 if [ $count == 30 ]; then
     exit 1
 fi
-echo "waiting for client pod to complete";
+echo "[INFO] Waiting for client pod to complete...";
 sleep 5
 count=$(( count + 1 ))
 done
 
 pod=$(kubectl get pod -n kubestone -l iperf-mode=client -o jsonpath="{.items[0].metadata.name}")
-kubectl logs -n kubestone $pod > ./kubestone_iperf/results/${CLIENT}.json
+kubectl logs -n kubestone "$pod" > "./kubestone_iperf/results/${CLIENT}.json"
