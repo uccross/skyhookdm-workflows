@@ -4,10 +4,10 @@ options:
     BLOCKDEVICES: $_BLOCKDEVICES
     BLOCKSIZE: 4m
     PV_SIZE: 4Gi
-    IO_DEPTH: '16'
+    IO_DEPTH: '16 32'
     IO_ENGINE: libaio
-    NUM_JOBS: '1'
-    MODES: 'read'
+    NUM_JOBS: '8'
+    MODES: 'read write randread randwrite'
     HOSTNAME: $_HOSTNAME
 
 steps:
