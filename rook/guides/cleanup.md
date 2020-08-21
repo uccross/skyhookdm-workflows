@@ -1,7 +1,7 @@
 # Cleaning up the Cluster
 
 After running the teardown step of the `rook.yml` workflow, SSH into each OSD node and cleanup the OSD disks
-following the steps given below.
+following the steps given below. Please note that `sudo` will be required.
 
 ```
 DISK="/dev/sdb"
