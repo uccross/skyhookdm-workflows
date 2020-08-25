@@ -1,18 +1,15 @@
 #!/bin/bash
 set -eu
 
-# download json files
-mkdir -p ./kubestone_fio/results
 pod=$(kubectl get pod -n kubestone -l app=fio-benchmarks -o jsonpath="{.items[0].metadata.name}")
-output_files=($(kubectl exec -n kubestone "$pod" -- find FIO_OUTPUT/ -name '*.json'))
-for file in ${output_files[@]}
-do
-kubectl cp "kubestone/${pod}:/${file}" "./kubestone_fio/results/${file}"
-done
 
-# download log files
-output_files=($(kubectl exec -n kubestone "${pod}" -- find FIO_OUTPUT/ -name '*.log'))
-for file in ${output_files[@]}
-do
-kubectl cp "kubestone/${pod}:/${file}" "./kubestone_fio/results/${file}"
-done
+echo "[INFO] Packing result files..."
+kubectl exec -n kubestone "$pod" -- sh -c "rm -rf results.tar.gz"
+kubectl exec -n kubestone "$pod" -- sh -c "tar -zcvf results.tar.gz FIO_OUTPUT/"
+
+echo "[INFO] Downloading results archive..."
+kubectl cp "kubestone/${pod}:/results.tar.gz" "./kubestone_fio/results.tar.gz"
+
+echo "[INFO] Unpacking results archive..."
+tar -xvzf ./kubestone_fio/results.tar.gz -C ./kubestone_fio
+mv ./kubestone_fio/FIO_OUTPUT ./kubestone_fio/results

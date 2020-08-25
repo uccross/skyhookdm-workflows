@@ -22,5 +22,5 @@ echo "[INFO] Dropping system caches..."
 kubectl exec -n kubestone "$pod" -- sh -c "echo 3 | tee /proc/sys/vm/drop_caches"
 
 echo "[INFO] Running fio benchmark..."
-cmd="bench_fio --target ${targets} --duration 180 --template /fio-plot/benchmark_script/fio-job-template.fio --type device --mode ${MODES} --output FIO_OUTPUT -e ${IO_ENGINE} -b ${BLOCKSIZE} --iodepth ${IO_DEPTH} --numjobs ${NUM_JOBS}"
+cmd="bench_fio --target ${targets} --duration ${DURATION} --template /fio-plot/benchmark_script/fio-job-template.fio --type device --mode ${MODES} --output FIO_OUTPUT -e ${IO_ENGINE} -b ${BLOCKSIZE} --iodepth ${IO_DEPTH} --numjobs ${NUM_JOBS}"
 kubectl exec -n kubestone "$pod"  -- sh -c "${cmd}"
