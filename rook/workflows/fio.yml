@@ -2,13 +2,13 @@ options:
   env:
     KUBECONFIG: ./kubeconfig/config
     BLOCKDEVICES: $_BLOCKDEVICES
-    BLOCKSIZE: '4k 32k 128k 4m'
+    BLOCKSIZE: '4k 32k 128k 1m 4m'
     PV_SIZE: 4Gi
     IO_DEPTH: '32'
-    DURATION: '120'
+    DURATION: '60'
     IO_ENGINE: libaio
     NUM_JOBS: '8'
-    MODES: 'write'
+    MODES: 'read write randread randwrite'
     HOSTNAME: $_HOSTNAME
 
 steps:
