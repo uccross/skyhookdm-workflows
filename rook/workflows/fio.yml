@@ -5,7 +5,7 @@ options:
     BLOCKSIZE: '4k 32k 128k 1m 4m'
     PV_SIZE: 4Gi
     IO_DEPTH: '32'
-    DURATION: '60'
+    DURATION: '120'
     IO_ENGINE: libaio
     NUM_JOBS: '8'
     MODES: 'read write randread randwrite'
