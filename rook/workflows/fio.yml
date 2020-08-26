@@ -2,19 +2,20 @@ options:
   env:
     KUBECONFIG: ./kubeconfig/config
     BLOCKDEVICES: $_BLOCKDEVICES
-    BLOCKSIZE: 4m
+    BLOCKSIZE: '4k 32k 128k 1m 4m'
     PV_SIZE: 4Gi
-    IO_DEPTH: '16'
+    IO_DEPTH: '32'
+    DURATION: '120'
     IO_ENGINE: libaio
-    NUM_JOBS: '1'
-    MODES: 'read'
+    NUM_JOBS: '8'
+    MODES: 'read write randread randwrite'
     HOSTNAME: $_HOSTNAME
 
 steps:
 - id: bootstrap-config
   uses: docker://biowdl/pyyaml:3.13-py37-slim
   runs: [python]
-  args: [./kubestone_fio/bootstrap.py]
+  args: [./kubestone_fio/scripts/bootstrap.py]
 
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
@@ -27,15 +28,19 @@ steps:
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone_fio/run_benchmarks.sh]
+  runs: [./kubestone_fio/scripts/run_benchmarks.sh]
 
 - id: download-results
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./kubestone_fio/download_results.sh]
+  runs: [./kubestone_fio/scripts/download_results.sh]
 
 - id: plot-results
-  uses: docker://getpopper/fio-plot:3.12-2
-  runs: [./kubestone_fio/plot.sh]
+  uses: docker://jupyter/datascience-notebook:python-3.8.5
+  runs: [jupyter]
+  args: ["nbconvert", "--execute", "--to=notebook", "./kubestone_fio/notebook/plot.ipynb"]
+  options:
+    ports:
+      8888/tcp: 8888
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
