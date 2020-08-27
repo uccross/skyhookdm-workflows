@@ -20,6 +20,8 @@ skyhook_overhead/results
 # ceph benchmarks
 rook/radosbench/results*
 rook/radosbench/*.yaml
+rook/radosbench/notebook/.ipynb_checkpoints/
+rook/radosbench/notebook/*.nbconvert.ipynb
 
 # iperf
 rook/kubestone_iperf/results*
