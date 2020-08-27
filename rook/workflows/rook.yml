@@ -10,6 +10,7 @@ steps:
   - |
     kubectl apply -f ./rook/common.yaml
     kubectl apply -f ./rook/operator.yaml
+    kubectl apply -f ./rook/clsconfig.yml
     kubectl apply -f ./rook/cluster_skyhook_ceph.yaml
     kubectl apply -f ./rook/toolbox.yaml
 
@@ -49,5 +50,6 @@ steps:
   - |
     kubectl delete --ignore-not-found -f ./rook/toolbox.yaml
     kubectl delete --ignore-not-found -f ./rook/cluster_skyhook_ceph.yaml
+    kubectl apply  --ignore-not-found -f ./rook/clsconfig.yaml
     kubectl delete --ignore-not-found -f ./rook/operator.yaml
     kubectl delete --ignore-not-found -f ./rook/common.yaml
