@@ -4,8 +4,8 @@ options:
     NAMESPACE: kubestone
     WRITE_DURATION: '120'
     READ_DURATION: '120'
-    THREADS: '1 8 16'
-    OBJECT_SIZE: '4M'
+    THREADS: '1 8 32'
+    OBJECT_SIZE: '10M'
     PG_SIZE: '128'
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
@@ -16,7 +16,7 @@ steps:
 - id: bootstrap-config
   uses: docker://biowdl/pyyaml:3.13-py37-slim
   runs: [python]
-  args: [./radosbench/bootstrap.py]
+  args: [./radosbench/scripts/bootstrap.py]
 
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
@@ -27,19 +27,19 @@ steps:
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./radosbench/copy_config.sh]
+  runs: [./radosbench/scripts/copy_config.sh]
 
 - id: run-benchmarks
   uses: docker://bitnami/kubectl:1.17.4
-  runs: [./radosbench/run_benchmarks.sh]
+  runs: [./radosbench/scripts/run_benchmarks.sh]
 
 - id: plot-results
-  uses: docker://czentye/matplotlib-minimal:3.1.2
-  runs: [sh, -euc]
-  args:
-  - |
-    python ./radosbench/plot_osd_benchmarks.py
-    python ./radosbench/plot_rados_benchmarks.py
+  uses: docker://jupyter/datascience-notebook:latest
+  runs: [jupyter]
+  args: ["nbconvert", "--execute", "--to=notebook", "./radosbench/notebook/plot.ipynb"]
+  options:
+    ports:
+      8888/tcp: 8888
 
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
