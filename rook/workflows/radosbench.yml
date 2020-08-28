@@ -34,7 +34,7 @@ steps:
   runs: [./radosbench/scripts/run_benchmarks.sh]
 
 - id: plot-results
-  uses: docker://jupyter/datascience-notebook:latest
+  uses: docker://jupyter/datascience-notebook:python-3.8.5
   runs: [jupyter]
   args: ["nbconvert", "--execute", "--to=notebook", "./radosbench/notebook/plot.ipynb"]
   options:
