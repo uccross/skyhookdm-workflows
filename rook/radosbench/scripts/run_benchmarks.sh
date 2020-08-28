@@ -21,7 +21,13 @@ function clear_caches_on_osds {
     kubectl -n rook-ceph exec "$osd_pod" -- sh -c "echo 3 | sudo tee /proc/sys/vm/drop_caches"
     kubectl -n rook-ceph exec "$osd_pod" -- sh -c "sync"
   done
-  sleep 5
+
+  info "Clearing cache on client pod"
+  kubectl -n "$NAMESPACE" exec "$pod" -- sh -c "sync"
+  kubectl -n "$NAMESPACE" exec "$pod" -- sh -c "echo 3 | sudo tee /proc/sys/vm/drop_caches"
+  kubectl -n "$NAMESPACE" exec "$pod" -- sh -c "sync"
+
+  sleep 2
 }
 
 info "Removing existing pools, if any"
