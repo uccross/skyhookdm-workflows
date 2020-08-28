@@ -13,9 +13,7 @@ config = {
                 "name": "ceph-benchmarks",
                 "image": "uccross/skyhookdm-ceph:v14.2.9",
                 "command": ["sleep", "infinity"],
-                "securityContext": {
-                    "privileged": True
-                }
+                "securityContext": {"privileged": True},
             }
         ],
     },
