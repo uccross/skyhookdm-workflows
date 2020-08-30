@@ -9,9 +9,9 @@ steps:
   args:
   - |
     kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
-    kubectl apply -f ./prometheus/service-monitor.yaml
-    kubectl apply -f ./prometheus/prometheus.yaml
-    kubectl apply -f ./prometheus/prometheus-service.yaml
+    kubectl apply -f ./prometheus_storage_side/service-monitor.yaml
+    kubectl apply -f ./prometheus_storage_side/prometheus.yaml
+    kubectl apply -f ./prometheus_storage_side/prometheus-service.yaml
     echo "http://$(kubectl -n rook-ceph -o jsonpath={.status.hostIP} get pod prometheus-rook-prometheus-0):30900"
 
 - id: teardown
@@ -19,7 +19,7 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl delete --ignore-not-found -f ./prometheus/service-monitor.yaml
-    kubectl delete --ignore-not-found -f ./prometheus/prometheus.yaml
-    kubectl delete --ignore-not-found -f ./prometheus/prometheus-service.yaml
+    kubectl delete --ignore-not-found -f ./prometheus_storage_side/service-monitor.yaml
+    kubectl delete --ignore-not-found -f ./prometheus_storage_side/prometheus.yaml
+    kubectl delete --ignore-not-found -f ./prometheus_storage_side/prometheus-service.yaml
     kubectl delete --ignore-not-found -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
