@@ -13,5 +13,5 @@ count=$(( count + 1 ))
 done
 
 pod=$(kubectl get pod -n "$NAMESPACE" -l app=ceph-benchmarks -o jsonpath="{.items[0].metadata.name}")
-kubectl cp -n "$NAMESPACE" ./cephconfig/ceph.conf "$NAMESPACE"/$pod:/etc/ceph/ceph.conf
-kubectl cp -n "$NAMESPACE" ./cephconfig/keyring "$NAMESPACE"/$pod:/etc/ceph/keyring
+kubectl cp -n "$NAMESPACE" ./cephconfig/ceph.conf "${NAMESPACE}/${pod}:/etc/ceph/ceph.conf"
+kubectl cp -n "$NAMESPACE" ./cephconfig/keyring "${NAMESPACE}/${pod}:/etc/ceph/keyring"
