@@ -1,0 +1,23 @@
+options:
+  env:
+    KUBECONFIG: ./kubeconfig/config
+
+steps:
+- id: setup
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl create -f ./kube-prometheus/manifests/setup
+    until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+    kubectl create -f ./kube-prometheus/manifests/
+
+- id: teardown
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete --ignore-not-found -f ./kube-prometheus/manifests/ -f ./kube-prometheus/manifests/setup
+
+### After the setup step is run, access the graphana dashboard by running,
+### $ kubectl --namespace monitoring port-forward svc/grafana 3000
