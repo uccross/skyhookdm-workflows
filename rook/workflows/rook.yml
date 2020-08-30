@@ -42,7 +42,6 @@ steps:
     kubectl delete --ignore-not-found -f ./rook/operator.yaml
     kubectl delete --ignore-not-found -f ./rook/common.yaml
 
-
 - id: teardown-skyhook-ceph
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
@@ -53,3 +52,25 @@ steps:
     kubectl delete --ignore-not-found -f ./rook/clsconfig.yaml
     kubectl delete --ignore-not-found -f ./rook/operator.yaml
     kubectl delete --ignore-not-found -f ./rook/common.yaml
+
+- id: setup-rook-prometheus
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
+    kubectl apply -f ./rook/service-monitor.yaml
+    kubectl apply -f ./rook/prometheus.yaml
+    kubectl apply -f ./rook/prometheus-service.yaml
+    sleep 5
+    echo "http://$(kubectl -n rook-ceph -o jsonpath={.status.hostIP} get pod prometheus-rook-prometheus-0):30900"
+
+- id: teardown-rook-prometheus
+  uses: docker://bitnami/kubectl:1.17.4
+  runs: [bash, -euc]
+  args:
+  - |
+    kubectl delete --ignore-not-found -f ./rook/service-monitor.yaml
+    kubectl delete --ignore-not-found -f ./rook/prometheus.yaml
+    kubectl delete --ignore-not-found -f ./rook/prometheus-service.yaml
+    kubectl delete --ignore-not-found -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
