@@ -73,12 +73,12 @@ sed -i '1d' "./radosbench/results/seq-${t}.json"
 sed -i '1d' "./radosbench/results/rand-${t}.json"
 done
 
-info "Counting OSDs"
-osd_count=$(kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd ls | wc -l)
+info "Listing OSDs"
+osds=($(kubectl -n "$NAMESPACE" exec "$pod" -- ceph osd ls))
 
 info "Testing write throughput using ceph tell"
-for (( i=0; i<osd_count; i++ ))
+for osd in ${osds[@]};
 do
-info "ceph tell osd.${i} bench"
-k8s_exec ceph tell "osd.${i}" bench > "./radosbench/results/osd.${i}.json"
+info "ceph tell osd.${osd} bench"
+k8s_exec ceph tell "osd.${osd}" bench > "./radosbench/results/osd.${osd}.json"
 done
