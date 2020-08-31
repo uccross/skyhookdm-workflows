@@ -17,11 +17,11 @@ k8s_exec ceph osd pool create tpchdata "$PG_COUNT" "$PG_COUNT" "$POOLTYPE"
 # set pool size to 1 to disable replicacy
 k8s_exec ceph osd pool set tpchdata size 1
 
-# download flatbuffer 100MB lineitem dataset
-k8s_exec curl https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.100MB.750Krows.obj.0 --output fbx.lineitem.100MB.750Krows.obj.0
+# download flatbuffer 10MB lineitem dataset
+k8s_exec curl https://users.soe.ucsc.edu/~jlefevre/skyhookdb/testdata/pdsw19/sampledata/fbx.lineitem.10MB.75Krows.obj.0 --output fbx.lineitem.10MB.75Krows.obj.0
 
 # put the data in a loop
 for (( k=1; k<=REPLICACY_COUNT; k++ ))
 do
-    k8s_exec rados -p tpchdata put public.lineitem."$k" fbx.lineitem.100MB.750Krows.obj.0
+    k8s_exec rados -p tpchdata put public.lineitem."$k" fbx.lineitem.10MB.75Krows.obj.0
 done
