@@ -5,8 +5,8 @@ options:
     POOLTYPE: replicated
     OBJECT_COUNT: '10000'
     QUERY_EPOCHS: '5'
-    WTHREADS: '32'
-    QDEPTH: '128'
+    WTHREADS: '48'
+    QDEPTH: '192'
     PG_COUNT: '32'
 
 steps:
@@ -23,8 +23,8 @@ steps:
   args:
   - |
     pod=$(kubectl -n "$NAMESPACE" get pod -l app=run-query -o jsonpath="{.items[0].metadata.name}")
-    kubectl cp ./cephconfig/ceph.conf "$NAMESPACE"/"$pod":/etc/ceph/ceph.conf
-    kubectl cp ./cephconfig/keyring "$NAMESPACE"/"$pod":/etc/ceph/keyring
+    kubectl cp ./cephconfig/ceph.conf "${NAMESPACE}/${pod}:/etc/ceph/ceph.conf"
+    kubectl cp ./cephconfig/keyring "${NAMESPACE}/${pod}:/etc/ceph/keyring"
 
 - id: load-data
   uses: docker://bitnami/kubectl:1.17.4
