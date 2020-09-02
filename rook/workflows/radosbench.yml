@@ -6,7 +6,7 @@ options:
     READ_DURATION: '120'
     THREADS: '1 8 32'
     OBJECT_SIZE: '10M'
-    PG_SIZE: '128'
+    PG_SIZE: '32'
     POOL_NAME: 'testbench'
     POOL_TYPE: 'replicated'
     REPLICATION_DISABLED: '1'

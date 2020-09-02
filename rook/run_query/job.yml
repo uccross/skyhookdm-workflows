@@ -17,4 +17,6 @@ spec:
           value: replicated
         - name: LD_LIBRARY_PATH
           value: /usr/lib64/ceph
+        securityContext:
+          privileged: True
       restartPolicy: Never
