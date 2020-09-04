@@ -1,0 +1,13 @@
+options:
+  secrets:
+    - ANSIBLE_USER
+    - ANSIBLE_SSH_KEY_DATA
+
+steps:
+- id: setup
+  uses: docker://popperized/ansible:v2.9
+  runs: ['./kubernetes/scripts/setup_kubespray.sh']
+
+- id: copy-kube-config
+  uses: docker://lgatica/openssh-client:latest
+  runs: ['./kubernetes/scripts/copy_config.sh']
