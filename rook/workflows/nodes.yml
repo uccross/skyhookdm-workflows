@@ -14,7 +14,7 @@ options:
 steps:
 - id: setup
   uses: docker://popperized/geni:v0.9.9.2
-  args: ['./geni/setup-nodes.py']
+  args: ['./geni/setup_nodes.py']
 
 - id: teardown
   uses: docker://popperized/geni:v0.9.9.2
