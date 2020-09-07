@@ -37,7 +37,7 @@ steps:
   args: [./run_query/scripts/queries.sh]
 
 - id: plot-results
-  uses: docker://jupyter/datascience-notebook:latest
+  uses: docker://jupyter/datascience-notebook:python-3.8.5
   runs: [jupyter]
   args: ["nbconvert", "--execute", "--to=notebook", "./run_query/notebook/plot.ipynb"]
   options:
