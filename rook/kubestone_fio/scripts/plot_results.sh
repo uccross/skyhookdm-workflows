@@ -5,7 +5,7 @@ for blkdev in ${BLOCKDEVICES[@]};
 do
 for io_depth in ${IO_DEPTH[@]};
 do
-for blksize in ${BLOCKSIZES[@]};
+for blksize in ${BLOCKSIZE[@]};
 do
 for jobsize in ${NUM_JOBS[@]};
 do
