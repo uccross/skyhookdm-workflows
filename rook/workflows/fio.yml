@@ -42,6 +42,10 @@ steps:
     ports:
       8888/tcp: 8888
 
+- id: plot-results-fioplot
+  uses: docker://getpopper/fio-plot:3.12-2
+  runs: [./kubestone_fio/scripts/plot_results.sh]
+
 - id: teardown
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
