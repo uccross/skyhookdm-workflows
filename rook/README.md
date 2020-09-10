@@ -2,14 +2,14 @@
 
 Popper workflow to automate Large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
 
-## Installing popper
+## Installing Popper
 ```bash
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install popper
 ```
 
-## Environment variables
+## Setting environment variables
 ```bash
 # generate the .env file and populate it
 $ cp .env.example .env 
@@ -18,30 +18,30 @@ $ cp .env.example .env
 $ source .env
 ```
 
-## Setting up skyhookDM cluster using rook
+## Setting up SkyhookDM cluster using Rook
 ```bash
-# setup the cluster
+# setup
 $ popper run -f workflows/setup_rook_cluster.yml setup-rook-cluster
 
-# download the ceph configuration files
-$ popper run -f workflows/setup_rook_cluster.yml download-ceph-config
+# download the ceph config
+$ popper run -f workflows/setup_rook_cluster.yml download-config
 
-# teardown the cluster
+# teardown
 $ popper run -f workflows/setup_rook_cluster.yml teardown-rook-cluster
 ```
 
-## Setup prometheus monitoring
+## Setting up Prometheus Monitoring
 ```bash
 # setup monitoring
-$ popper run -f workflows/setup_prometheus.yml setup
+$ popper run -f workflows/prometheus.yml setup
 
 # teardown monitoring
-$ popper run -f workflows/setup_prometheus.yml teardown
+$ popper run -f workflows/prometheus.yml teardown
 ```
 
-## Rados and OSD benchmarks
+## Performing Rados and OSD benchmarks
 ```bash
-$ popper run -f workflows/radosbench.yml 
+$ popper run -f workflows/radosbench.yml -s _CLIENT=<client_hostname>
 ```
 
 The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. Example rados benchmark plots are shown below.
@@ -57,7 +57,7 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 
 <img src="https://user-images.githubusercontent.com/33978990/86971992-c9e60300-c18f-11ea-89ea-436e108ff498.png" height="250" width="350" />
 
-## Run-Query benchmarks
+## Running Query benchmarks
 ```bash
 $ popper run -f workflows/run_query.yml
 ```
@@ -105,7 +105,7 @@ The workflow measures the link speed from the node allocated as the client to th
 
 ### `fio`
 ```bash
-$ popper run -f workflows/fio.yml
+$ popper run -f workflows/fio.yml -s _HOSTNAME=<hosttobenchmark>
 ```
 The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
 blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the reads of a blockdevice at IO depths 16 and 1.
