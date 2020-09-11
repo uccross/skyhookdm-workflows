@@ -47,7 +47,7 @@ $ popper run -f workflows/setup_rook_cluster.yml teardown-rook-cluster
 > The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook.
 
 
-## Setting up Prometheus Monitoring
+## Setting up Prometheus Monitoring with Grafana Dashboard
 ```bash
 # setup monitoring
 $ popper run -f workflows/prometheus.yml setup
@@ -55,6 +55,8 @@ $ popper run -f workflows/prometheus.yml setup
 # teardown monitoring
 $ popper run -f workflows/prometheus.yml teardown
 ```
+
+<img src="https://user-images.githubusercontent.com/33978990/92876578-e91b3e00-f427-11ea-8c0c-8b7887f9168b.png" height="250" width="550" />
 
 ## Performing Rados and OSD benchmarks
 ```bash
@@ -66,12 +68,19 @@ The rados benchmark workflow plots the latency and bandwidth of the rados object
 Each of the OSD's are also benchmarked using the native ceph osd benchmark tool, `ceph tell`. 
 Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark plots are shown below.
 
+
+<img src="https://user-images.githubusercontent.com/33978990/92874999-2e3e7080-f426-11ea-8d78-7e82f841cf9b.png" height="300" width="450" />
+
+<img src="https://user-images.githubusercontent.com/33978990/92875116-5332e380-f426-11ea-862b-237f20194506.png" height="300" width="450" />
+
 ## Running Query benchmarks
 ```bash
 $ popper run -f workflows/run_query.yml
 ```
 
 These workflows run queries over tpch dataset at 1%, 10%, 100% selectivity in arrow (currently not supported) and flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below.
+
+<img src="https://user-images.githubusercontent.com/33978990/92876259-832eb680-f427-11ea-947e-e0b94ebc3100.png" height="300" width="450" />
 
 ## Kubestone benchmarks
 
@@ -108,9 +117,13 @@ The value to be provided to the `SERVER` and `CLIENT` substitution variables of 
 
 The workflow measures the link speed from the node allocated as the client to the node allocated as the server. An example plot for such a benchmark run is shown below.
 
+<img src="https://user-images.githubusercontent.com/33978990/92874220-7315d780-f425-11ea-96af-c9aa9239a649.png" height="300" width="450" />
+
 ### `fio`
 ```bash
 $ popper run -f workflows/fio.yml -s _HOSTNAME=<hostname-to-benchmark>
 ```
 The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
-blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the reads of a blockdevice at IO depths 16 and 1.
+blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
+
+<img src="https://user-images.githubusercontent.com/33978990/92878167-7b701180-f429-11ea-9a61-0f7bda767961.png" height="300" width="450" />
