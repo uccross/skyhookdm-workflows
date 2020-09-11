@@ -8,17 +8,32 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install popper
 ```
+> To install Popper with Docker, check [this](https://github.com/getpopper/popper#installation) out.
 
-## Setting environment variables
+## Booting up a Kubernetes cluster in Cloudlab
+
 ```bash
 # generate the .env file and populate it
 $ cp .env.example .env 
 
 # apply the environment variables to your shell
 $ source .env
+
+# boot up nodes in cloudlab
+$ popper run -f workflows/nodes.yml setup
+
+# deploy kubernetes and download the kube config
+$ popper run -f workflows/kubernetes.yml setup
+$ popper run -f workflows/kubernetes.yml copy-kube-config
+
+# teardown kubernetes + nodes
+$ popper run -f workflows/nodes.yml teardown
 ```
 
-## Setting up SkyhookDM cluster using Rook
+> You can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow).
+
+## Setting up SkyhookDM Ceph cluster using Rook
+
 ```bash
 # setup
 $ popper run -f workflows/setup_rook_cluster.yml setup-rook-cluster
@@ -29,6 +44,8 @@ $ popper run -f workflows/setup_rook_cluster.yml download-config
 # teardown
 $ popper run -f workflows/setup_rook_cluster.yml teardown-rook-cluster
 ```
+> The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook.
+
 
 ## Setting up Prometheus Monitoring
 ```bash
@@ -41,21 +58,13 @@ $ popper run -f workflows/prometheus.yml teardown
 
 ## Performing Rados and OSD benchmarks
 ```bash
-$ popper run -f workflows/radosbench.yml -s _CLIENT=<client_hostname>
+$ popper run -f workflows/radosbench.yml -s _CLIENT=<client-hostname>
 ```
 
 The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. Example rados benchmark plots are shown below.
 
-<img src="https://user-images.githubusercontent.com/33978990/86970919-e123f100-c18d-11ea-9baf-2fb7656e23e5.png" height="250" width="350" />
-
-<img src="https://user-images.githubusercontent.com/33978990/86972328-67413700-c190-11ea-8a43-9f3000b94396.png" height="250" width="350" />
-
 Each of the OSD's are also benchmarked using the native ceph osd benchmark tool, `ceph tell`. 
 Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark plots are shown below.
-
-<img src="https://user-images.githubusercontent.com/33978990/86971224-6c04eb80-c18e-11ea-90d2-59d9e762149a.png" height="250" width="350" />      
-
-<img src="https://user-images.githubusercontent.com/33978990/86971992-c9e60300-c18f-11ea-89ea-436e108ff498.png" height="250" width="350" />
 
 ## Running Query benchmarks
 ```bash
@@ -63,8 +72,6 @@ $ popper run -f workflows/run_query.yml
 ```
 
 These workflows run queries over tpch dataset at 1%, 10%, 100% selectivity in arrow (currently not supported) and flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below.
-
-<img src="https://user-images.githubusercontent.com/33978990/87318524-1772bf00-c546-11ea-8cad-66c5efbc7b8a.png" height="250" width="350">
 
 ## Kubestone benchmarks
 
@@ -101,15 +108,9 @@ The value to be provided to the `SERVER` and `CLIENT` substitution variables of 
 
 The workflow measures the link speed from the node allocated as the client to the node allocated as the server. An example plot for such a benchmark run is shown below.
 
-<img src="https://user-images.githubusercontent.com/33978990/87332356-0da68700-c559-11ea-9a03-6af9beb11c3c.png" height="300" width="450" />
-
 ### `fio`
 ```bash
-$ popper run -f workflows/fio.yml -s _HOSTNAME=<hosttobenchmark>
+$ popper run -f workflows/fio.yml -s _HOSTNAME=<hostname-to-benchmark>
 ```
 The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
 blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the reads of a blockdevice at IO depths 16 and 1.
-
-<img src="https://user-images.githubusercontent.com/33978990/86969921-29421400-c18c-11ea-96de-0e58f7936527.png" height="300" width="450" />
-
-<img src="https://user-images.githubusercontent.com/33978990/86972712-ffd7b700-c190-11ea-8276-ded3c73269ec.png" height="300" width="450" />
