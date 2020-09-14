@@ -1,7 +1,7 @@
-# SkyhookDM-Benchmarks Workflow
+# Popper workflows for SkyhookDM and Ceph Benchmarks
 
-A set of [Popper](https://getpopper.io) workflows to automate large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
-Below given is an exhaustive guide on how to use the workflows to automate Ceph experiments.
+A set of [Popper](https://getpopper.io) workflows to automate large-scale tests and benchmarks of [SkyhookDM](skyhookdm.com) in a Kubernetes cluster.
+Below given is an exhaustive guide on how to use the workflows to automate [Ceph](https://ceph.io/) experiments.
 
 ## Cloning the project
 
@@ -10,6 +10,10 @@ $ git clone --recursive https://github.com/uccross/skyhookdm-workflows
 ```
 
 ## Installing Popper
+
+Popper is a container-native workflow execution and automation engine that takes a workflow definition in YAML and runs each step of 
+the workflow inside containers. To install Popper,
+
 ```bash
 $ python3 -m venv venv
 $ source venv/bin/activate
@@ -159,4 +163,4 @@ blockdevices at varying IO depths and readwrite modes. The plot shown below is o
 Once done with running the workflows and performing experiments, it is absolutely necessary to cleanup the ceph partitions and metadata directories created by Rook on the
 underlying drives of the nodes in order to be able to deploy and use Ceph again. If the underlying drives are not cleaned up, further Ceph deployments using Rook might not be possible.
 [This](https://github.com/rook/rook/blob/master/Documentation/ceph-teardown.md) guide consists of the commands that need to be run on all the nodes of the Kubernetes cluster which were used by a previous Ceph deployment.
-A short form of that is available [here]().
+A short form of that is available [here](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/guides/cleanup.md#cleaning-up-the-cluster).
