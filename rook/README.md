@@ -2,6 +2,12 @@
 
 Popper workflow to automate Large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
 
+## Cloning the project
+
+```bash
+$ git clone --recursive https://github.com/uccross/skyhookdm-workflows
+```
+
 ## Installing Popper
 ```bash
 $ python3 -m venv venv
@@ -45,7 +51,8 @@ $ popper run -f workflows/rook.yml download-config
 $ popper run -f workflows/rook.yml teardown-ceph
 ```
 
-To change the Vanilla Ceph cluster into SkyhookDM cluster, Follow [this](https://github.com/rook/rook/blob/master/Documentation/ceph-upgrade.md#ceph-version-upgrades) guide.
+To change the vanilla Ceph cluster into a SkyhookDM cluster, run the `setup-skyhook-ceph` step from the `rook.yml` workflow.
+This will update the Ceph config to load the tabular libraries and will update and restart all the daemons to use the SkyhookDM image.
 
 ## Setting up SkyhookDM Ceph cluster using Rook
 
@@ -90,7 +97,7 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 
 ## Running Query benchmarks
 ```bash
-$ popper run -f workflows/run_query.yml
+$ popper run -f workflows/run_query.yml -s _CLIENT=<client-hostname>
 ```
 
 These workflows run queries over tpch dataset at 1%, 10%, 100% selectivity in arrow (currently not supported) and flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below.
