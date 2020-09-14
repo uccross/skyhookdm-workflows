@@ -37,5 +37,6 @@ rook/kubestone_fio/notebook/*.nbconvert.ipynb
 
 # run-query
 rook/run_query/results*
+rook/run_query/*.yaml
 rook/run_query/notebook/.ipynb_checkpoints/
 rook/run_query/notebook/*.nbconvert.ipynb
