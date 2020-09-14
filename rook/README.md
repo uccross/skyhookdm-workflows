@@ -32,17 +32,32 @@ $ popper run -f workflows/nodes.yml teardown
 
 > You can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow).
 
+## Setting up Vanilla Ceph cluster
+
+```bash
+# setup
+$ popper run -f workflows/rook.yml setup-ceph
+
+# download the ceph config
+$ popper run -f workflows/rook.yml download-config
+
+# teardown
+$ popper run -f workflows/rook.yml teardown-ceph
+```
+
+To change the Vanilla Ceph cluster into SkyhookDM cluster, Follow [this](https://github.com/rook/rook/blob/master/Documentation/ceph-upgrade.md#ceph-version-upgrades) guide.
+
 ## Setting up SkyhookDM Ceph cluster using Rook
 
 ```bash
 # setup
-$ popper run -f workflows/setup_rook_cluster.yml setup-rook-cluster
+$ popper run -f workflows/rook.yml setup-skyhook-ceph
 
 # download the ceph config
-$ popper run -f workflows/setup_rook_cluster.yml download-config
+$ popper run -f workflows/rook.yml download-config
 
 # teardown
-$ popper run -f workflows/setup_rook_cluster.yml teardown-rook-cluster
+$ popper run -f workflows/rook.yml teardown-skyhook-ceph
 ```
 > The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook.
 
