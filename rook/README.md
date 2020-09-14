@@ -1,6 +1,7 @@
 # SkyhookDM-Benchmarks Workflow
 
-Popper workflow to automate Large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
+A set of [Popper](https://getpopper.io) workflows to automate large-scale tests and benchmarks of SkyhookDM-Ceph in a Kubernetes cluster.
+Below given is an exhaustive guide on how to use the workflows to automate Ceph experiments.
 
 ## Cloning the project
 
@@ -51,8 +52,11 @@ $ popper run -f workflows/rook.yml download-config
 $ popper run -f workflows/rook.yml teardown-ceph
 ```
 
-To change the vanilla Ceph cluster into a SkyhookDM cluster, run the `setup-skyhook-ceph` step from the `rook.yml` workflow.
-This will update the Ceph config to load the tabular libraries and will update and restart all the daemons to use the SkyhookDM image.
+To change the vanilla Ceph cluster into a SkyhookDM cluster, run the `setup-skyhook-ceph` step from the [`workflows/rook.yml`](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/workflows/rook.yml) workflow.
+This will update the Ceph config to load the tabular libraries and will update and restart all the daemons to use the [uccross/skyhookdm-ceph:v14.2.9](https://hub.docker.com/layers/uccross/skyhookdm-ceph/v14.2.9/images/sha256-05ad184557c2cfeed8b2caf048db2c1748dd38e9c322b2d3178bb6380e30509b?context=explore) image which is maintained here.
+
+In general, if you need to upgrade the Ceph image in your Rook cluster using Popper, update the `{"spec": {"cephVersion": {"image": "myrepo/mycephimage"}}}` in the [`rook/cluster_ceph.yaml`](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/rook/cluster_ceph.yaml) file and run the `setup-ceph` step.
+The upgrade process is described in more detail [here](https://github.com/rook/rook/blob/master/Documentation/ceph-upgrade.md#ceph-version-upgrades).
 
 ## Setting up SkyhookDM Ceph cluster using Rook
 
@@ -149,3 +153,10 @@ The `fio` benchmark workflow generates graphs showing the bandwidth, latency and
 blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
 
 <img src="https://user-images.githubusercontent.com/33978990/92878167-7b701180-f429-11ea-9a61-0f7bda767961.png" height="300" width="450" />
+
+## Cleaning up the Kubernetes cluster
+
+Once done with running the workflows and performing experiments, it is absolutely necessary to cleanup the ceph partitions and metadata directories created by Rook on the
+underlying drives of the nodes in order to be able to deploy and use Ceph again. If the underlying drives are not cleaned up, further Ceph deployments using Rook might not be possible.
+[This](https://github.com/rook/rook/blob/master/Documentation/ceph-teardown.md) guide consists of the commands that need to be run on all the nodes of the Kubernetes cluster which were used by a previous Ceph deployment.
+A short form of that is available [here]().
