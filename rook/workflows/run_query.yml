@@ -8,14 +8,20 @@ options:
     WTHREADS: '48'
     QDEPTH: '192'
     PG_COUNT: '32'
+    CLIENT: $_CLIENT
 
 steps:
+- id: bootstrap-config
+  uses: docker://biowdl/pyyaml:3.13-py37-slim
+  runs: [python]
+  args: [./run_query/scripts/bootstrap.py]
+
 - id: start
   uses: docker://bitnami/kubectl:1.17.4
   runs: [bash, -euc]
   args:
   - |
-    kubectl -n "$NAMESPACE" apply -f ./run_query/job.yml
+    kubectl -n "$NAMESPACE" apply -f ./run_query/pod.yaml
 
 - id: copy-config
   uses: docker://bitnami/kubectl:1.17.4
