@@ -164,3 +164,7 @@ Once done with running the workflows and performing experiments, it is absolutel
 underlying drives of the nodes in order to be able to deploy and use Ceph again. If the underlying drives are not cleaned up, further Ceph deployments using Rook might not be possible.
 [This](https://github.com/rook/rook/blob/master/Documentation/ceph-teardown.md) guide consists of the commands that need to be run on all the nodes of the Kubernetes cluster which were used by a previous Ceph deployment.
 A short form of that is available [here](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/guides/cleanup.md#cleaning-up-the-cluster).
+
+## Case Study
+
+We ran the above workflows to benchmark a SkyhookDM deployment in the River SSL Kubernetes cluster. The results of the experiments can be found [here](https://github.com/JayjeetAtGithub/skyhookdm-benchmark-ssl).
