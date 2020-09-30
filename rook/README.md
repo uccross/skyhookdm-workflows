@@ -40,16 +40,15 @@ $ popper run -f workflows/kubernetes.yml copy-kube-config
 $ popper run -f workflows/nodes.yml teardown
 ```
 
-These set of workflows boot bare-metal nodes from CloudLab and deploy a production-ready Kubernetes cluster
-on them using [Kubespray](https://github.com/kubernetes-sigs/kubespray). The cluster can be tore down
-by releasing the CloudLab nodes.
+This set of `popper run` commands boot bare-metal nodes from CloudLab and deploy a production-ready Kubernetes cluster on them using [Kubespray](https://github.com/kubernetes-sigs/kubespray). The cluster can be tore down
+by releasing the CloudLab nodes. Note that users need to properly populate the environment variables in the `.env` file for these workflows to work as they contain information like secret keys, private keys, passwords, etc.
 
-> One can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow).
+> One can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow) to boot nodes and deploy kubernetes.
 
 ## Setting up Vanilla Ceph cluster
 
 ```bash
-# setup
+# deploy the ceph cluster
 $ popper run -f workflows/rook.yml setup-ceph
 
 # download the ceph config
@@ -68,7 +67,7 @@ The upgrade process is described in more detail [here](https://github.com/rook/r
 ## Setting up SkyhookDM Ceph cluster using Rook
 
 ```bash
-# setup
+# deploy the skyhookDM cluster
 $ popper run -f workflows/rook.yml setup-skyhook-ceph
 
 # download the ceph config
@@ -78,7 +77,9 @@ $ popper run -f workflows/rook.yml download-config
 $ popper run -f workflows/rook.yml teardown-skyhook-ceph
 ```
 
-This workflow sets up a SkyhookDM cluster using Rook. It can be also run to update a Ceph cluster to a SkyhookDM cluster. The Rook version that is used is `1.4`.
+This workflow sets up a SkyhookDM cluster using Rook. 
+It can be also run to update a Ceph cluster to a SkyhookDM cluster. 
+The Rook version that is currently used is `1.4`.
 
 > The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook. Then the Ceph image can be updated in the [`rook/cluster_skyhook_ceph.yaml`](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/rook/cluster_skyhook_ceph.yaml) and the `setup-skyhook-ceph` step can be run multiple times to update the SkyhookDM cluster.
 
@@ -109,10 +110,10 @@ To login to the dashboard for the first time, use `admin` as both username and p
 $ popper run -f workflows/radosbench.yml -s _CLIENT=<client-hostname>
 ```
 
-The RADOS benchmark workflow benchmarks the RADOS interface and plots the latency, bandwidth and IOPS at varying IO depths over a given period of time for Sequential and Random R/W workloads. Example RADOS benchmark plots are shown below.
+This workflow benchmarks the RADOS Object store and plots the latency, bandwidth and IOPS at varying IO depths over a given period of time for Sequential and Random R/W workloads. Example RADOS benchmark plots are shown below.
 
-Each of the OSD's write throughput is also measured using the `ceph tell` benchmark tool. 
-Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark plots are shown below.
+Each of the OSD's write throughput and IOPS is also measured using the `ceph tell` benchmark tool. 
+A set of example RADOS benchmark plots are shown below.
 
 <img src="https://user-images.githubusercontent.com/33978990/92874999-2e3e7080-f426-11ea-8d78-7e82f841cf9b.png" height="300" width="450" />
 
@@ -123,7 +124,7 @@ Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark
 $ popper run -f workflows/run_query.yml -s _CLIENT=<client-hostname>
 ```
 
-These workflows run queries over the TPC-H Lineitem dataset at 1%, 10%, 100% selectivity in Arrow (currently not supported) and Flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below. It is recommended to deploy the client on a pod that doesn't host an OSD or MON to get the best results. This can be controlled by the `CLIENT` substitution variable given in the workflow.
+This workflow runs queries over the TPC-H Lineitem dataset at 1%, 10%, 100% selectivity in Arrow (currently not supported) and Flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below. It is recommended to deploy the client on a pod that doesn't host an OSD or MON to get the best results. This can be controlled by the `CLIENT` substitution variable given in the workflow.
 
 <img src="https://user-images.githubusercontent.com/33978990/94709227-20b04280-0363-11eb-9e39-6cb493018e51.png" height="300" width="450" />
 
@@ -157,10 +158,8 @@ $ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<cli
 .
 .
 ```
-
-The value to be provided to the `SERVER` and `CLIENT` substitution variables of the `popper run` command is the hostname of the node within the Kubernetes cluster that would act as the server and client respectively.
-
-The workflow measures the link speed between the node allocated as the client and the node allocated as the server. An example plot for such a benchmark run is shown below.
+This workflow measures the link speed between the node allocated as the client and the node allocated as the server. An example plot for such a benchmark run is shown below. The deployment of the server and client pods can be
+controlled by the `SERVER` and `CLIENT` substitution variables of the workflow.
 
 <img src="https://user-images.githubusercontent.com/33978990/92874220-7315d780-f425-11ea-96af-c9aa9239a649.png" height="300" width="450" />
 
