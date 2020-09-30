@@ -11,8 +11,7 @@ $ git clone --recursive https://github.com/uccross/skyhookdm-workflows
 
 ## Installing Popper
 
-Popper is a container-native workflow execution and automation engine that takes a workflow definition in YAML and runs each step of 
-the workflow inside containers. To install Popper,
+Popper is a container-native workflow execution and automation engine that takes a workflow definition in YAML and runs each step of the workflow inside containers. To install Popper,
 
 ```bash
 $ python3 -m venv venv
@@ -41,7 +40,11 @@ $ popper run -f workflows/kubernetes.yml copy-kube-config
 $ popper run -f workflows/nodes.yml teardown
 ```
 
-> You can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow).
+These set of workflows boot bare-metal nodes from CloudLab and deploy a production-ready Kubernetes cluster
+on them using [Kubespray](https://github.com/kubernetes-sigs/kubespray). The cluster can be tore down
+by releasing the CloudLab nodes.
+
+> One can also use the workflow given [here](https://github.com/getpopper/kubernetes-cluster-setup-workflow).
 
 ## Setting up Vanilla Ceph cluster
 
@@ -74,10 +77,13 @@ $ popper run -f workflows/rook.yml download-config
 # teardown
 $ popper run -f workflows/rook.yml teardown-skyhook-ceph
 ```
-> The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook.
 
+This workflow sets up a SkyhookDM cluster using Rook. It can be also run to update a Ceph cluster to a SkyhookDM cluster. The Rook version that is used is `1.4`.
+
+> The workflow given [here](https://github.com/uccross/skyhookdm-ceph-cls/blob/master/.popper.yml) can be run to build SkyhookDM and to build and push the SkyhookDM Docker image for use with Rook. Then the Ceph image can be updated in the [`rook/cluster_skyhook_ceph.yaml`](https://github.com/uccross/skyhookdm-workflows/blob/master/rook/rook/cluster_skyhook_ceph.yaml) and the `setup-skyhook-ceph` step can be run multiple times to update the SkyhookDM cluster.
 
 ## Setting up Prometheus Monitoring with Grafana Dashboard
+
 ```bash
 # setup monitoring
 $ popper run -f workflows/prometheus.yml setup
@@ -86,31 +92,40 @@ $ popper run -f workflows/prometheus.yml setup
 $ popper run -f workflows/prometheus.yml teardown
 ```
 
+This workflow deploys the Prometheus and Grafana operators in the cluster.
+To access the Grafana dashboard, a local port e.g. `3000` needs to be mapped to the port on which the Grafana service is listening inside the cluster by doing,
+
+```bash
+$ kubectl --namespace monitoring port-forward svc/grafana 3000
+```
+
+Then, on browsing to `http://localhost:3000`, the Grafana dashboard can be accessed. 
+To login to the dashboard for the first time, use `admin` as both username and password.
+
 <img src="https://user-images.githubusercontent.com/33978990/92876578-e91b3e00-f427-11ea-8c0c-8b7887f9168b.png" height="250" width="550" />
 
-## Performing Rados and OSD benchmarks
+## Performing RADOS and OSD benchmarks
 ```bash
 $ popper run -f workflows/radosbench.yml -s _CLIENT=<client-hostname>
 ```
 
-The rados benchmark workflow plots the latency and bandwidth of the rados object store at varying IO depths over a period of 120 seconds for write, read and sequential workloads. Example rados benchmark plots are shown below.
+The RADOS benchmark workflow benchmarks and plots the latency and bandwidth of the RADOS object store at varying IO depths over a given period of time for R/W workloads. Example RADOS benchmark plots are shown below.
 
-Each of the OSD's are also benchmarked using the native ceph osd benchmark tool, `ceph tell`. 
+Each of the OSD's write throughput is also measured using the `ceph tell` tool. 
 Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark plots are shown below.
-
 
 <img src="https://user-images.githubusercontent.com/33978990/92874999-2e3e7080-f426-11ea-8d78-7e82f841cf9b.png" height="300" width="450" />
 
 <img src="https://user-images.githubusercontent.com/33978990/92875116-5332e380-f426-11ea-862b-237f20194506.png" height="300" width="450" />
 
-## Running Query benchmarks
+## Running SkyhookDM benchmarks
 ```bash
 $ popper run -f workflows/run_query.yml -s _CLIENT=<client-hostname>
 ```
 
-These workflows run queries over tpch dataset at 1%, 10%, 100% selectivity in arrow (currently not supported) and flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below.
+These workflows run queries over the TPC-H Lineitem dataset at 1%, 10%, 100% selectivity in Arrow (currently not supported) and Flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below. It is recommended to deploy the client on a pod that doesn't host an OSD or MON to get the best results. This can be controlled by the `CLIENT` substitution variable given in the workflow.
 
-<img src="https://user-images.githubusercontent.com/33978990/92876259-832eb680-f427-11ea-947e-e0b94ebc3100.png" height="300" width="450" />
+<img src="https://user-images.githubusercontent.com/33978990/94709227-20b04280-0363-11eb-9e39-6cb493018e51.png" height="300" width="450" />
 
 ## Kubestone benchmarks
 
@@ -167,4 +182,4 @@ A short form of that is available [here](https://github.com/uccross/skyhookdm-wo
 
 ## Case Study
 
-We ran the above workflows to benchmark a SkyhookDM deployment in the River SSL Kubernetes cluster. The results of the experiments can be found [here](https://github.com/JayjeetAtGithub/skyhookdm-benchmark-ssl).
+We ran the above workflows to benchmark a SkyhookDM deployment in the River SSL Kubernetes cluster. The results of the experiments can be found [here](https://github.com/JayjeetAtGithub/skyhookdm-benchmark-ssl). Please find a detailed report on the project and the experiments performed [here](https://github.com/JayjeetAtGithub/skyhookdm-benchmark-ssl/blob/master/report/report.pdf).
