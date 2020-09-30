@@ -22,6 +22,8 @@ $ pip install popper
 
 ## Booting up a Kubernetes cluster in Cloudlab
 
+> If a Kubernetes cluster is already available, copy the Kubernetes config file to a `kubeconfig/config` file and skip this step.
+
 ```bash
 # generate the .env file and populate it
 $ cp .env.example .env 
