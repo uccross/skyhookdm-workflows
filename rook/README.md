@@ -111,6 +111,7 @@ $ popper run -f workflows/radosbench.yml -s _CLIENT=<client-hostname>
 ```
 
 This workflow benchmarks the RADOS Object store and plots the latency, bandwidth and IOPS at varying IO depths over a given period of time for Sequential and Random R/W workloads. Example RADOS benchmark plots are shown below.
+The node that needs to host the client pod can be controlled through the `CLIENT` variable.
 
 Each of the OSD's write throughput and IOPS is also measured using the `ceph tell` benchmark tool. 
 A set of example RADOS benchmark plots are shown below.
@@ -124,7 +125,7 @@ A set of example RADOS benchmark plots are shown below.
 $ popper run -f workflows/run_query.yml -s _CLIENT=<client-hostname>
 ```
 
-This workflow runs queries over the TPC-H Lineitem dataset at 1%, 10%, 100% selectivity in Arrow (currently not supported) and Flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below. It is recommended to deploy the client on a pod that doesn't host an OSD or MON to get the best results. This can be controlled by the `CLIENT` substitution variable given in the workflow.
+This workflow runs queries over the TPC-H lineitem dataset at 1%, 10%, 100% selectivity in Arrow (currently not supported) and Flatbuffer format and plots the run time of the queries against selectivity. An example plot is shown below. It is recommended to deploy the client on a pod that doesn't host an OSD or MON to get the best results. This can be controlled by the `CLIENT` substitution variable given in the workflow.
 
 <img src="https://user-images.githubusercontent.com/33978990/94709227-20b04280-0363-11eb-9e39-6cb493018e51.png" height="300" width="450" />
 
@@ -158,8 +159,7 @@ $ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<cli
 .
 .
 ```
-This workflow measures the link speed between the node allocated as the client and the node allocated as the server. An example plot for such a benchmark run is shown below. The deployment of the server and client pods can be
-controlled by the `SERVER` and `CLIENT` substitution variables of the workflow.
+This workflow measures the link speed between the node allocated as the client and the node allocated as the server. The deployment of the server and client pods can be controlled by the `SERVER` and `CLIENT` substitution variables of the workflow. This workflow can be run multiple times to measure the link speed between different sets of nodes. An example plot for such a benchmark run is shown below.
 
 <img src="https://user-images.githubusercontent.com/33978990/92874220-7315d780-f425-11ea-96af-c9aa9239a649.png" height="300" width="450" />
 
@@ -167,7 +167,7 @@ controlled by the `SERVER` and `CLIENT` substitution variables of the workflow.
 ```bash
 $ popper run -f workflows/fio.yml -s _HOSTNAME=<hostname-to-benchmark>
 ```
-This workflow benchmarks the blockdevices using `fio` and generates plots showing the bandwidth, latency and IOPS of of the candidate blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
+This workflow benchmarks the blockdevices of a node using `fio` and generates plots showing the bandwidth, latency and IOPS of of the candidate blockdevices at varying IO depths and R/W modes. The blockdevices from different nodes can be benchmarked by passing the hostname through the `HOSTNAME` substitution variable. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
 
 <img src="https://user-images.githubusercontent.com/33978990/92878167-7b701180-f429-11ea-9a61-0f7bda767961.png" height="300" width="450" />
 
