@@ -109,9 +109,9 @@ To login to the dashboard for the first time, use `admin` as both username and p
 $ popper run -f workflows/radosbench.yml -s _CLIENT=<client-hostname>
 ```
 
-The RADOS benchmark workflow benchmarks and plots the latency and bandwidth of the RADOS object store at varying IO depths over a given period of time for R/W workloads. Example RADOS benchmark plots are shown below.
+The RADOS benchmark workflow benchmarks the RADOS interface and plots the latency, bandwidth and IOPS at varying IO depths over a given period of time for Sequential and Random R/W workloads. Example RADOS benchmark plots are shown below.
 
-Each of the OSD's write throughput is also measured using the `ceph tell` tool. 
+Each of the OSD's write throughput is also measured using the `ceph tell` benchmark tool. 
 Both bandwidth (throughput) and IOPS is measured. A set of example OSD benchmark plots are shown below.
 
 <img src="https://user-images.githubusercontent.com/33978990/92874999-2e3e7080-f426-11ea-8d78-7e82f841cf9b.png" height="300" width="450" />
@@ -130,7 +130,7 @@ These workflows run queries over the TPC-H Lineitem dataset at 1%, 10%, 100% sel
 ## Kubestone benchmarks
 
 The `fio` and `iperf` benchmarks require [`kubestone`](https://kubestone.io/en/latest/) to be installed and a `kubestone` namespace to be created in the cluster.
-Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace) or you can just do the following,
+Please follow the instructions given [here](https://kubestone.io/en/latest/quickstart/#installation) to install Kubestone in the cluster. The namespace can be created by doing [this](https://kubestone.io/en/latest/quickstart/#namespace) or you can just do the following,
 
 ```bash
 # clone the `kubestone` repo
@@ -158,9 +158,9 @@ $ popper run -f workflows/iperf.yml -s _SERVER=<server-hostname> -s _CLIENT=<cli
 .
 ```
 
-The value to be provided to the `SERVER` and `CLIENT` substitution variables of the `popper run` command is the hostname of the node within the kubernetes cluster that would act as the server and client respectively.
+The value to be provided to the `SERVER` and `CLIENT` substitution variables of the `popper run` command is the hostname of the node within the Kubernetes cluster that would act as the server and client respectively.
 
-The workflow measures the link speed from the node allocated as the client to the node allocated as the server. An example plot for such a benchmark run is shown below.
+The workflow measures the link speed between the node allocated as the client and the node allocated as the server. An example plot for such a benchmark run is shown below.
 
 <img src="https://user-images.githubusercontent.com/33978990/92874220-7315d780-f425-11ea-96af-c9aa9239a649.png" height="300" width="450" />
 
@@ -168,8 +168,7 @@ The workflow measures the link speed from the node allocated as the client to th
 ```bash
 $ popper run -f workflows/fio.yml -s _HOSTNAME=<hostname-to-benchmark>
 ```
-The `fio` benchmark workflow generates graphs showing the bandwidth, latency and IOPS of of the candidate
-blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
+This workflow benchmarks the blockdevices using `fio` and generates plots showing the bandwidth, latency and IOPS of of the candidate blockdevices at varying IO depths and readwrite modes. The plot shown below is obtained by benchmarking the sequential reads of a blockdevice at IO depth 32 with 1m blocksize and 8 jobs.
 
 <img src="https://user-images.githubusercontent.com/33978990/92878167-7b701180-f429-11ea-9a61-0f7bda767961.png" height="300" width="450" />
 
