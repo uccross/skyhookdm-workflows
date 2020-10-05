@@ -55,4 +55,4 @@ steps:
   runs: [bash, -euc]
   args:
   - |
-    kubectl -n "$NAMESPACE" delete --ignore-not-found -f ./run_query/job.yml
+    kubectl -n "$NAMESPACE" delete --ignore-not-found -f ./run_query/pod.yaml

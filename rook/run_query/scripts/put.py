@@ -54,5 +54,5 @@ if __name__ == "__main__":
 
     for i in range(num_batches):
         batch_length = os.cpu_count()
-        put_batch(start, start + batch_length - 1)
+        put_batch(start, min(start + batch_length - 1, object_count))
         start += batch_length
