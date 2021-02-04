@@ -25,10 +25,11 @@ steps:
 # the version of ceph being deployed determines which version of ceph-ansible
 # to use: https://docs.ceph.com/ceph-ansible/master/#releases
 - id: deploy
-  uses: docker://getpopper/ceph-ansible:v4.0.22
+  uses: getpopper/library/ceph-ansible@master
   args: ['-i', 'ansible/hosts.yaml', 'ansible/deploy-mons-and-osds.yml']
   env:
     ANSIBLE_LOG_PATH: ansible/ansible.log
+    ANSIBLE_CONFIG: ansible/ansible.cfg
     ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
     ANSIBLE_HOST_KEY_CHECKING: 'false'
   secrets:
@@ -39,7 +40,7 @@ steps:
   uses: docker://docker:19.03.3
   runs: [sh]
   args:
-  - -c,
+  - -c
   - |
     docker pull uccross/skyhookdm-ceph:v14.2.9
     docker run \
@@ -51,10 +52,11 @@ steps:
 
 
 - id: deploy skyhook library
-  uses: docker://getpopper/ansible:v2.9.7
+  uses: docker://getpopper/ansible:2.9.7
   args: ['-i', 'ansible/hosts.yaml', 'ansible/deploy-libcls_tabular.yml']
   env:
     ANSIBLE_LOG_PATH: ansible/ansible.log
+    ANSIBLE_CONFIG: ansible/ansible.cfg
     ANSIBLE_SSH_CONTROL_PATH: /dev/shm/cp%%h-%%p-%%r
     ANSIBLE_HOST_KEY_CHECKING: 'false'
   secrets:

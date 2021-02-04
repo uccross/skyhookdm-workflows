@@ -1,7 +1,7 @@
 import cloudlab_cmd
 
 # name of experiment to use to identify this allocation
-experiment_name = 'popper-ceph'
+experiment_name = 'skyhookdm-test'
 
 # expiration of allocation in minutes
 expiration = 180
@@ -20,12 +20,12 @@ with_lan = True
 # multi-node
 ############
 # grouping of nodes based on their ceph roles
-#num_osds = 3
-#groups = {
+# num_osds = 3
+# groups = {
 #   'mons': ['mon1'],
 #   'mgrs': ['mon1'],
 #   'osds': ['osd{}'.format(n) for n in range(1, num_osds+1)],
-#}
+# }
 
 
 #############
