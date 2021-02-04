@@ -1,7 +1,7 @@
 ---
 ceph_origin: repository
 ceph_repository: community
-ceph_stable_release: luminous
+ceph_stable_release: octopus
 monitor_address: "192.168.1.1"
 public_network: "192.168.1.0/24"
 cluster_network: "192.168.1.0/24"
@@ -18,3 +18,4 @@ osd_scenario: lvm
 osd_objectstore: bluestore
 devices:
 - '/dev/sdb'
+dashboard_enabled: false

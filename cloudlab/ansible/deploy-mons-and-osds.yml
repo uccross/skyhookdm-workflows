@@ -1,43 +1,55 @@
----
-- import_playbook: purge_cluster.yml
-  when:
-  - "lookup('env','CEPH_PURGE_CLUSTER') | default(false)"
-
 - hosts:
   - mons
   - osds
+  - mgrs
 
   gather_facts: false
   any_errors_fatal: true
   become: true
 
-  tags:
-    - always
+  tags: always
 
   vars:
     delegate_facts_host: True
 
   pre_tasks:
+    # If we can't get python2 installed before any module is used we will fail
+    # so just try what we can to get it installed
+
+    - import_tasks: raw_install_python.yml
+
     - name: gather facts
       setup:
+        gather_subset:
+          - 'all'
+          - '!facter'
+          - '!ohai'
       when:
-        - not delegate_facts_host | bool
+        - not delegate_facts_host | bool or inventory_hostname in groups.get(client_group_name, [])
 
     - name: gather and delegate facts
       setup:
+        gather_subset:
+          - 'all'
+          - '!facter'
+          - '!ohai'
       delegate_to: "{{ item }}"
       delegate_facts: True
-      with_items: "{{ groups['all'] }}"
+      with_items: "{{ groups['all'] | difference(groups.get('clients', [])) }}"
       run_once: true
-      when:
-        - delegate_facts_host | bool
+      when: delegate_facts_host | bool
 
-  roles:
-    - ceph-defaults
-    - ceph-facts
-    - ceph-validate
-    - ceph-infra
-
+  tasks:
+    - import_role:
+        name: ceph-defaults
+    - import_role:
+        name: ceph-facts
+    - import_role:
+        name: ceph-validate
+    - import_role:
+        name: ceph-infra
+    - import_role:
+        name: ceph-common
 
 - hosts: mons
   gather_facts: false
@@ -51,22 +63,70 @@
           installer_phase_ceph_mon:
             status: "In Progress"
             start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
-  roles:
-    - role: ceph-defaults
+
+  tasks:
+    - import_role:
+        name: ceph-defaults
       tags: ['ceph_update_config']
-    - role: ceph-facts
+    - import_role:
+        name: ceph-facts
       tags: ['ceph_update_config']
-    - role: ceph-handler
-    - role: ceph-common
-    - role: ceph-config
+    - import_role:
+        name: ceph-handler
       tags: ['ceph_update_config']
-    - role: ceph-mon
+    - import_role:
+        name: ceph-config
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-mon
+    - import_role:
+        name: ceph-mgr
+      when: groups.get(mgr_group_name, []) | length == 0
+
   post_tasks:
     - name: set ceph monitor install 'Complete'
       run_once: true
       set_stats:
         data:
           installer_phase_ceph_mon:
+            status: "Complete"
+            end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
+- hosts: mgrs
+  gather_facts: false
+  become: True
+  any_errors_fatal: true
+  pre_tasks:
+    - name: set ceph manager install 'In Progress'
+      run_once: true
+      set_stats:
+        data:
+          installer_phase_ceph_mgr:
+            status: "In Progress"
+            start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
+  tasks:
+    - import_role:
+        name: ceph-defaults
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-facts
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-handler
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-config
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-mgr
+
+  post_tasks:
+    - name: set ceph manager install 'Complete'
+      run_once: true
+      set_stats:
+        data:
+          installer_phase_ceph_mgr:
             status: "Complete"
             end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
 
@@ -82,16 +142,23 @@
           installer_phase_ceph_osd:
             status: "In Progress"
             start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
-  roles:
-    - role: ceph-defaults
+
+  tasks:
+    - import_role:
+        name: ceph-defaults
       tags: ['ceph_update_config']
-    - role: ceph-facts
+    - import_role:
+        name: ceph-facts
       tags: ['ceph_update_config']
-    - role: ceph-handler
-    - role: ceph-common
-    - role: ceph-config
+    - import_role:
+        name: ceph-handler
       tags: ['ceph_update_config']
-    - role: ceph-osd
+    - import_role:
+        name: ceph-config
+      tags: ['ceph_update_config']
+    - import_role:
+        name: ceph-osd
+
   post_tasks:
     - name: set ceph osd install 'Complete'
       run_once: true
@@ -101,13 +168,38 @@
             status: "Complete"
             end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
 
+- import_playbook: dashboard.yml
+  when:
+    - dashboard_enabled | bool
+    - groups.get(grafana_server_group_name, []) | length > 0
+
+- hosts:
+  - mons
+  - osds
+  - mgrs
+
+  gather_facts: false
+  become: True
+  any_errors_fatal: true
+
+  tasks:
+    - import_role:
+        name: ceph-defaults
+    - import_role:
+        name: ceph-facts
+        tasks_from: container_binary.yml
+    - import_role:
+        name: ceph-handler
+    - import_role:
+        name: ceph-crash
+
 - hosts: mons
   gather_facts: false
   become: True
   any_errors_fatal: true
-  roles:
-    - role: ceph-defaults
-  post_tasks:
+  tasks:
+    - import_role:
+        name: ceph-defaults
     - name: get ceph status from the first monitor
       command: ceph --cluster {{ cluster }} -s
       register: ceph_status
@@ -120,4 +212,7 @@
         msg: "{{ ceph_status.stdout_lines }}"
       delegate_to: "{{ groups[mon_group_name][0] }}"
       run_once: true
-      when: not ceph_status.failed
+      when:
+        - ceph_status is not skipped
+        - ceph_status is successful
+
