@@ -35,7 +35,7 @@ steps:
   secrets:
   - ANSIBLE_SSH_KEY_DATA
 
-- id: download and extract the skyhook library
+- id: download and extract skyhook library
   uses: docker://docker:19.03.3
   runs: [sh]
   args:
@@ -49,7 +49,7 @@ steps:
       uccross/skyhookdm-ceph:v14.2.9 \
         -c 'cp /usr/lib64/rados-classes/libcls_tabular.so ansible/files/'
 
-- id: download and extract the skyhook-arrow library
+- id: download and extract skyhook-arrow library
   uses: docker://docker:19.03.3
   runs: [sh]
   args:

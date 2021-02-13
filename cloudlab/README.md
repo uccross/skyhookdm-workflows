@@ -1,4 +1,4 @@
-# Deploy Ceph on CloudLab
+# Deploy Ceph (+SkyhookDM) on CloudLab
 
 A workflow for deploying Ceph on CloudLab using `geni-lib` and 
 Ansible; assumes basic knowledge of how these two tools work.
@@ -19,6 +19,13 @@ workflow consists of the following steps:
     [`ansible/playbooks/`](./ansible/playbooks) folder. After this 
     step executes, the resulting `ceph.conf` file is placed in 
     [`ansible/fetch/`](./ansible/fetch).
+
+  * **`download and extract skyhook library/download and extract skyhook-arrow library`**. Extracts the
+    SkyhookDM and SkyhookDM-Arrow shared libraries from their respective Docker images into the [`ansible/files`](./ansible/files) directory.
+
+  * **`deploy skyhook library`**. Copies the shared libraries from [`ansible/files`](./ansible/files) into the `/usr/lib64/rados-classes/` directory in the Ceph OSDs by running [this](./ansible/deploy-libcls_tabular.yml) playbook.
+
+  * **`release resources`**. Releases all the resources spawned by the workflow.
 
 In addition to the above, subsequent steps can be added to the 
 workflow in order to run tests, benchmarks or other workloads that 
