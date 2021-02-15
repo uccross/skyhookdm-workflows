@@ -55,12 +55,12 @@ steps:
   args:
   - -c
   - |
-    docker pull jcnitdgp25/skyhookdm-arrow:stable-0.1
+    docker pull uccross/skyhookdm-arrow:stable-0.1
     docker run \
       -v $PWD:/w \
       -w /w \
       --entrypoint=/bin/bash \
-      jcnitdgp25/skyhookdm-arrow:stable-0.1 \
+      uccross/skyhookdm-arrow:stable-0.1 \
         -c 'cp /usr/lib64/rados-classes/libcls_arrow* ansible/files/ &&
             cp /usr/local/lib64/libarrow* ansible/files/ &&
             cp /usr/local/lib64/libparquet* ansible/files/'
