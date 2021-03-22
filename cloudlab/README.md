@@ -77,7 +77,7 @@ To execute this workflow:
        in the GENI [config file](./geni/config.py).
 
      * Specify in the `deploy` step which Ansible playbook is to be 
-       executed (see the [`ansible/playbooks/`](./ansible/playbooks) 
+       executed (see the [`ansible/`](./ansible/) 
        folder. Multiple playbooks may exist, depending on what type of 
        deployment is needed (e.g. ).
 
